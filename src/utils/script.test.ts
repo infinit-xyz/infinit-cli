@@ -8,20 +8,20 @@ import type { AnyZodObject } from 'zod'
 describe('generateScriptText', () => {
   const initialAction = protocolModules[PROTOCOL_MODULE.aave_v3].actions.init
   const libPath = protocolModules[PROTOCOL_MODULE.aave_v3].libPath
-  const paramSchema = initialAction.paramSchema as AnyZodObject
+  const paramsSchema = initialAction.paramsSchema as AnyZodObject
   const generatedText = generateScriptText(initialAction, libPath, 'init')
 
   test('should generate script text correctly (partial match)', () => {
     expect(generatedText).toContain(`import { ${initialAction.actionClassName}, type actions } from '${libPath}/actions'`)
 
-    const zodObjectDefault = zodGetDefaults(initialAction.paramSchema)
+    const zodObjectDefault = zodGetDefaults(initialAction.paramsSchema)
     const allZodKeys = Object.keys(zodObjectDefault)
 
-    expect(generatedText).toContain(`type Param = z.infer<typeof actions['init']['paramSchema']>`)
+    expect(generatedText).toContain(`type Param = z.infer<typeof actions['init']['paramsSchema']>`)
     expect(generatedText).toContain(`const params: Param = {`)
     allZodKeys.forEach((key) => {
       expect(generatedText).toContain(`"${key}": undefined`)
-      expect(generatedText).toContain(`// TODO: ${paramSchema.shape[key].description ?? ''}`)
+      expect(generatedText).toContain(`// TODO: ${paramsSchema.shape[key].description ?? ''}`)
     })
 
     expect(generatedText).toContain(`const signer = {`)
@@ -37,7 +37,7 @@ describe('generateScriptText', () => {
 import { DeployAaveV3Action, type actions } from '@infinit-xyz/aave-v3/actions'
 import type { z } from 'zod'
 
-type Param = z.infer<typeof actions['init']['paramSchema']>
+type Param = z.infer<typeof actions['init']['paramsSchema']>
 
 // TODO: Replace with actual params
 const params: Param = {
@@ -139,7 +139,7 @@ export default { params, signer, Action: DeployAaveV3Action }
 import { DeployAaveV3Action, type actions } from '@infinit-xyz/aave-v3/actions'
 import type { z } from 'zod'
 
-type Param = z.infer<typeof actions['init']['paramSchema']>
+type Param = z.infer<typeof actions['init']['paramsSchema']>
 
 // TODO: Replace with actual params
 const params: Param = {

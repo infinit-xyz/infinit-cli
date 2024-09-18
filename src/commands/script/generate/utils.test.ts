@@ -30,7 +30,7 @@ describe('generate/utils.ts', () => {
 
       const readFileContent = fs.readFileSync(generatedFilePath, 'utf-8')
 
-      const zodObjectDefault = zodGetDefaults(infinitAction.paramSchema)
+      const zodObjectDefault = zodGetDefaults(infinitAction.paramsSchema)
       const allZodKeys = Object.keys(zodObjectDefault)
 
       expect(generatedFilePath.split('/').at(-1)).toBe('test-generate.script.ts')

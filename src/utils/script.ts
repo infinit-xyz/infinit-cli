@@ -10,7 +10,7 @@ export const generateScriptText = (infinitAction: InfinitAction, libPath: string
     return acc
   }, {})
 
-  const generatedParamsText = pipeInto(infinitAction.paramSchema, zodGetDefaults, stringifyWithUndefined)
+  const generatedParamsText = pipeInto(infinitAction.paramsSchema, zodGetDefaults, stringifyWithUndefined)
   const splittedParamsText = generatedParamsText.split('\n')
   const newSplistedParamsText = []
 
@@ -19,7 +19,7 @@ export const generateScriptText = (infinitAction: InfinitAction, libPath: string
     if (match) {
       const key = match[1]
       newSplistedParamsText.push('\n')
-      newSplistedParamsText.push(`  // TODO: ${infinitAction.paramSchema.shape[key].description ?? ''}`)
+      newSplistedParamsText.push(`  // TODO: ${infinitAction.paramsSchema.shape[key].description ?? ''}`)
     }
     newSplistedParamsText.push(line)
   }
@@ -28,7 +28,7 @@ export const generateScriptText = (infinitAction: InfinitAction, libPath: string
 import { ${infinitAction.actionClassName}, type actions } from '${libPath}/actions'
 import type { z } from 'zod'
 
-type Param = z.infer<typeof actions['${actionKey}']['paramSchema']>
+type Param = z.infer<typeof actions['${actionKey}']['paramsSchema']>
 
 // TODO: Replace with actual params
 const params: Param = ${newSplistedParamsText.join('\n')}

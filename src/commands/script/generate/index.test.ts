@@ -26,13 +26,13 @@ vi.mock('@constants/protocol-module', () => ({
         action1: {
           name: 'Action 1',
           actionClassName: 'Action1',
-          paramSchema: {},
+          paramsSchema: {},
           signers: ['action-1-signer'],
         },
         action2: {
           name: 'Action 2',
           actionClassName: 'Action2',
-          paramSchema: {},
+          paramsSchema: {},
           signers: ['action-2-signer'],
         },
       },
@@ -79,7 +79,7 @@ describe('generate/index.ts', () => {
         {
           name: 'Action 1',
           actionClassName: 'Action1',
-          paramSchema: {},
+          paramsSchema: {},
           signers: ['action-1-signer'],
         },
         'action1',
@@ -111,7 +111,7 @@ describe('generate/index.ts', () => {
         {
           name: 'Action 2',
           actionClassName: 'Action2',
-          paramSchema: {},
+          paramsSchema: {},
           signers: ['action-2-signer'],
         },
         'action2',
