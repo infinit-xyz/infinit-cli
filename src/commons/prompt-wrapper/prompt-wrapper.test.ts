@@ -29,7 +29,7 @@ describe('Prompt Wrapper', () => {
 
     events?.keypress('enter')
 
-    expect(getScreen?.()).toBe('? Select action action3')
+    expect(getScreen?.()).toBe('✔ Select action action3')
 
     const result = await promisePrompt
 
