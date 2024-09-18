@@ -1,11 +1,70 @@
 {
-  "name": "infinit-cli",
-  "module": "index.ts",
+  "name": "@infinit-xyz/cli",
+  "version": "0.0.0",
   "type": "module",
-  "devDependencies": {
-    "@types/bun": "latest"
+  "module": "src/index.ts",
+  "bin": {
+    "infinit": "bin/cli.js"
   },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
+  "files": ["/bin", "/dist", ".bun.lockb"],
+  "scripts": {
+    "dev": "bun scripts/dev.ts",
+    "build": "bun run clean:bin && bun run build:script",
+    "build:script": "bun scripts/build.ts",
+    "clean:bin": "find bin ! -name 'cli.js' -type f -exec rm -f {} +",
+    "clean": "bun run clean:bin && rm -rf node_modules",
+    "test": "bun run build && vitest run",
+    "test:watch": "vitest",
+    "test:typecheck": "vitest run --typecheck",
+    "test:coverage": "vitest run --coverage",
+    "changeset:version": "changeset version && bun install --lockfile-only",
+    "changeset:publish": "bun run build && changeset publish",
+    "lint": "bunx @biomejs/biome lint --write ./src",
+    "lint:check": "bunx @biomejs/biome lint ./src",
+    "format": "bunx @biomejs/biome format --write ./src",
+    "typecheck": "tsc --noEmit",
+    "json2ts": "json2ts -i src/schemas/**/*.json -o src/schemas/generated.d.ts && bun run format",
+    "make-badges": "istanbul-badges-readme"
+  },
+  "dependencies": {
+    "@ethereumjs/wallet": "2.0.4",
+    "@infinit-xyz/aave-v3": "0.0.0-alpha.6",
+    "@infinit-xyz/core": "0.0.0-alpha.5",
+    "@infinit-xyz/token": "0.0.0-alpha.5",
+    "@infinit-xyz/uniswap-v3": "0.0.0-alpha.6",
+    "@inquirer/prompts": "^5.3.8",
+    "chalk": "^5.3.0",
+    "cli-progress": "^3.12.0",
+    "cli-table3": "^0.6.5",
+    "commander": "^12.1.0",
+    "fs-extra": "^11.2.0",
+    "js-yaml": "^4.1.0",
+    "json-schema-to-typescript": "^15.0.0",
+    "lodash": "^4.17.21",
+    "ora": "^8.0.1",
+    "prool": "^0.0.16",
+    "ts-functional-pipe": "^3.1.2",
+    "ts-pattern": "^5.3.1",
+    "tsx": "^4.16.2",
+    "zod": "^3.23.8",
+    "viem": "2.21.9"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@biomejs/biome": "^1.8.1",
+    "@changesets/changelog-github": "^0.5.0",
+    "@changesets/cli": "^2.27.7",
+    "@types/bun": "latest",
+    "@types/cli-progress": "^3.11.6",
+    "@types/fs-extra": "^11.0.4",
+    "@types/inquirer": "^9.0.7",
+    "@types/js-yaml": "^4.0.9",
+    "@types/lodash": "^4.17.6",
+    "@vitest/coverage-istanbul": "^2.0.5",
+    "execa": "^9.3.0",
+    "istanbul-badges-readme": "^1.9.0",
+    "strip-ansi": "^7.1.0",
+    "vite-tsconfig-paths": "^5.0.1",
+    "vitest": "^2.0.1"
   }
 }

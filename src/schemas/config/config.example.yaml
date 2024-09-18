@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=./config.schema.json
+
+project_name: "My Project"
+protocol_module: "init-capital"
+chain_info:
+  name: 'Ethereum'
+  network_id: 1
+  rpc_url: https://example.com
