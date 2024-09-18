@@ -50,7 +50,7 @@ describe('Command: accounts - delete', () => {
 
     const loadAccountSpy = vi
       .spyOn(accounts, 'load')
-      .mockImplementation(async () => Wallet.fromPrivateKey(Buffer.from(MOCK_PRIVATE_KEY.slice(2, MOCK_PRIVATE_KEY.length), 'hex')))
+      .mockImplementation(async () => Wallet.fromPrivateKey(new Uint8Array(Buffer.from(MOCK_PRIVATE_KEY.slice(2, MOCK_PRIVATE_KEY.length), 'hex'))))
 
     vi.mocked(confirm).mockResolvedValue(false)
 
@@ -73,7 +73,7 @@ describe('Command: accounts - delete', () => {
 
     const loadAccountSpy = vi
       .spyOn(accounts, 'load')
-      .mockImplementation(async () => Wallet.fromPrivateKey(Buffer.from(MOCK_PRIVATE_KEY.slice(2, MOCK_PRIVATE_KEY.length), 'hex')))
+      .mockImplementation(async () => Wallet.fromPrivateKey(new Uint8Array(Buffer.from(MOCK_PRIVATE_KEY.slice(2, MOCK_PRIVATE_KEY.length), 'hex'))))
 
     vi.mocked(confirm).mockResolvedValue(true)
 
