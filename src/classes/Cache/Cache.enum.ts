@@ -1,0 +1,5 @@
+export enum TX_STATUS {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  REVERTED = 'REVERTED',
+}

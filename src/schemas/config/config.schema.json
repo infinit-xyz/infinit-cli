@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "infinit-config-schema-v0.0.1.json",
+  "title": "Infinit Config Schema",
+  "description": "Infinit Config Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "definitions": {
+    "Address": {
+      "type": "string",
+      "pattern": "^(0x)?[0-9a-f]{40}$",
+      "description": "Ethereum address (lowercase)",
+      "examples": ["0x1234567890123456789012345678901234abcdef"],
+      "minLength": 42,
+      "maxLength": 42
+    },
+    "Url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL",
+      "examples": ["https://example.com"]
+    }
+  },
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "project_name": {
+      "type": "string"
+    },
+    "protocol_module": {
+      "type": "string"
+    },
+    "chain_info": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "network_id": {
+          "type": "integer"
+        },
+        "rpc_url": {
+          "$ref": "#/definitions/Url"
+        }
+      },
+      "required": ["name", "network_id", "rpc_url"]
+    }
+  },
+  "required": ["project_name", "protocol_module", "chain_info"]
+}
