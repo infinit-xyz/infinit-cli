@@ -82,7 +82,7 @@ describe('Prompt: account', () => {
 
       await events?.keypress('enter')
 
-      expect(getScreen?.()).toBe(`? Enter password`)
+      expect(getScreen?.()).toBe(`✔ Enter password`)
 
       const result = await promisePasswordPrompt
       expect(result).toBe(MOCK_PASSWORD)
