@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/github-action.json
+
+name: 'Set up and Install'
+description: 'Set up repository and install all dependencies'
+
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up bun
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: latest
+
+    - name: Install dependencies
+      shell: bash
+      run: bun install --ignore-scripts
