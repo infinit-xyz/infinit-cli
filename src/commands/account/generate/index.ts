@@ -22,12 +22,12 @@ export const handleGenerateAccount = async (accountId?: string) => {
     const accountFilePath = path.join(DATA_FOLDER, 'accounts')
     ensureAccessibilityAtPath(accountFilePath, fs.constants.W_OK)
 
-    // 3. generate wallet
+    // 3. prompt password
+    const password = await passwordWithConfirmPrompt()
+
+    // 4. generate wallet
     console.log('Generating a new private key...')
     const wallet = Wallet.generate()
-
-    // 4. prompt password
-    const password = await passwordWithConfirmPrompt()
 
     const privateKey = wallet.getPrivateKeyString() as Hex
     // 5. create account
