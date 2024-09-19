@@ -84,7 +84,7 @@ export const initializeCliProject = async (
   const packageJson = {
     ...oldPackageJson,
     engines: {
-      node: '>=20',
+      node: '>=22',
     },
   }
 

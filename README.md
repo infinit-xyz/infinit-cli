@@ -1,9 +1,9 @@
 # @infinit-xyz/cli
 
-![Statements](https://img.shields.io/badge/statements-51.64%25-red.svg?style=flat)
-![Branches](https://img.shields.io/badge/branches-35.54%25-red.svg?style=flat)
-![Functions](https://img.shields.io/badge/functions-54.5%25-red.svg?style=flat)
-![Lines](https://img.shields.io/badge/lines-51.59%25-red.svg?style=flat)
+![Statements](https://img.shields.io/badge/statements-52.25%25-red.svg?style=flat)
+![Branches](https://img.shields.io/badge/branches-35.91%25-red.svg?style=flat)
+![Functions](https://img.shields.io/badge/functions-55.05%25-red.svg?style=flat)
+![Lines](https://img.shields.io/badge/lines-52.23%25-red.svg?style=flat)
 
 
 To install dependencies:
