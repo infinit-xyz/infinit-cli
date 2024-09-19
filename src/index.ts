@@ -8,7 +8,26 @@ import { handleInitializeCli } from '@commands/init'
 import { handleCompileProject } from '@commands/project'
 import { handleExecuteScript, handleGenerateScript } from '@commands/script'
 
+// Function to validate Node.js version
+const validateNodeVersion = () => {
+  const expectedNodeVersion = '22.0.0'
+  const currentVersion = process.versions.node
+
+  const [currentMajor] = currentVersion.split('.')
+  const [requiredMajor] = expectedNodeVersion.split('.')
+
+  if (parseInt(currentMajor) < parseInt(requiredMajor)) {
+    console.error(`Error: Node.js version must be ${expectedNodeVersion} or higher. You are using ${currentVersion}.`)
+    process.exit(1)
+  }
+}
+
 program.name('INFINIT CLI').usage('<command> [options]').version(version, '-v, --version')
+
+// Add global hook to validate before executing commands
+program.hook('preAction', () => {
+  validateNodeVersion()
+})
 
 program
   .command('init')
