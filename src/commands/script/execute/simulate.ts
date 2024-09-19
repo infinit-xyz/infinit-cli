@@ -22,20 +22,22 @@ export const simulateExecute = async (
   spinner: Ora,
   actionInfinitCache?: InfinitCache,
 ) => {
-  // create fork server with anvil and prool (with 1 pool)
-  const server = createServer({
-    instance: anvil({
-      chainId: Number(chainInfo.chainId),
-      forkUrl: chainInfo.rpcList[0],
-    }),
-    limit: 1, // force to have only 1 pool since we are going to run 1 consequently action.
-    port: FORK_CHAIN_PORT,
-  })
-
-  // start the prool server
-  const stopServer = await server.start()
+  let stopServer: (() => Promise<void>) | undefined = undefined
 
   try {
+    // create fork server with anvil and prool (with 1 pool)
+    const server = createServer({
+      instance: anvil({
+        chainId: Number(chainInfo.chainId),
+        forkUrl: chainInfo.rpcList[0],
+      }),
+      limit: 1, // force to have only 1 pool since we are going to run 1 consequently action.
+      port: FORK_CHAIN_PORT,
+    })
+
+    // start the prool server
+    stopServer = await server.start()
+
     spinner.start(getSpinnerProgressText(action.name, 0))
 
     // initialize test client and public client that connected to the fork chain.
@@ -100,6 +102,8 @@ export const simulateExecute = async (
 
     throw error
   } finally {
-    await stopServer()
+    if (stopServer) {
+      await stopServer()
+    }
   }
 }
