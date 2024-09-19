@@ -57,7 +57,7 @@ We use [Changesets](https://github.com/changesets/changesets) to help manage ver
 Run the following command to create a changeset.
 
 ```
-pnpm changeset
+bun changeset
 ```
 
 Select the packages: Choose the packages affected by your changes.
