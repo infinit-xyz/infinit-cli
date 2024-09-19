@@ -1,4 +1,5 @@
 import { $ } from 'bun'
+import os from 'node:os'
 
 try {
   const externalPackages = [
@@ -71,7 +72,13 @@ try {
   // Generate dist folders to store assets
   await $`rm -rf dist`
   await $`mkdir dist`
-  await $`cp -r src/schemas dist/schemas`
+
+  if (os.platform() === 'win32') {
+    await $`xcopy src\\schemas dist\\schemas /E /I /Y`
+  } else {
+    await $`cp -r src/schemas dist/schemas`
+  }
+
   console.log('✅ Generated dist')
 } catch (error) {
   console.error('❌ Error in scripts/build.ts')
