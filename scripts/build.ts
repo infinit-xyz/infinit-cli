@@ -1,5 +1,5 @@
 import { $ } from 'bun'
-import os from 'os'
+import os from 'node:os'
 
 try {
   const externalPackages = [
