@@ -1,5 +1,5 @@
 import { handleGenerateScript } from '@commands/script'
-import { getScriptFileDirectory, handleGenerateScriptFile } from '@commands/script/generate/utils'
+import { getScriptFileDirectory, getUniqueScriptFileName, handleGenerateScriptFile } from '@commands/script/generate/utils'
 import { chalkError, chalkInfo } from '@constants/chalk'
 import { confirm, select } from '@inquirer/prompts'
 import { type Mock, type MockInstance, afterAll, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
@@ -53,6 +53,7 @@ describe('generate/index.ts', () => {
     consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
     promptSelectSpy = vi.fn()
     handleGenerateScriptFileSpy = vi.fn().mockResolvedValue('mockGeneratedFilePath')
+    vi.mocked(getUniqueScriptFileName).mockImplementation((actionName: string) => `${actionName}_1`)
     vi.mocked(getScriptFileDirectory).mockReturnValue('folderPath/src/scripts')
   })
 
@@ -91,7 +92,7 @@ describe('generate/index.ts', () => {
         },
         'action1',
         'protocol-x-lib',
-        'Action1-629557993',
+        'Action1_1',
         'folderPath/src/scripts',
       )
 
@@ -123,7 +124,7 @@ describe('generate/index.ts', () => {
         },
         'action2',
         'protocol-x-lib',
-        'Action2-629557993',
+        'Action2_1',
         'folderPath/src/scripts',
       )
 
