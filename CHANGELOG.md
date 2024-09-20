@@ -1,5 +1,15 @@
 # @infinit-xyz/cli
 
+## 0.0.0-alpha.2
+
+### Minor Changes
+
+- [#10](https://github.com/infinit-xyz/infinit-cli/pull/10) [`93aca5d`](https://github.com/infinit-xyz/infinit-cli/commit/93aca5d682ffaa97f5c4c2752af702fc8057f4b2) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - update generated script file name
+
+### Patch Changes
+
+- [#10](https://github.com/infinit-xyz/infinit-cli/pull/10) [`93aca5d`](https://github.com/infinit-xyz/infinit-cli/commit/93aca5d682ffaa97f5c4c2752af702fc8057f4b2) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - remove `README.md` when create project
+
 ## 0.0.0-alpha.1
 
 ### Minor Changes
