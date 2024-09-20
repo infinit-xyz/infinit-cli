@@ -52,6 +52,10 @@ describe('generate/utils.ts', () => {
       mockExistsSync = vi.spyOn(fs, 'existsSync')
     })
 
+    afterAll(() => {
+      mockExistsSync.mockRestore()
+    })
+
     test('should get correct script file name', async () => {
       mockExistsSync.mockReturnValueOnce(false)
 
@@ -65,7 +69,11 @@ describe('generate/utils.ts', () => {
     })
 
     test('should get correct script file name when multiple duplicate', async () => {
-      mockExistsSync.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(false)
+      const existedFiles = ['MockAction', 'MockAction_1', 'MockAction_2'].map((fileName) => `<PROJECT_CWD>/<MOCK_DIRECTORY>/${fileName}.script.ts`)
+
+      mockExistsSync.mockImplementation((fileName: fs.PathLike): boolean => {
+        return typeof fileName === 'string' && existedFiles.includes(fileName) ? true : false
+      })
 
       expect(getUniqueScriptFileName('MockAction', mockDirectory)).toBe('MockAction_3')
     })
