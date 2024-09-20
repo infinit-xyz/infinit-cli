@@ -1,11 +1,11 @@
-import { getScriptFileDirectory, getScriptHistoryFileDirectory, handleGenerateScriptFile } from '@commands/script/generate/utils'
+import { getScriptFileDirectory, getScriptHistoryFileDirectory, getUniqueScriptFileName, handleGenerateScriptFile } from '@commands/script/generate/utils'
 import { protocolModules } from '@constants/protocol-module'
 import { PROTOCOL_MODULE } from '@enums/module'
 import { writeFileSync } from '@utils/files'
 import { zodGetDefaults } from '@utils/zod'
 import fs from 'fs'
 import path from 'path'
-import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest'
+import { type MockInstance, afterAll, beforeAll, describe, expect, test, vi } from 'vitest'
 
 const folderPath = path.join(__dirname, '..', '..', '..', 'generate')
 const mockProcessCwd = '<PROJECT_CWD>'
@@ -40,6 +40,34 @@ describe('generate/utils.ts', () => {
 
     test('should get correct script history file directory with custom project root', async () => {
       expect(getScriptHistoryFileDirectory('FAKE_ROOT')).toBe(`FAKE_ROOT/src/scripts-history`)
+    })
+  })
+
+  describe('getUniqueScriptFileName', () => {
+    const mockDirectory = '<MOCK_DIRECTORY>'
+
+    let mockExistsSync: MockInstance<typeof fs.existsSync>
+
+    beforeAll(() => {
+      mockExistsSync = vi.spyOn(fs, 'existsSync')
+    })
+
+    test('should get correct script file name', async () => {
+      mockExistsSync.mockReturnValueOnce(false)
+
+      expect(getUniqueScriptFileName('MockAction', mockDirectory)).toBe('MockAction')
+    })
+
+    test('should get correct script file name when duplicate once', async () => {
+      mockExistsSync.mockReturnValueOnce(true).mockReturnValueOnce(false)
+
+      expect(getUniqueScriptFileName('MockAction', mockDirectory)).toBe('MockAction_1')
+    })
+
+    test('should get correct script file name when multiple duplicate', async () => {
+      mockExistsSync.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(false)
+
+      expect(getUniqueScriptFileName('MockAction', mockDirectory)).toBe('MockAction_3')
     })
   })
 
