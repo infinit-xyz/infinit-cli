@@ -14,6 +14,7 @@ import { accounts } from '@classes'
 import { cache } from '@classes/Cache/Cache'
 import { TX_STATUS } from '@classes/Cache/Cache.enum'
 import { FORK_CHAIN_URL, simulateExecute } from '@commands/script/execute/simulate'
+import { getScriptFileDirectory, getScriptHistoryFileDirectory } from '@commands/script/generate/utils'
 import { loadAccountFromPrompt } from '@commons/prompts/accounts'
 import { chalkError, chalkInfo } from '@constants/chalk'
 import { confirm } from '@inquirer/prompts'
@@ -106,12 +107,12 @@ export const executeActionCallbackHandler = (spinner: Ora, filename: string) => 
 
 export const handleExecuteScript = async (_fileName?: string) => {
   ensureCwdRootProject()
-  const root = process.cwd()
 
+  const scriptFileDirectory = getScriptFileDirectory()
   let fileName = _fileName
 
   if (!fileName) {
-    const currentFileList = getFilesCurrentDir(path.join(root, 'src', 'scripts'))
+    const currentFileList = getFilesCurrentDir(scriptFileDirectory)
     fileName = await scriptFileNamePrompt(currentFileList)
   }
 
@@ -120,8 +121,7 @@ export const handleExecuteScript = async (_fileName?: string) => {
     process.exit(1)
   }
 
-  const target = path.resolve(root, 'src', 'scripts', fileName)
-
+  const target = path.resolve(scriptFileDirectory, fileName)
   console.log('🏃 Starting Execution...\n')
   const spinner = ora({ spinner: 'dots' })
 
@@ -256,7 +256,8 @@ export const handleExecuteScript = async (_fileName?: string) => {
     fs.writeFileSync(registryPath, JSON.stringify(newRegistry, null, 2))
 
     // move file to archive
-    await fsExtra.move(target, path.resolve(root, 'scripts-history', fileName), { overwrite: true })
+    const scriptFileHistoryDirectory = getScriptHistoryFileDirectory()
+    await fsExtra.move(target, path.resolve(scriptFileHistoryDirectory, fileName), { overwrite: true })
 
     console.log()
 
