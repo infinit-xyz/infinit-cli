@@ -1,5 +1,6 @@
+import { program } from '@naerth/commander-autocomplete'
 import { isRunOnLocalOnly } from '@utils/invoke-cli'
-import { Option, program } from 'commander'
+import { Option } from 'commander'
 import { version } from '../package.json'
 
 import { handleDeleteAccount, handleExportAccount, handleGenerateAccount, handleImportAccount, handleListAccounts } from '@commands/account'
@@ -150,8 +151,8 @@ scriptCommands
 scriptCommands
   .command('execute')
   .description('Execute a specified script in the scripts/ folder')
-  .argument('<file>', 'Script file name') // required
-  .action(async (fileName) => {
+  .argument('[file]', 'Script file name') // required
+  .action(async (fileName?: string) => {
     isRunOnLocalOnly()
     await handleExecuteScript(fileName)
   })
