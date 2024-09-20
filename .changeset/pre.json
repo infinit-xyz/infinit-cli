@@ -5,7 +5,11 @@
     "@infinit-xyz/cli": "0.0.0-alpha"
   },
   "changesets": [
+    "angry-bikes-train",
     "cuddly-carrots-repeat",
-    "dull-teachers-swim"
+    "dull-dragons-mix",
+    "dull-teachers-swim",
+    "eighty-foxes-pay",
+    "serious-elephants-stare"
   ]
 }
