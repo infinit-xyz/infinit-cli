@@ -18,6 +18,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Checkout the fork/head-repository and push changes to the fork.
+          # If you skip this, the base repository will be checked out and changes
+          # will be committed to the base repository!
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+          # Checkout the branch made in the fork. Will automatically push changes
+          # back to this branch.
+          ref: ${{ github.head_ref }}
 
       - name: Set up and install
         uses: ./.github/actions/setup-and-install
@@ -47,7 +56,7 @@ jobs:
 
       # Auto commit new changes from format, lint, and make-badges
       # ref: https://github.com/stefanzweifel/git-auto-commit-action
-      - name: Auto commit (coverage badges)
+      - name: Auto commit
         uses: stefanzweifel/git-auto-commit-action@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
