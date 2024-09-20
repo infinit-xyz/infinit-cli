@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import { handleGenerateScriptFile } from '@commands/script/generate/utils'
+import { getScriptFileDirectory, handleGenerateScriptFile } from '@commands/script/generate/utils'
 import { DEFAULT_ACTION_KEY, FILE_NAMES } from '@constants'
 import { CHAINS } from '@constants/chains'
 import { chalkInfo } from '@constants/chalk'
@@ -119,7 +119,7 @@ export const initializeCliProject = async (
   if (!initAction) {
     throw new Error('Initialize action not found')
   }
-  const scriptFolderPath = path.join(projectDirectory, 'src', 'scripts')
+  const scriptFolderPath = getScriptFileDirectory(projectDirectory)
   await handleGenerateScriptFile(initAction, DEFAULT_ACTION_KEY, protocolModuleInfo.libPath, 'default', scriptFolderPath, deployerId)
 
   // Install dependencies

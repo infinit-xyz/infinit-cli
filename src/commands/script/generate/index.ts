@@ -1,5 +1,3 @@
-import path from 'path'
-
 import type { InfinitAction } from '@infinit-xyz/core'
 import { confirm, select } from '@inquirer/prompts'
 
@@ -9,7 +7,7 @@ import { protocolModules } from '@constants/protocol-module'
 import type { PROTOCOL_MODULE } from '@enums/module'
 import { ensureCwdRootProject } from '@utils/files'
 import type { ProtocolModuleActionKey } from './index.type'
-import { handleGenerateScriptFile } from './utils'
+import { getScriptFileDirectory, handleGenerateScriptFile } from './utils'
 
 export const handleGenerateScript = async (actionId?: string) => {
   ensureCwdRootProject()
@@ -56,7 +54,7 @@ export const handleGenerateScript = async (actionId?: string) => {
 
   // Generate file
   const selectedAction: InfinitAction = protocolModule.actions[actionKey] as InfinitAction
-  const folderPath = path.join(process.cwd(), 'src', 'scripts')
+  const folderPath = getScriptFileDirectory()
   await handleGenerateScriptFile(selectedAction, actionKey, protocolModule.libPath, scriptFileName, folderPath)
 
   // Log

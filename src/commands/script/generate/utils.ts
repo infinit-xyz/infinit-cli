@@ -4,6 +4,9 @@ import path from 'path'
 
 import { generateScriptText } from '@utils/script'
 
+export const getScriptFileDirectory = (projectDirectory?: string) => path.join(projectDirectory ?? process.cwd(), 'src', 'scripts')
+export const getScriptHistoryFileDirectory = (projectDirectory?: string) => path.join(projectDirectory ?? process.cwd(), 'src', 'scripts-history')
+
 export const handleGenerateScriptFile = async (
   infinitAction: InfinitAction,
   actionKey: string,
