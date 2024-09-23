@@ -151,7 +151,7 @@ scriptCommands
 scriptCommands
   .command('execute')
   .description('Execute a specified script in the scripts/ folder')
-  .argument('[file]', 'Script file name') // required
+  .argument('[file]', 'Script file name') // optional
   .action(async (fileName?: string) => {
     isRunOnLocalOnly()
     await handleExecuteScript(fileName)
