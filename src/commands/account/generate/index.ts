@@ -3,7 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import type { Hex } from 'viem'
 
-import { accounts } from '@classes'
+import { accounts, config } from '@classes'
 import { DATA_FOLDER } from '@classes/Config/Config'
 import { chalkError, chalkInfo } from '@constants/chalk'
 
@@ -11,10 +11,13 @@ import { notDuplicatedAccountIdPrompt } from '@commands/account/prompt'
 import { ensureAccessibilityAtPath } from '@utils/files'
 
 import { passwordWithConfirmPrompt } from '@commands/account/prompt'
+import { sendOffChainEvent } from '@utils/analytics'
 import { getProjectChainInfo } from '@utils/config'
 
 export const handleGenerateAccount = async (accountId?: string) => {
   try {
+    const projectConfig = config.getProjectConfig()
+
     // 1. prompt account ID
     const validAccountId = await notDuplicatedAccountIdPrompt(accountId)
 
@@ -44,6 +47,10 @@ export const handleGenerateAccount = async (accountId?: string) => {
     console.log(
       `Please transfer ${chainInfo.nativeCurrency.symbol} to the address ${chalkInfo(walletAddress)} account on ${chalkInfo(chainInfo.name)} blockchain to cover gas fees.`,
     )
+
+    if (projectConfig.allow_analytics) {
+      sendOffChainEvent({ action: 'account generate', payload: { walletAddress } })
+    }
   } catch (error) {
     console.error(chalkError(error))
   }

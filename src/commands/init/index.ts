@@ -1,3 +1,4 @@
+import { confirm } from '@inquirer/prompts'
 import { isSupportedChain, toSupportedChainID } from '@utils/chain'
 import { trim } from '@utils/string'
 
@@ -76,6 +77,18 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
     }
 
     /**
+     * Analytics
+     */
+    let allowAnalytics = false
+
+    if (!cmdInput.ignoreAnalytics) {
+      allowAnalytics = await confirm({
+        message: `Do you allow INFINIT CLI to send usage data to help improve the tool? (This can be changed later in the config file)`,
+        default: true,
+      })
+    }
+
+    /**
      * Package Manager
      */
 
@@ -85,7 +98,7 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
      * Initialize CLI Project
      */
 
-    await initializeCliProject(projectDirectory, protocolModule, chainId, packageManager, deployerId)
+    await initializeCliProject(projectDirectory, protocolModule, chainId, packageManager, deployerId, allowAnalytics)
 
     await compileProject(projectDirectory, protocolModule)
 

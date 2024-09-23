@@ -38,6 +38,7 @@ program
   .option('--deployer <char>', 'Deployer account ID')
   // hidden
   .addOption(new Option('--ignore-deployer', 'Do not ask for deployer account ID').hideHelp())
+  .addOption(new Option('--ignore-analytics', 'Do not ask for analytics tracking').hideHelp())
 
   .action(async (input) => {
     await handleInitializeCli(input)

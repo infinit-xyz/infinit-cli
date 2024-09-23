@@ -10,7 +10,7 @@ import { Cache, cache } from './Cache'
 import { TX_STATUS } from './Cache.enum'
 import { type InfinitCliCache, InfinitCliCacheZod } from './Cache.type'
 
-import { example1, example1Parsed } from './__mocks__/constants'
+import { example1, example1Parsed, mockProjectConfig } from './__mocks__/constants'
 
 /**
  * Enable this snippet to separate the cache instance from the cache mock instance
@@ -388,7 +388,7 @@ describe('Cache', () => {
   describe('Action Callback Cache', () => {
     const spinner = ora({ spinner: 'dots' })
 
-    const actionCb01Callback = executeActionCallbackHandler(spinner, 'action-cb-01')
+    const actionCb01Callback = executeActionCallbackHandler(spinner, 'action-cb-01', mockProjectConfig, ['0x123'])
 
     const txHash01 = '0x001'
     const txHash02 = '0x002'

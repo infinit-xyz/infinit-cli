@@ -4,4 +4,5 @@ export type InitProjectInput = {
   module?: string
   deployer?: string
   ignoreDeployer?: boolean
+  ignoreAnalytics?: boolean
 }

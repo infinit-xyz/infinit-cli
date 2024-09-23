@@ -5,6 +5,7 @@ import { config } from '@classes'
 import { chalkError, chalkInfo } from '@constants/chalk'
 import { protocolModules } from '@constants/protocol-module'
 import type { PROTOCOL_MODULE } from '@enums/module'
+import { sendOffChainEvent } from '@utils/analytics'
 import { ensureCwdRootProject } from '@utils/files'
 import type { ProtocolModuleActionKey } from './index.type'
 import { getScriptFileDirectory, getUniqueScriptFileName, handleGenerateScriptFile } from './utils'
@@ -12,8 +13,9 @@ import { getScriptFileDirectory, getUniqueScriptFileName, handleGenerateScriptFi
 export const handleGenerateScript = async (actionId?: string) => {
   ensureCwdRootProject()
 
+  const projectConfig = config.getProjectConfig()
   // Validate config
-  const protocolModule = protocolModules[config.getProjectConfig().protocol_module as PROTOCOL_MODULE]
+  const protocolModule = protocolModules[projectConfig.protocol_module as PROTOCOL_MODULE]
 
   if (!protocolModule) {
     throw new Error('Protocol module not supported')
@@ -62,4 +64,8 @@ export const handleGenerateScript = async (actionId?: string) => {
   console.log(`⚙ Generate ${chalkInfo(selectedAction.name)} script successfully`)
   console.log()
   console.log(`📁 Checkout ${chalkInfo('src/scripts/' + scriptFileName + '.script.ts')}`)
+
+  if (projectConfig.allow_analytics) {
+    sendOffChainEvent({ action: 'script generate', payload: { action: actionKey, module: projectConfig.protocol_module } })
+  }
 }
