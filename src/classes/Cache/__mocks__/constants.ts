@@ -172,3 +172,14 @@ export const example1Parsed = {
     },
   },
 }
+
+export const mockProjectConfig = {
+  project_name: 'My Project',
+  protocol_module: 'infinit',
+  chain_info: {
+    name: 'Ethereum',
+    network_id: 1,
+    rpc_url: 'https://example.com',
+  },
+  allow_analytics: false,
+}
