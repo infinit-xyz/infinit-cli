@@ -1,5 +1,4 @@
-import { program } from '@naerth/commander-autocomplete'
-import { Option } from 'commander'
+import { Option, program } from 'commander'
 
 import { handleDeleteAccount, handleExportAccount, handleGenerateAccount, handleImportAccount, handleListAccounts } from '@commands/account'
 import { handleListAction } from '@commands/action'
