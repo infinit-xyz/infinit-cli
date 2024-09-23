@@ -41,7 +41,8 @@
       "@commons/*": ["./src/commons/*"],
       "@config": ["./src/config.ts"],
       "@schemas/*": ["./src/schemas/*"],
-      "@enums/*": ["./src/enums/*"]
+      "@enums/*": ["./src/enums/*"],
+      "@errors/*": ["./src/errors/*"]
     }
   }
 }
