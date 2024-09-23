@@ -75,7 +75,7 @@ export const initializeCliProject = async (
   packageManager: PACKAGE_MANAGER,
   deployerId?: string,
   allowAnalytics?: boolean,
-) => {
+): Promise<{ generatedScriptFile: string }> => {
   const packageJsonFile = fs.readFileSync(path.join(projectDirectory, 'package.json'), 'utf-8')
   const projectName = JSON.parse(packageJsonFile).name
 
@@ -153,4 +153,8 @@ export const initializeCliProject = async (
   }
 
   spinner.stop()
+
+  return {
+    generatedScriptFile: `${camelCaseActionName}.script.ts`,
+  }
 }

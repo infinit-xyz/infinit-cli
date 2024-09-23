@@ -98,11 +98,11 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
      * Initialize CLI Project
      */
 
-    await initializeCliProject(projectDirectory, protocolModule, chainId, packageManager, deployerId, allowAnalytics)
+    const { generatedScriptFile } = await initializeCliProject(projectDirectory, protocolModule, chainId, packageManager, deployerId, allowAnalytics)
 
     await compileProject(projectDirectory, protocolModule)
 
-    console.log(chalkSuccess(`🔥 Successfully initialized a project, go to ${chalkInfo(`src/scripts/default.script.ts`)} to start building.`))
+    console.log(chalkSuccess(`🔥 Successfully initialized a project, go to ${chalkInfo(`src/scripts/${generatedScriptFile}`)} to start building.`))
   } catch (error) {
     console.error(chalkError(error))
   }
