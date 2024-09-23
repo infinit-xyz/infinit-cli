@@ -1,6 +1,6 @@
 import { CHAIN_ID } from '@enums/chain'
 import type { Chain } from 'viem'
-import { arbitrum, mainnet, mantle } from 'viem/chains'
+import { mainnet, mantle } from 'viem/chains'
 
 type TokenDetail = {
   name: string
@@ -70,18 +70,18 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
   //   },
   //   viemChainInstance: bsc,
   // },
-  [CHAIN_ID.Arbitrum]: {
-    chainId: CHAIN_ID.Arbitrum,
-    name: 'Arbitrum One',
-    shortName: 'Arbitrum',
-    rpcList: ['https://arbitrum.llamarpc.com', 'https://arbitrum.drpc.org', 'https://1rpc.io/arb', 'https://rpc.ankr.com/arbitrum'],
-    nativeCurrency: {
-      name: 'Ethereum',
-      symbol: 'ETH',
-      decimals: 18,
-    },
-    viemChainInstance: arbitrum,
-  },
+  // [CHAIN_ID.Arbitrum]: {
+  //   chainId: CHAIN_ID.Arbitrum,
+  //   name: 'Arbitrum One',
+  //   shortName: 'Arbitrum',
+  //   rpcList: ['https://arbitrum.llamarpc.com', 'https://arbitrum.drpc.org', 'https://1rpc.io/arb', 'https://rpc.ankr.com/arbitrum'],
+  //   nativeCurrency: {
+  //     name: 'Ethereum',
+  //     symbol: 'ETH',
+  //     decimals: 18,
+  //   },
+  //   viemChainInstance: arbitrum,
+  // },
   // [CHAIN_ID.ARB_SEPOLIA]: {
   //   chainId: CHAIN_ID.ARB_SEPOLIA,
   //   name: 'Arbitrum Sepolia',

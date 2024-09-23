@@ -45,7 +45,7 @@ describe('Command: init', () => {
     test('should initialize INFINIT project successfully with npm', async () => {
       const [exitCode, logs] = await InfinitCLI()
         .setCwd(cwdPath)
-        .invoke(['init', '--directory', newProjectPath, '--chain', 'Arbitrum', '--module', 'aave-v3', '--ignore-deployer'])
+        .invoke(['init', '--directory', newProjectPath, '--chain', 'Mantle', '--module', 'aave-v3', '--ignore-deployer'])
 
       logs.should.contain('Successfully initialized a project')
 
@@ -55,7 +55,7 @@ describe('Command: init', () => {
     test('should throw error with project directory does not exist', async () => {
       const [exitCode, _logs, errorLogs] = await InfinitCLI()
         .setCwd(cwdPath)
-        .invoke(['init', '--directory', 'wrong', '--chain', 'Arbitrum', '--module', 'aave_v3', '--ignore-deployer'])
+        .invoke(['init', '--directory', 'wrong', '--chain', 'Mantle', '--module', 'aave_v3', '--ignore-deployer'])
 
       errorLogs.should.contain('Error: Project directory does not exist')
       expect(exitCode).toBe(0)
@@ -64,7 +64,7 @@ describe('Command: init', () => {
     test('should throw error with protocol module is not supported', async () => {
       const [exitCode, _logs, errorLogs] = await InfinitCLI()
         .setCwd(cwdPath)
-        .invoke(['init', '--directory', newProjectPath, '--chain', 'Arbitrum', '--module', 'abcd', '--ignore-deployer'])
+        .invoke(['init', '--directory', newProjectPath, '--chain', 'Mantle', '--module', 'abcd', '--ignore-deployer'])
 
       errorLogs.should.contain('Error: Protocol module is not supported')
       expect(exitCode).toBe(0)
@@ -95,7 +95,7 @@ describe('Command: init', () => {
 
       const [exitCode, logs] = await InfinitCLI()
         .setCwd(cwdPath)
-        .invoke(['init', '--directory', newProjectPath, '--chain', 'Arbitrum', '--module', 'aave-v3', '--ignore-deployer'])
+        .invoke(['init', '--directory', newProjectPath, '--chain', 'Mantle', '--module', 'aave-v3', '--ignore-deployer'])
 
       logs.should.contain('Successfully initialized a project')
 
