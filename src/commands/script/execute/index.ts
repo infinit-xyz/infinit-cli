@@ -3,7 +3,7 @@ import type { CallbackKeys, CallbackParams } from '@infinit-xyz/core/types/callb
 
 import fs from 'fs'
 import fsExtra from 'fs-extra'
-import _ from 'lodash'
+import _ from 'lodash' // [TODO/INVESTIGATE] later on importing from lodash
 import ora, { type Ora } from 'ora'
 import path from 'path'
 import { match } from 'ts-pattern'

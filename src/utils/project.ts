@@ -16,7 +16,7 @@ import { spawnChild } from '@utils/childprocess'
 import { writeFileSync } from '@utils/files'
 import { getPackageManagerInstallArgs } from '@utils/packageManager'
 import yaml from 'js-yaml'
-import _ from 'lodash'
+import _ from 'lodash' // [TODO/INVESTIGATE] later on importing from lodash
 import ora from 'ora'
 import os from 'os'
 import { dependencies as packageJsonDependencies, name as packageJsonName } from 'package.json'

@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 import fs from 'fs'
 import fsExtra from 'fs-extra'
-import _ from 'lodash'
+import _ from 'lodash' // [TODO/INVESTIGATE] later on importing from lodash
 import path from 'path'
 import { match } from 'ts-pattern'
 import type { Address } from 'viem'

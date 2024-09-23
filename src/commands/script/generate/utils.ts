@@ -4,7 +4,7 @@ import fs from 'fs'
 import path from 'path'
 
 import { generateScriptText } from '@utils/script'
-import _ from 'lodash'
+import _ from 'lodash' // [TODO/INVESTIGATE] later on importing from lodash
 
 /**
  * Get the directory path for script files.
