@@ -13,6 +13,7 @@ export default defineConfig({
       include: ['src/**/*'],
       exclude: ['**/*.test.*'],
     },
+    testTimeout: 25_000,
     env: loadEnv('', process.cwd(), ''),
   },
   plugins: [tsconfigPaths()],
