@@ -1,7 +1,9 @@
 import { accounts } from '@classes'
 import { MOCK_FILENAME, MOCK_PASSWORD, MOCK_PRIVATE_KEY, MOCK_WALLET_ADDRESS } from '@commands/account/__mock__'
 import { handleExportAccount } from '@commands/account/export'
-import { chalkError, chalkInfo } from '@constants/chalk'
+import { chalkInfo } from '@constants/chalk'
+import { AccountValidateError } from '@errors/account'
+import { customErrorLog } from '@errors/log'
 import { Wallet } from '@ethereumjs/wallet'
 import { checkIsAccountFound } from '@utils/account'
 import { describe, expect, test, vi } from 'vitest'
@@ -10,15 +12,18 @@ vi.mock('@utils/account')
 
 describe('Command: accounts - export', () => {
   test('should export account failed with wrong account id', async () => {
+    const accountId = 'wrong'
     // mock
     vi.mocked(checkIsAccountFound).mockReturnValue(false)
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined)
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
 
     // call function
-    await handleExportAccount('wrong')
+    await handleExportAccount(accountId)
 
     // assert
-    expect(consoleSpy).toHaveBeenCalledWith(chalkError('Error: Account with id wrong not found'))
+    const expectedError = new AccountValidateError(`Account with id ${accountId} not found`)
+
+    expect(consoleSpy).toHaveBeenCalledWith(customErrorLog(expectedError))
   })
 
   test('should export account successfully', async () => {
