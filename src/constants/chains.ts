@@ -1,6 +1,6 @@
 import { CHAIN_ID } from '@enums/chain'
 import type { Chain } from 'viem'
-import { arbitrum, arbitrumSepolia, bsc, mainnet, mantle } from 'viem/chains'
+import { mainnet, mantle, sepolia } from 'viem/chains'
 
 type TokenDetail = {
   name: string
@@ -50,48 +50,60 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     },
     viemChainInstance: mantle,
   },
-  [CHAIN_ID.BSC]: {
-    chainId: CHAIN_ID.BSC,
-    name: 'BNB Smart Chain',
-    shortName: 'BSC',
-    rpcList: [
-      'https://1rpc.io/bnb',
-      'https://binance.llamarpc.com',
-      'https://rpc.ankr.com/bsc',
-      'https://bsc-dataseed1.bnbchain.org',
-      'https://bsc-dataseed2.bnbchain.org',
-      'https://bsc-dataseed3.bnbchain.org',
-      'https://bsc-dataseed4.bnbchain.org',
-    ],
-    nativeCurrency: {
-      name: 'Binance Coin',
-      symbol: 'BNB',
-      decimals: 18,
-    },
-    viemChainInstance: bsc,
-  },
-  [CHAIN_ID.Arbitrum]: {
-    chainId: CHAIN_ID.Arbitrum,
-    name: 'Arbitrum One',
-    shortName: 'Arbitrum',
-    rpcList: ['https://arbitrum.llamarpc.com', 'https://arbitrum.drpc.org', 'https://1rpc.io/arb', 'https://rpc.ankr.com/arbitrum'],
+  [CHAIN_ID.Sepolia]: {
+    chainId: CHAIN_ID.Sepolia,
+    name: '[Testnet] Sepolia',
+    shortName: 'Sepolia',
+    rpcList: ['https://endpoints.omniatech.io/v1/eth/sepolia/public', 'https://eth-sepolia.public.blastapi.io', 'https://rpc2.sepolia.org'],
     nativeCurrency: {
       name: 'Ethereum',
       symbol: 'ETH',
       decimals: 18,
     },
-    viemChainInstance: arbitrum,
+    viemChainInstance: sepolia,
   },
-  [CHAIN_ID.ARB_SEPOLIA]: {
-    chainId: CHAIN_ID.ARB_SEPOLIA,
-    name: 'Arbitrum Sepolia',
-    shortName: 'ARB_SEPOLIA',
-    rpcList: ['https://sepolia-rollup.arbitrum.io/rpc', 'https://arbitrum-sepolia.blockpi.network/v1/rpc/public'],
-    nativeCurrency: {
-      name: 'Ethereum',
-      symbol: 'ETH',
-      decimals: 18,
-    },
-    viemChainInstance: arbitrumSepolia,
-  },
+  // [CHAIN_ID.BSC]: {
+  //   chainId: CHAIN_ID.BSC,
+  //   name: 'BNB Smart Chain',
+  //   shortName: 'BSC',
+  //   rpcList: [
+  //     'https://1rpc.io/bnb',
+  //     'https://binance.llamarpc.com',
+  //     'https://rpc.ankr.com/bsc',
+  //     'https://bsc-dataseed1.bnbchain.org',
+  //     'https://bsc-dataseed2.bnbchain.org',
+  //     'https://bsc-dataseed3.bnbchain.org',
+  //     'https://bsc-dataseed4.bnbchain.org',
+  //   ],
+  //   nativeCurrency: {
+  //     name: 'Binance Coin',
+  //     symbol: 'BNB',
+  //     decimals: 18,
+  //   },
+  //   viemChainInstance: bsc,
+  // },
+  // [CHAIN_ID.Arbitrum]: {
+  //   chainId: CHAIN_ID.Arbitrum,
+  //   name: 'Arbitrum One',
+  //   shortName: 'Arbitrum',
+  //   rpcList: ['https://arbitrum.llamarpc.com', 'https://arbitrum.drpc.org', 'https://1rpc.io/arb', 'https://rpc.ankr.com/arbitrum'],
+  //   nativeCurrency: {
+  //     name: 'Ethereum',
+  //     symbol: 'ETH',
+  //     decimals: 18,
+  //   },
+  //   viemChainInstance: arbitrum,
+  // },
+  // [CHAIN_ID.ARB_SEPOLIA]: {
+  //   chainId: CHAIN_ID.ARB_SEPOLIA,
+  //   name: 'Arbitrum Sepolia',
+  //   shortName: 'ARB_SEPOLIA',
+  //   rpcList: ['https://sepolia-rollup.arbitrum.io/rpc', 'https://arbitrum-sepolia.blockpi.network/v1/rpc/public'],
+  //   nativeCurrency: {
+  //     name: 'Ethereum',
+  //     symbol: 'ETH',
+  //     decimals: 18,
+  //   },
+  //   viemChainInstance: arbitrumSepolia,
+  // },
 }
