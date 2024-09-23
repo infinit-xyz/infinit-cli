@@ -16,6 +16,7 @@ import { spawnChild } from '@utils/childprocess'
 import { writeFileSync } from '@utils/files'
 import { getPackageManagerInstallArgs } from '@utils/packageManager'
 import yaml from 'js-yaml'
+import _ from 'lodash'
 import ora from 'ora'
 import os from 'os'
 import { dependencies as packageJsonDependencies, name as packageJsonName } from 'package.json'
@@ -120,7 +121,8 @@ export const initializeCliProject = async (
     throw new Error('Initialize action not found')
   }
   const scriptFolderPath = getScriptFileDirectory(projectDirectory)
-  await handleGenerateScriptFile(initAction, DEFAULT_ACTION_KEY, protocolModuleInfo.libPath, initAction.actionClassName, scriptFolderPath, deployerId)
+  const camelCaseActionName = _.camelCase(initAction.actionClassName)
+  await handleGenerateScriptFile(initAction, DEFAULT_ACTION_KEY, protocolModuleInfo.libPath, camelCaseActionName, scriptFolderPath, deployerId)
 
   // Install dependencies
   console.log(`\n🚀 Initialize a project from ${chalkInfo(protocolModule)} module.`)
