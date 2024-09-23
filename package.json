@@ -26,8 +26,7 @@
     "lint:check": "bunx @biomejs/biome lint ./src",
     "format": "bunx @biomejs/biome format --write ./src",
     "typecheck": "tsc --noEmit",
-    "json2ts": "json2ts -i src/schemas/**/*.json -o src/schemas/generated.d.ts && bun run format",
-    "make-badges": "istanbul-badges-readme"
+    "json2ts": "json2ts -i src/schemas/**/*.json -o src/schemas/generated.d.ts && bun run format"
   },
   "dependencies": {
     "@ethereumjs/wallet": "2.0.4",
@@ -64,7 +63,6 @@
     "@types/lodash": "^4.17.6",
     "@vitest/coverage-v8": "^2.1.1",
     "execa": "^9.3.0",
-    "istanbul-badges-readme": "^1.9.0",
     "strip-ansi": "^7.1.0",
     "typescript": "^5.0.0",
     "vite-tsconfig-paths": "^5.0.1",
