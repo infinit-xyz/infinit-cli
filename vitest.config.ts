@@ -9,7 +9,7 @@ export default defineConfig({
   test: {
     coverage: {
       reporter: coverageReporter,
-      provider: 'istanbul',
+      provider: 'v8',
       include: ['src/**/*'],
       exclude: ['**/*.test.*'],
     },
