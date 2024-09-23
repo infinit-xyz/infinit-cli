@@ -1,6 +1,6 @@
 # @infinit-xyz/cli
 
-[![codecov](https://codecov.io/gh/melvinmcrn/infinit-cli/graph/badge.svg?token=RY39X0ESZ8)](https://codecov.io/gh/melvinmcrn/infinit-cli)
+[![codecov](https://codecov.io/gh/infinit-xyz/infinit-cli/graph/badge.svg?token=OKQQJS6U4K)](https://codecov.io/gh/infinit-xyz/infinit-cli)
 
 
 To install dependencies:
