@@ -2,6 +2,7 @@ import { config } from '@classes'
 import { protocolModules } from '@constants/protocol-module'
 import type { PROTOCOL_MODULE } from '@enums/module'
 import type { InfinitActionRecord } from '@infinit-xyz/core'
+import { sendOffChainEvent } from '@utils/analytics'
 import Table from 'cli-table3'
 
 export const handleListAction = () => {
@@ -26,5 +27,10 @@ export const handleListAction = () => {
   }
 
   console.log(table.toString())
+
+  if (projectConfig.allow_analytics) {
+    sendOffChainEvent({ action: 'action list', payload: {} })
+  }
+
   return table
 }

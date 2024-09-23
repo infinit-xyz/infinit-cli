@@ -1,6 +1,7 @@
-import { DATA_FOLDER, accounts } from '@classes'
+import { DATA_FOLDER, accounts, config } from '@classes'
 import { notDuplicatedAccountIdPrompt, passwordWithConfirmPrompt, privateKeyInputPrompt } from '@commands/account/prompt'
 import { chalkError, chalkInfo } from '@constants/chalk'
+import { sendOffChainEvent } from '@utils/analytics'
 import { getProjectChainInfo } from '@utils/config'
 import { ensureAccessibilityAtPath } from '@utils/files'
 import fs from 'fs'
@@ -13,6 +14,8 @@ import type { Hex } from 'viem'
 
 export const handleImportAccount = async (accountId?: string) => {
   try {
+    const projectConfig = config.getProjectConfig()
+
     // 1. prompt account ID
     const validAccountId = await notDuplicatedAccountIdPrompt(accountId)
 
@@ -40,6 +43,10 @@ export const handleImportAccount = async (accountId?: string) => {
     console.log(
       `Please transfer ${chainInfo.nativeCurrency.symbol} to the address ${chalkInfo(walletAddress)} account on ${chalkInfo(chainInfo.name)} blockchain to cover gas fees.`,
     )
+
+    if (projectConfig.allow_analytics) {
+      sendOffChainEvent({ action: 'account import', payload: { walletAddress } })
+    }
   } catch (error) {
     console.error(chalkError(error))
   }

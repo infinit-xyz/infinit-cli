@@ -4,10 +4,11 @@ import { notDuplicatedAccountIdPrompt, passwordWithConfirmPrompt } from '@comman
 import { chalkError, chalkInfo } from '@constants/chalk'
 import { checkIsAccountFound } from '@utils/account'
 import { ensureAccessibilityAtPath } from '@utils/files'
-import { describe, expect, test, vi } from 'vitest'
+import { beforeAll, describe, expect, test, vi } from 'vitest'
 
-import { accounts } from '@classes'
+import { accounts, config } from '@classes'
 import type { KeystoreV3 } from '@classes/Accounts/Accounts.type'
+import { mockProjectConfig } from '@classes/Cache/__mocks__/constants'
 import { CHAIN_ID } from '@enums/chain'
 import { Wallet } from '@ethereumjs/wallet'
 import { getProjectChainInfo } from '@utils/config'
@@ -18,8 +19,13 @@ vi.mock('@utils/account')
 vi.mock('@utils/files')
 vi.mock('@commands/account/prompt')
 vi.mock('@utils/config')
+vi.mock('@classes')
 
 describe('Command: accounts - generate', () => {
+  beforeAll(() => {
+    vi.mocked(config).getProjectConfig.mockReturnValue(mockProjectConfig)
+  })
+
   test('should get error with permission denied', async () => {
     vi.mocked(checkIsAccountFound).mockReturnValue(false)
     vi.mocked(ensureAccessibilityAtPath).mockImplementation(() => {

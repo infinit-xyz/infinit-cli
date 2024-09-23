@@ -1,9 +1,6 @@
 # @infinit-xyz/cli
 
-![Statements](https://img.shields.io/badge/statements-51.6%25-red.svg?style=flat)
-![Branches](https://img.shields.io/badge/branches-36.88%25-red.svg?style=flat)
-![Functions](https://img.shields.io/badge/functions-54.36%25-red.svg?style=flat)
-![Lines](https://img.shields.io/badge/lines-51.55%25-red.svg?style=flat)
+[![codecov](https://codecov.io/gh/infinit-xyz/infinit-cli/graph/badge.svg?token=OKQQJS6U4K)](https://codecov.io/gh/infinit-xyz/infinit-cli)
 
 
 To install dependencies:

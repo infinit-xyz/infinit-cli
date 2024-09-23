@@ -12,10 +12,12 @@ import { PROTOCOL_MODULE } from '@enums/module'
 import type { PACKAGE_MANAGER } from '@enums/package-managers'
 import { ContractProvider } from '@infinit-xyz/core'
 import type { InfinitConfigSchema } from '@schemas/generated'
+import { sendOffChainEvent } from '@utils/analytics'
 import { spawnChild } from '@utils/childprocess'
 import { writeFileSync } from '@utils/files'
 import { getPackageManagerInstallArgs } from '@utils/packageManager'
 import yaml from 'js-yaml'
+import _ from 'lodash' // [TODO/INVESTIGATE] later on importing from lodash
 import ora from 'ora'
 import os from 'os'
 import { dependencies as packageJsonDependencies, name as packageJsonName } from 'package.json'
@@ -72,7 +74,8 @@ export const initializeCliProject = async (
   chainId: CHAIN_ID,
   packageManager: PACKAGE_MANAGER,
   deployerId?: string,
-) => {
+  allowAnalytics?: boolean,
+): Promise<{ generatedScriptFile: string }> => {
   const packageJsonFile = fs.readFileSync(path.join(projectDirectory, 'package.json'), 'utf-8')
   const projectName = JSON.parse(packageJsonFile).name
 
@@ -109,6 +112,7 @@ export const initializeCliProject = async (
       network_id: parseInt(chainInfo.chainId),
       rpc_url: chainInfo.rpcList[0],
     },
+    allow_analytics: allowAnalytics,
   }
   fs.writeFileSync(path.join(projectDirectory, 'src', FILE_NAMES.CONFIG), `# yaml-language-server: $schema=${CONFIG_SCHEMA}\n\n` + yaml.dump(config) + os.EOL)
 
@@ -120,7 +124,8 @@ export const initializeCliProject = async (
     throw new Error('Initialize action not found')
   }
   const scriptFolderPath = getScriptFileDirectory(projectDirectory)
-  await handleGenerateScriptFile(initAction, DEFAULT_ACTION_KEY, protocolModuleInfo.libPath, 'default', scriptFolderPath, deployerId)
+  const camelCaseActionName = _.camelCase(initAction.actionClassName)
+  await handleGenerateScriptFile(initAction, DEFAULT_ACTION_KEY, protocolModuleInfo.libPath, camelCaseActionName, scriptFolderPath, deployerId)
 
   // Install dependencies
   console.log(`\n🚀 Initialize a project from ${chalkInfo(protocolModule)} module.`)
@@ -143,5 +148,13 @@ export const initializeCliProject = async (
 
   spinner.stopAndPersist({ symbol: '✅', text: `Dependencies installed successfully.` })
 
+  if (allowAnalytics) {
+    sendOffChainEvent({ action: 'init', payload: { project_name: projectName, protocol_module: protocolModule, chain_id: chainId } })
+  }
+
   spinner.stop()
+
+  return {
+    generatedScriptFile: `${camelCaseActionName}.script.ts`,
+  }
 }

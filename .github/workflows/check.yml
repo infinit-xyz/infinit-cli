@@ -49,10 +49,12 @@ jobs:
       - if: ${{ inputs.skip-test == false }}
         name: Run test
         run: bun run test:coverage
-
+    
       - if: ${{ inputs.skip-test == false }}
-        name: make coverage badges
-        run: bun run make-badges
+        name: Upload results to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       # Auto commit new changes from format, lint, and make-badges
       # ref: https://github.com/stefanzweifel/git-auto-commit-action

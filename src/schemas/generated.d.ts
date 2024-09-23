@@ -22,4 +22,5 @@ export interface InfinitConfigSchema {
     network_id: number
     rpc_url: Url
   }
+  allow_analytics?: boolean
 }

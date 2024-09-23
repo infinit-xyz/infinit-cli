@@ -1,3 +1,6 @@
+import { accounts, config } from '@classes'
+import type { KeystoreV3 } from '@classes/Accounts/Accounts.type'
+import { mockProjectConfig } from '@classes/Cache/__mocks__/constants'
 import { MOCK_PASSWORD, MOCK_PRIVATE_KEY, MOCK_WALLET_ADDRESS } from '@commands/account/__mock__'
 import { handleImportAccount } from '@commands/account/import'
 import { notDuplicatedAccountIdPrompt, passwordWithConfirmPrompt, privateKeyInputPrompt } from '@commands/account/prompt'
@@ -7,14 +10,20 @@ import { checkIsAccountFound } from '@utils/account'
 import { createDataFolder, getProjectChainInfo } from '@utils/config'
 import { ensureAccessibilityAtPath } from '@utils/files'
 import fs from 'fs'
-import { describe, expect, test, vi } from 'vitest'
+import { beforeAll, describe, expect, test, vi } from 'vitest'
 
 vi.mock('@utils/account')
 vi.mock('@utils/files')
 vi.mock('@commands/account/prompt')
 vi.mock('@utils/config')
+vi.mock('@classes')
 
 describe('Command: accounts - import', () => {
+  beforeAll(() => {
+    vi.mocked(config).getProjectConfig.mockReturnValue(mockProjectConfig)
+    vi.mocked(accounts).save.mockImplementation(async () => ({ filePath: '', keystore: { address: MOCK_WALLET_ADDRESS.slice(2) } as unknown as KeystoreV3 }))
+  })
+
   test('should get error with permission denied', async () => {
     vi.mocked(checkIsAccountFound).mockReturnValue(false)
     vi.mocked(ensureAccessibilityAtPath).mockImplementation(() => {

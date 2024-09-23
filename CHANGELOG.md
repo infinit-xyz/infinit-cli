@@ -1,5 +1,17 @@
 # @infinit-xyz/cli
 
+## 0.0.0-alpha.3
+
+### Minor Changes
+
+- [#14](https://github.com/infinit-xyz/infinit-cli/pull/14) [`1c52471`](https://github.com/infinit-xyz/infinit-cli/commit/1c52471582aa78e75f484a2699d70d42514aa4c7) Thanks [@arintrongs](https://github.com/arintrongs)! - Add analytics
+
+### Patch Changes
+
+- [#17](https://github.com/infinit-xyz/infinit-cli/pull/17) [`0e739be`](https://github.com/infinit-xyz/infinit-cli/commit/0e739be7d0a37709db90232d7133d93ff95c8eb8) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - update script file to be camel case
+
+- [#17](https://github.com/infinit-xyz/infinit-cli/pull/17) [`0e739be`](https://github.com/infinit-xyz/infinit-cli/commit/0e739be7d0a37709db90232d7133d93ff95c8eb8) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - update default script file name
+
 ## 0.0.0-alpha.2
 
 ### Minor Changes
