@@ -12,6 +12,7 @@ import { PROTOCOL_MODULE } from '@enums/module'
 import type { PACKAGE_MANAGER } from '@enums/package-managers'
 import { ContractProvider } from '@infinit-xyz/core'
 import type { InfinitConfigSchema } from '@schemas/generated'
+import { sendOffChainEvent } from '@utils/analytics'
 import { spawnChild } from '@utils/childprocess'
 import { writeFileSync } from '@utils/files'
 import { getPackageManagerInstallArgs } from '@utils/packageManager'
@@ -72,6 +73,7 @@ export const initializeCliProject = async (
   chainId: CHAIN_ID,
   packageManager: PACKAGE_MANAGER,
   deployerId?: string,
+  allowAnalytics?: boolean,
 ) => {
   const packageJsonFile = fs.readFileSync(path.join(projectDirectory, 'package.json'), 'utf-8')
   const projectName = JSON.parse(packageJsonFile).name
@@ -109,6 +111,7 @@ export const initializeCliProject = async (
       network_id: parseInt(chainInfo.chainId),
       rpc_url: chainInfo.rpcList[0],
     },
+    allow_analytics: allowAnalytics,
   }
   fs.writeFileSync(path.join(projectDirectory, 'src', FILE_NAMES.CONFIG), `# yaml-language-server: $schema=${CONFIG_SCHEMA}\n\n` + yaml.dump(config) + os.EOL)
 
@@ -142,6 +145,10 @@ export const initializeCliProject = async (
   await spawnChild(packageManager, devDependencyArgs)
 
   spinner.stopAndPersist({ symbol: '✅', text: `Dependencies installed successfully.` })
+
+  if (allowAnalytics) {
+    sendOffChainEvent({ action: 'init', payload: { project_name: projectName, protocol_module: protocolModule, chain_id: chainId } })
+  }
 
   spinner.stop()
 }

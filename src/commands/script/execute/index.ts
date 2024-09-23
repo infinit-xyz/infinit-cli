@@ -9,7 +9,7 @@ import path from 'path'
 import { match } from 'ts-pattern'
 import * as tsx from 'tsx/cjs/api'
 
-import { accounts } from '@classes'
+import { accounts, config } from '@classes'
 import { cache } from '@classes/Cache/Cache'
 import { TX_STATUS } from '@classes/Cache/Cache.enum'
 import { FORK_CHAIN_URL, simulateExecute } from '@commands/script/execute/simulate'
@@ -17,7 +17,9 @@ import { getScriptFileDirectory, getScriptHistoryFileDirectory } from '@commands
 import { loadAccountFromPrompt } from '@commons/prompts/accounts'
 import { chalkError, chalkInfo } from '@constants/chalk'
 import { confirm } from '@inquirer/prompts'
+import type { InfinitConfigSchema } from '@schemas/generated'
 import { checkIsAccountFound } from '@utils/account'
+import { sendOnChainEvent } from '@utils/analytics'
 import { getProjectChainInfo } from '@utils/config'
 import { ensureCwdRootProject, readProjectRegistry } from '@utils/files'
 import type { Address } from 'viem'
@@ -28,7 +30,7 @@ const isSigner = (signer: any): signer is Record<string, string> => {
   return signer && typeof signer === 'object' && Object.keys(signer).length > 0 && Object.values(signer).every((value) => typeof value === 'string' && value)
 }
 
-export const executeActionCallbackHandler = (spinner: Ora, filename: string) => {
+export const executeActionCallbackHandler = (spinner: Ora, filename: string, projectConfig: InfinitConfigSchema, signerAddresses: string[]) => {
   let currentSubActionCount = 0
   let currentSubActionStartIndex = 0
   let currentSubActionName = ''
@@ -65,6 +67,17 @@ export const executeActionCallbackHandler = (spinner: Ora, filename: string) => 
         transactionCount += 1
 
         spinner.text = `Executing ${chalkInfo(actionName)} - ${chalkInfo(currentSubActionName)} (${chalkInfo(`${currentSubActionCount + 1}/${totalSubActions}`)} sub-actions, ${chalkInfo(transactionCount)} transactions).`
+
+        if (projectConfig.allow_analytics) {
+          sendOnChainEvent({
+            // [TODO]: Add multiple signer
+            address: signerAddresses[0],
+            module: projectConfig.protocol_module,
+            action: actionName,
+            txHash: parsedValue.txHash,
+            chainId: projectConfig.chain_info.network_id,
+          })
+        }
 
         cache.updateTxCache(filename, parsedValue.txHash, { status: TX_STATUS.CONFIRMED })
       })
@@ -121,6 +134,9 @@ export const handleExecuteScript = async (fileName: string) => {
     }
 
     spinner.start('Reading configuration and registry...')
+
+    // read config
+    const projectConfig = config.getProjectConfig()
 
     // read registry
     const { registryPath, registry } = readProjectRegistry()
@@ -235,7 +251,7 @@ export const handleExecuteScript = async (fileName: string) => {
 
     // setup the real action with real signer
     const action = new Action({ params, signer: signerWalletRecord }) as BaseAction
-    const newRegistry = await action.run(registry, actionInfinitCache, executeActionCallbackHandler(spinner, fileName))
+    const newRegistry = await action.run(registry, actionInfinitCache, executeActionCallbackHandler(spinner, fileName, projectConfig, signerAddresses))
 
     // clear cache if all sub actions are finished
     cache.deleteTxActionCache(fileName)

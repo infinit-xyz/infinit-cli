@@ -46,6 +46,9 @@
         }
       },
       "required": ["name", "network_id", "rpc_url"]
+    },
+    "allow_analytics": {
+      "type": "boolean"
     }
   },
   "required": ["project_name", "protocol_module", "chain_info"]
