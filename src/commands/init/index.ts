@@ -79,10 +79,14 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
     /**
      * Analytics
      */
-    const allowAnalytics = await confirm({
-      message: `Do you allow INFINIT CLI to send usage data to help improve the tool? (Can be changed later in the config file)`,
-      default: true,
-    })
+    let allowAnalytics = false
+
+    if (!cmdInput.ignoreAnalytics) {
+      allowAnalytics = await confirm({
+        message: `Do you allow INFINIT CLI to send usage data to help improve the tool? (Can be changed later in the config file)`,
+        default: true,
+      })
+    }
 
     /**
      * Package Manager
