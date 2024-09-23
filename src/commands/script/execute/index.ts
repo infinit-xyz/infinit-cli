@@ -113,12 +113,15 @@ export const handleExecuteScript = async (_fileName?: string) => {
 
   if (!fileName) {
     const currentFileList = getFilesCurrentDir(scriptFileDirectory)
+    if (currentFileList.length === 0) {
+      throw new Error('No script file found. Please generate a script file before executing any script.')
+    }
+
     fileName = await scriptFileNamePrompt(currentFileList)
   }
 
   if (!fileName) {
-    console.log(chalkError('No script file selected.'))
-    process.exit(1)
+    throw new Error('No script file selected.')
   }
 
   const target = path.resolve(scriptFileDirectory, fileName)

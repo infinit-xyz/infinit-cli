@@ -13,7 +13,6 @@ vi.mock('@utils/account')
 vi.mock('@utils/files')
 vi.mock('@commands/account/prompt')
 vi.mock('@utils/config')
-vi.mock('@utils/config')
 
 describe('Command: accounts - import', () => {
   test('should get error with permission denied', async () => {
