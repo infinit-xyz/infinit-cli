@@ -120,7 +120,7 @@ export const initializeCliProject = async (
     throw new Error('Initialize action not found')
   }
   const scriptFolderPath = getScriptFileDirectory(projectDirectory)
-  await handleGenerateScriptFile(initAction, DEFAULT_ACTION_KEY, protocolModuleInfo.libPath, 'default', scriptFolderPath, deployerId)
+  await handleGenerateScriptFile(initAction, DEFAULT_ACTION_KEY, protocolModuleInfo.libPath, initAction.actionClassName, scriptFolderPath, deployerId)
 
   // Install dependencies
   console.log(`\n🚀 Initialize a project from ${chalkInfo(protocolModule)} module.`)
