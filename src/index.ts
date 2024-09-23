@@ -7,6 +7,7 @@ import { handleListAction } from '@commands/action'
 import { handleInitializeCli } from '@commands/init'
 import { handleCompileProject } from '@commands/project'
 import { handleExecuteScript, handleGenerateScript } from '@commands/script'
+import { chalkError } from '@constants/chalk'
 
 // Function to validate Node.js version
 const validateNodeVersion = () => {
@@ -17,7 +18,7 @@ const validateNodeVersion = () => {
   const [requiredMajor] = expectedNodeVersion.split('.')
 
   if (parseInt(currentMajor) < parseInt(requiredMajor)) {
-    console.error(`Error: Node.js version must be ${expectedNodeVersion} or higher. You are using ${currentVersion}.`)
+    console.error(chalkError(`Error: Node.js version must be ${expectedNodeVersion} or higher. You are using ${currentVersion}.`))
     process.exit(1)
   }
 }
