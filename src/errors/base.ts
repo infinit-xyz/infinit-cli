@@ -1,5 +1,5 @@
 // ref: https://github.com/wevm/viem/blob/main/src/errors/base.ts
-import { version as cliVersion } from 'package.json'
+import { name as cliName, version as cliVersion } from 'package.json'
 
 type BaseErrorParameters = {
   cause?: BaseError | Error | undefined
@@ -38,7 +38,7 @@ export class BaseError extends Error {
         const stacks = this._stack?.split('\n')
         const stackTrace = stacks.slice(1, stacks.length).join('\n')
 
-        const version = [`Version: ${cliVersion}`, `Node: ${nodeVersion}`].join('\n')
+        const version = [`${cliName}: ${cliVersion}`, `Node: ${nodeVersion}`].join('\n')
 
         const displayStack = [stackTrace, version].join('\n\n')
 
