@@ -1,13 +1,14 @@
 import { program } from '@naerth/commander-autocomplete'
-import { isRunOnLocalOnly } from '@utils/invoke-cli'
 import { Option } from 'commander'
-import { version } from '../package.json'
 
 import { handleDeleteAccount, handleExportAccount, handleGenerateAccount, handleImportAccount, handleListAccounts } from '@commands/account'
 import { handleListAction } from '@commands/action'
 import { handleInitializeCli } from '@commands/init'
 import { handleCompileProject } from '@commands/project'
 import { handleExecuteScript, handleGenerateScript } from '@commands/script'
+import { isRunOnLocalOnly } from '@utils/invoke-cli'
+
+import { version } from '../package.json'
 
 // Function to validate Node.js version
 const validateNodeVersion = () => {
