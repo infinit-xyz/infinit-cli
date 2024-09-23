@@ -5,12 +5,13 @@ import type { Hex } from 'viem'
 
 import { accounts } from '@classes'
 import { DATA_FOLDER } from '@classes/Config/Config'
-import { chalkError, chalkInfo } from '@constants/chalk'
+import { chalkInfo } from '@constants/chalk'
 
 import { notDuplicatedAccountIdPrompt } from '@commands/account/prompt'
 import { ensureAccessibilityAtPath } from '@utils/files'
 
 import { passwordWithConfirmPrompt } from '@commands/account/prompt'
+import { customErrorLog } from '@errors/log'
 import { getProjectChainInfo } from '@utils/config'
 
 export const handleGenerateAccount = async (accountId?: string) => {
@@ -45,6 +46,6 @@ export const handleGenerateAccount = async (accountId?: string) => {
       `Please transfer ${chainInfo.nativeCurrency.symbol} to the address ${chalkInfo(walletAddress)} account on ${chalkInfo(chainInfo.name)} blockchain to cover gas fees.`,
     )
   } catch (error) {
-    console.error(chalkError(error))
+    customErrorLog(error as Error)
   }
 }

@@ -1,5 +1,6 @@
 import { ValidatePrompt } from '@commons/prompt-wrapper'
 import { chalkError } from '@constants/chalk'
+import { AccountValidateError } from '@errors/account'
 import { input, password } from '@inquirer/prompts'
 import { checkIsAccountFound } from '@utils/account'
 import { validate } from '@utils/validations'
@@ -47,7 +48,7 @@ export const notDuplicatedAccountIdPrompt = async (accountId?: string): Promise<
 
   // should not happen
   if (!_accountId) {
-    throw new Error('Account ID is required')
+    throw new AccountValidateError('Account ID is required')
   }
 
   const isDuplicate = checkIsAccountFound(_accountId)

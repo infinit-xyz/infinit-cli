@@ -1,6 +1,7 @@
 import { DATA_FOLDER, accounts } from '@classes'
 import { notDuplicatedAccountIdPrompt, passwordWithConfirmPrompt, privateKeyInputPrompt } from '@commands/account/prompt'
-import { chalkError, chalkInfo } from '@constants/chalk'
+import { chalkInfo } from '@constants/chalk'
+import { customErrorLog } from '@errors/log'
 import { getProjectChainInfo } from '@utils/config'
 import { ensureAccessibilityAtPath } from '@utils/files'
 import fs from 'fs'
@@ -41,6 +42,6 @@ export const handleImportAccount = async (accountId?: string) => {
       `Please transfer ${chainInfo.nativeCurrency.symbol} to the address ${chalkInfo(walletAddress)} account on ${chalkInfo(chainInfo.name)} blockchain to cover gas fees.`,
     )
   } catch (error) {
-    console.error(chalkError(error))
+    customErrorLog(error as Error)
   }
 }

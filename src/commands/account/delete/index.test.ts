@@ -3,6 +3,9 @@ import { MOCK_FILENAME, MOCK_PASSWORD, MOCK_PRIVATE_KEY } from '@commands/accoun
 import { handleDeleteAccount } from '@commands/account/delete'
 import { passwordInputPrompt } from '@commands/account/prompt'
 import { chalkError, chalkInfo } from '@constants/chalk'
+import { AccountValidateError } from '@errors/account'
+import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
+import { PermissionNotFoundError } from '@errors/fs'
 import { Wallet } from '@ethereumjs/wallet'
 import { confirm } from '@inquirer/prompts'
 import { checkIsAccountFound } from '@utils/account'
@@ -21,13 +24,15 @@ describe('Command: accounts - delete', () => {
 
     await handleDeleteAccount(MOCK_FILENAME)
 
-    expect(consoleSpy).toHaveBeenCalledWith(chalkError(`Error: Account with id ${MOCK_FILENAME} not found`))
+    const accountNotFoundMsg = ERROR_MESSAGE_RECORD.ACCOUNT_NOT_FOUND(MOCK_FILENAME)
+    const expectedError = new AccountValidateError(accountNotFoundMsg)
+    expect(consoleSpy).toHaveBeenCalledWith(chalkError(expectedError.message))
   })
 
   test('should get error with permission denied', async () => {
     vi.mocked(checkIsAccountFound).mockReturnValue(true)
     vi.mocked(ensureAccessibilityAtPath).mockImplementation(() => {
-      throw new Error('Permission required, run the command with sudo permission')
+      throw new PermissionNotFoundError()
     })
 
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
@@ -36,7 +41,8 @@ describe('Command: accounts - delete', () => {
     await handleDeleteAccount(MOCK_FILENAME)
 
     // assert
-    expect(consoleSpy).toHaveBeenCalledWith(chalkError('Error: Permission required, run the command with sudo permission'))
+    const expectedError = new PermissionNotFoundError()
+    expect(consoleSpy).toHaveBeenCalledWith(chalkError(expectedError.message))
   })
 
   test('should get error user denied to delete the account', async () => {

@@ -9,6 +9,8 @@ import { describe, expect, test, vi } from 'vitest'
 import { accounts } from '@classes'
 import type { KeystoreV3 } from '@classes/Accounts/Accounts.type'
 import { CHAIN_ID } from '@enums/chain'
+import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
+import { PermissionNotFoundError } from '@errors/fs'
 import { Wallet } from '@ethereumjs/wallet'
 import { getProjectChainInfo } from '@utils/config'
 import { hexToBytes } from 'viem'
@@ -23,7 +25,7 @@ describe('Command: accounts - generate', () => {
   test('should get error with permission denied', async () => {
     vi.mocked(checkIsAccountFound).mockReturnValue(false)
     vi.mocked(ensureAccessibilityAtPath).mockImplementation(() => {
-      throw new Error('Permission required, run the command with sudo permission')
+      throw new PermissionNotFoundError()
     })
 
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
@@ -32,7 +34,7 @@ describe('Command: accounts - generate', () => {
     await expect(handleGenerateAccount(MOCK_FILENAME)).resolves.toBeUndefined()
 
     // assert
-    expect(consoleErrorSpy).toHaveBeenCalledWith(chalkError('Error: Permission required, run the command with sudo permission'))
+    expect(consoleErrorSpy).toHaveBeenCalledWith(chalkError(ERROR_MESSAGE_RECORD.PERMISSION_DENIED))
   })
 
   test('should generate the account successfully', async () => {
