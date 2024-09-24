@@ -9,7 +9,6 @@ import { describe, expect, test, vi } from 'vitest'
 import { accounts } from '@classes'
 import type { KeystoreV3 } from '@classes/Accounts/Accounts.type'
 import { CHAIN_ID } from '@enums/chain'
-import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
 import { PermissionNotFoundError } from '@errors/fs'
 import { Wallet } from '@ethereumjs/wallet'
 import { getProjectChainInfo } from '@utils/config'
@@ -34,7 +33,8 @@ describe('Command: accounts - generate', () => {
     await expect(handleGenerateAccount(MOCK_FILENAME)).resolves.toBeUndefined()
 
     // assert
-    expect(consoleErrorSpy).toHaveBeenCalledWith(chalkError(ERROR_MESSAGE_RECORD.PERMISSION_DENIED))
+    const permissionNotFoundError = new PermissionNotFoundError()
+    expect(consoleErrorSpy).toHaveBeenCalledWith(chalkError(permissionNotFoundError.message))
   })
 
   test('should generate the account successfully', async () => {

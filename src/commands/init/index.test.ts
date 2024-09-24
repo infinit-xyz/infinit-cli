@@ -1,4 +1,5 @@
 import { PACKAGE_MANAGER } from '@enums/package-managers'
+import { ValidateInputValueError } from '@errors/validate'
 import { spawnChild } from '@utils/childprocess'
 import { InfinitCLI } from '@utils/invoke-cli'
 import { getPackageManagerInstallArgs } from '@utils/packageManager'
@@ -57,7 +58,8 @@ describe('Command: init', () => {
         .setCwd(cwdPath)
         .invoke(['init', '--directory', 'wrong', '--chain', 'ARB_SEPOLIA', '--module', 'aave_v3', '--ignore-deployer'])
 
-      errorLogs.should.contain('Error: Project directory does not exist')
+      const expectedError = new ValidateInputValueError('Project directory does not exist')
+      errorLogs.should.contain(expectedError.message)
       expect(exitCode).toBe(0)
     })
 
@@ -66,7 +68,8 @@ describe('Command: init', () => {
         .setCwd(cwdPath)
         .invoke(['init', '--directory', newProjectPath, '--chain', 'ARB_SEPOLIA', '--module', 'abcd', '--ignore-deployer'])
 
-      errorLogs.should.contain('Error: Protocol module is not supported')
+      const expectedError = new ValidateInputValueError('Protocol module is not supported')
+      errorLogs.should.contain(expectedError.message)
       expect(exitCode).toBe(0)
     })
   })

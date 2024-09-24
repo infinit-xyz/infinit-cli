@@ -112,7 +112,6 @@ export const executeActionCallbackHandler = (spinner: Ora, filename: string) => 
  */
 
 export const handleExecuteScript = async (fileName: string) => {
-  console.log('handleExecuteScripthandleExecuteScript')
   ensureCwdRootProject()
 
   const scriptFileDirectory = getScriptFileDirectory()

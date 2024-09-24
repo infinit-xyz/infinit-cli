@@ -18,11 +18,11 @@ export class BaseError extends Error {
   shortMessage: string
   cliVersion: string
 
-  private _stack: string
+  // private _stack: string
 
   override name = 'BaseError'
 
-  constructor(shortMessage: string, args: BaseErrorParameters = {}, options: BaseErrorOptions = {}) {
+  constructor(shortMessage: string, args: BaseErrorParameters = {}, _options: BaseErrorOptions = {}) {
     const details = (() => {
       if (args.cause instanceof BaseError) return args.cause.details
       if (args.cause?.message) return args.cause.message
@@ -30,28 +30,28 @@ export class BaseError extends Error {
     })()
 
     const nodeVersion = process.versions.node
-    const message = [shortMessage, ...(details ? [`Details: ${details}`] : [])].join('\n')
+    const message = [shortMessage, ...(details ? [`Details: ${details}`] : []), `${cliName}: ${cliVersion}`, `Node: ${nodeVersion}`].join('\n')
 
     super(message, args.cause ? { cause: args.cause } : undefined)
 
-    this._stack = this.stack ?? ''
+    // TODO: improve error stack trace
+    // this._stack = this.stack ?? ''
+    // Object.defineProperty(this, 'stack', {
+    //   get: () => {
+    //     const { isStackDisabled } = options
+    //     // const stacks = this._stack?.split('\n')
 
-    Object.defineProperty(this, 'stack', {
-      get: () => {
-        const { isStackDisabled } = options
-        const stacks = this._stack?.split('\n')
+    //     // find stack trace file name and line number
+    //     // const stackTraceIndex = stacks.findIndex((stack) => stack.includes('    at'))
+    //     // const stackTrace = stacks.slice(stackTraceIndex, stacks.length).join('\n')
 
-        // find stack trace file name and line number
-        const stackTraceIndex = stacks.findIndex((stack) => stack.includes('    at'))
-        const stackTrace = stacks.slice(stackTraceIndex, stacks.length).join('\n')
+    //     const version = [`${cliName}: ${cliVersion}`, `Node: ${nodeVersion}`].join('\n')
 
-        const version = [`${cliName}: ${cliVersion}`, `Node: ${nodeVersion}`].join('\n')
+    //     const displayStack = [version, ...(isStackDisabled ? [] : [stackTrace])].join('\n\n')
 
-        const displayStack = [version, ...(isStackDisabled ? [] : [stackTrace])].join('\n\n')
-
-        return displayStack
-      },
-    })
+    //     return displayStack
+    //   },
+    // })
 
     this.details = details
     this.name = args.name ?? this.name
