@@ -14,7 +14,7 @@ afterAll(() => {
   try {
     fs.rmSync(cache.getCacheFilePath())
   } catch (e) {
-    throw e
+    console.error('Error removing cache file or it may have already been removed', e)
   }
 })
 

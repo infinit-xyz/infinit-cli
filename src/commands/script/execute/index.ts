@@ -8,6 +8,7 @@ import ora, { type Ora } from 'ora'
 import path from 'path'
 import { match } from 'ts-pattern'
 import * as tsx from 'tsx/cjs/api'
+import type { Address } from 'viem'
 
 import { accounts, config } from '@classes'
 import { cache } from '@classes/Cache/Cache'
@@ -21,8 +22,8 @@ import type { InfinitConfigSchema } from '@schemas/generated'
 import { checkIsAccountFound } from '@utils/account'
 import { sendOnChainEvent } from '@utils/analytics'
 import { getProjectChainInfo } from '@utils/config'
-import { ensureCwdRootProject, readProjectRegistry } from '@utils/files'
-import type { Address } from 'viem'
+import { ensureCwdRootProject, getFilesCurrentDir, readProjectRegistry } from '@utils/files'
+import { scriptFileNamePrompt } from './index.prompt'
 
 // type casting
 // biome-ignore lint/suspicious/noExplicitAny: must assign any from reading the file
@@ -117,12 +118,26 @@ export const executeActionCallbackHandler = (spinner: Ora, filename: string, pro
  * Handlers
  */
 
-export const handleExecuteScript = async (fileName: string) => {
+export const handleExecuteScript = async (_fileName?: string) => {
   ensureCwdRootProject()
 
   const scriptFileDirectory = getScriptFileDirectory()
-  const target = path.resolve(scriptFileDirectory, fileName)
+  let fileName = _fileName
 
+  if (!fileName) {
+    const currentFileList = getFilesCurrentDir(scriptFileDirectory)
+    if (currentFileList.length === 0) {
+      throw new Error('No script file found. Please generate a script file before executing any script.')
+    }
+
+    fileName = await scriptFileNamePrompt(currentFileList)
+  }
+
+  if (!fileName) {
+    throw new Error('No script file selected.')
+  }
+
+  const target = path.resolve(scriptFileDirectory, fileName)
   console.log('🏃 Starting Execution...\n')
   const spinner = ora({ spinner: 'dots' })
 
