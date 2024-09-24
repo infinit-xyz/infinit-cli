@@ -15,7 +15,7 @@
     "build": "bun run clean:bin && bun run build:script",
     "build:script": "bun scripts/build.ts",
     "clean:bin": "find bin ! -name 'cli.js' -type f -exec rm -f {} +",
-    "clean": "bun run clean:bin && rm -rf node_modules",
+    "clean": "bun run clean:bin && rm -rf node_modules dist",
     "test": "bun run build && vitest run",
     "test:watch": "vitest",
     "test:typecheck": "vitest run --typecheck",
