@@ -8,6 +8,7 @@ import type { Mock } from 'vitest'
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { getProjectRpc } from '@utils/config'
+import axios, { isAxiosError } from 'axios'
 import { simulateExecute } from './simulate'
 
 vi.mock('@utils/config')
@@ -25,6 +26,8 @@ vi.mock('viem', () => ({
   createTestClient: vi.fn(),
   http: vi.fn(),
 }))
+
+vi.mock('axios')
 
 describe('simulateExecute', () => {
   let action: Action
@@ -83,6 +86,9 @@ describe('simulateExecute', () => {
     }
     ;(createTestClient as Mock).mockReturnValue(mockTestClient)
     ;(createPublicClient as Mock).mockReturnValue(publicClient)
+
+    vi.mocked(axios.get).mockImplementation(() => Promise.resolve({ data: 'mockData' }))
+    vi.mocked(isAxiosError).mockRejectedValue(true)
   })
 
   afterEach(() => {
@@ -107,6 +113,22 @@ describe('simulateExecute', () => {
 
     expect(startMockServer).toHaveBeenCalledOnce()
     expect(stopMockServer).toHaveBeenCalledOnce()
+  })
+
+  test('should handle when start pool failed', async () => {
+    vi.mocked(axios.get).mockImplementationOnce(() => {
+      throw new Error('Test error')
+    })
+
+    const stopMockServer = vi.fn().mockName('stopMockServer')
+    const startMockServer = vi.fn().mockName('startMockServer').mockResolvedValue(stopMockServer)
+    const mockAnvilInstance = vi.fn().mockName('mockAnvilInstance')
+    ;(createServer as Mock).mockReturnValue({ start: startMockServer })
+    ;(anvil as Mock).mockReturnValue(mockAnvilInstance)
+
+    await expect(simulateExecute(action, registry, chainInfo, signerAddresses, spinner, actionInfinitCache)).rejects.toThrowError(
+      'Start fork chain error: Error: Test error',
+    )
   })
 
   test('should simulate the action and log results', async () => {
