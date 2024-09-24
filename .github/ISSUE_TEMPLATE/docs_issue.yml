@@ -4,7 +4,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for submitting a documentation request. It helps make Viem better.
+        Thank you for submitting a documentation request. It helps make INFINIT CLI better.
 
         If it's a small change, like misspelling or example that needs updating, feel free to submit a PR instead of creating this issue.
 
