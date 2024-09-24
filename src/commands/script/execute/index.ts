@@ -3,11 +3,12 @@ import type { CallbackKeys, CallbackParams } from '@infinit-xyz/core/types/callb
 
 import fs from 'fs'
 import fsExtra from 'fs-extra'
-import _ from 'lodash'
+import _ from 'lodash' // [TODO/INVESTIGATE] later on importing from lodash
 import ora, { type Ora } from 'ora'
 import path from 'path'
 import { match } from 'ts-pattern'
 import * as tsx from 'tsx/cjs/api'
+import type { Address } from 'viem'
 
 import { accounts, config } from '@classes'
 import { cache } from '@classes/Cache/Cache'
@@ -24,10 +25,12 @@ import { ProtocolModuleLibError } from '@errors/lib'
 import { customErrorLog } from '@errors/log'
 import { ValidateInputValueError } from '@errors/validate'
 import { confirm } from '@inquirer/prompts'
+import type { InfinitConfigSchema } from '@schemas/generated'
 import { checkIsAccountFound } from '@utils/account'
-import { getProjectChainInfo } from '@utils/config'
-import { ensureCwdRootProject, readProjectRegistry } from '@utils/files'
-import type { Address } from 'viem'
+import { sendOnChainEvent } from '@utils/analytics'
+import { getProjectChainInfo, getProjectRpc } from '@utils/config'
+import { ensureCwdRootProject, getFilesCurrentDir, readProjectRegistry } from '@utils/files'
+import { scriptFileNamePrompt } from './index.prompt'
 
 // type casting
 // biome-ignore lint/suspicious/noExplicitAny: must assign any from reading the file
@@ -35,7 +38,7 @@ const isSigner = (signer: any): signer is Record<string, string> => {
   return signer && typeof signer === 'object' && Object.keys(signer).length > 0 && Object.values(signer).every((value) => typeof value === 'string' && value)
 }
 
-export const executeActionCallbackHandler = (spinner: Ora, filename: string) => {
+export const executeActionCallbackHandler = (spinner: Ora, filename: string, projectConfig: InfinitConfigSchema, signerAddresses: string[]) => {
   let currentSubActionCount = 0
   let currentSubActionStartIndex = 0
   let currentSubActionName = ''
@@ -72,6 +75,17 @@ export const executeActionCallbackHandler = (spinner: Ora, filename: string) => 
         transactionCount += 1
 
         spinner.text = `Executing ${chalkInfo(actionName)} - ${chalkInfo(currentSubActionName)} (${chalkInfo(`${currentSubActionCount + 1}/${totalSubActions}`)} sub-actions, ${chalkInfo(transactionCount)} transactions).`
+
+        if (projectConfig.allow_analytics) {
+          sendOnChainEvent({
+            // [TODO]: Add multiple signer
+            address: signerAddresses[0],
+            module: projectConfig.protocol_module,
+            action: actionName,
+            txHash: parsedValue.txHash,
+            chainId: projectConfig.chain_info.network_id,
+          })
+        }
 
         cache.updateTxCache(filename, parsedValue.txHash, { status: TX_STATUS.CONFIRMED })
       })
@@ -111,12 +125,26 @@ export const executeActionCallbackHandler = (spinner: Ora, filename: string) => 
  * Handlers
  */
 
-export const handleExecuteScript = async (fileName: string) => {
+export const handleExecuteScript = async (_fileName?: string) => {
   ensureCwdRootProject()
 
   const scriptFileDirectory = getScriptFileDirectory()
-  const target = path.resolve(scriptFileDirectory, fileName)
+  let fileName = _fileName
 
+  if (!fileName) {
+    const currentFileList = getFilesCurrentDir(scriptFileDirectory)
+    if (currentFileList.length === 0) {
+      throw new Error('No script file found. Please generate a script file before executing any script.')
+    }
+
+    fileName = await scriptFileNamePrompt(currentFileList)
+  }
+
+  if (!fileName) {
+    throw new Error('No script file selected.')
+  }
+
+  const target = path.resolve(scriptFileDirectory, fileName)
   console.log('🏃 Starting Execution...\n')
   const spinner = ora({ spinner: 'dots' })
 
@@ -128,6 +156,9 @@ export const handleExecuteScript = async (fileName: string) => {
     }
 
     spinner.start('Reading configuration and registry...')
+
+    // read config
+    const projectConfig = config.getProjectConfig()
 
     // read registry
     const { registryPath, registry } = readProjectRegistry()
@@ -201,8 +232,8 @@ export const handleExecuteScript = async (fileName: string) => {
       const privateKeyAccount = accounts.accounts[accountId]
       const signerAddress = privateKeyAccount.address
 
-      signerWalletRecord[signerKey] = new InfinitWallet(chainInfo.viemChainInstance, chainInfo.rpcList[0], privateKeyAccount)
-      simulationSignerWalletRecord[signerKey] = new InfinitWallet(chainInfo.viemChainInstance, FORK_CHAIN_URL, privateKeyAccount)
+      signerWalletRecord[signerKey] = new InfinitWallet(chainInfo.viemChain.instance, getProjectRpc(), privateKeyAccount)
+      simulationSignerWalletRecord[signerKey] = new InfinitWallet(chainInfo.viemChain.instance, FORK_CHAIN_URL, privateKeyAccount)
       signerAddresses.push(signerAddress)
     }
 
@@ -242,7 +273,7 @@ export const handleExecuteScript = async (fileName: string) => {
 
     // setup the real action with real signer
     const action = new Action({ params, signer: signerWalletRecord }) as BaseAction
-    const newRegistry = await action.run(registry, actionInfinitCache, executeActionCallbackHandler(spinner, fileName))
+    const newRegistry = await action.run(registry, actionInfinitCache, executeActionCallbackHandler(spinner, fileName, projectConfig, signerAddresses))
 
     // clear cache if all sub actions are finished
     cache.deleteTxActionCache(fileName)

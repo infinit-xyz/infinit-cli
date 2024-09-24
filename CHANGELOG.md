@@ -1,5 +1,47 @@
 # @infinit-xyz/cli
 
+## 0.0.0-alpha.6
+
+### Patch Changes
+
+- [#27](https://github.com/infinit-xyz/infinit-cli/pull/27) [`f733d1c`](https://github.com/infinit-xyz/infinit-cli/commit/f733d1c65c94819ccdfed14369083b0c0227ab32) Thanks [@Pitchanai](https://github.com/Pitchanai)! - add Holesky chain
+
+- [#27](https://github.com/infinit-xyz/infinit-cli/pull/27) [`f733d1c`](https://github.com/infinit-xyz/infinit-cli/commit/f733d1c65c94819ccdfed14369083b0c0227ab32) Thanks [@Pitchanai](https://github.com/Pitchanai)! - get chain rpc from config file
+
+## 0.0.0-alpha.5
+
+### Patch Changes
+
+- [#26](https://github.com/infinit-xyz/infinit-cli/pull/26) [`73995b5`](https://github.com/infinit-xyz/infinit-cli/commit/73995b50f40fabfca7a7ac888eb3498af13120e0) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - handle prool error
+
+## 0.0.0-alpha.4
+
+### Patch Changes
+
+- [#13](https://github.com/infinit-xyz/infinit-cli/pull/13) [`9fd7529`](https://github.com/infinit-xyz/infinit-cli/commit/9fd75294e9ce7f28592689e90f9e4bfce7bcb6c5) Thanks [@Pitchanai](https://github.com/Pitchanai)! - Add select prompt to select script filename
+
+- [#25](https://github.com/infinit-xyz/infinit-cli/pull/25) [`054633b`](https://github.com/infinit-xyz/infinit-cli/commit/054633bdab3a49746a8b9590186c69e239da29ef) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - - bump `@infinit-xyz/core@0.0.0-alpha.7`
+
+  - bump `@infinit-xyz/aave-v3@0.0.0-alpha.10`
+  - bump `@infinit-xyz/token@0.0.0-alpha.9`
+  - bump `@infinit-xyz/uniswap-v3@0.0.0-alpha.10`
+
+- [#23](https://github.com/infinit-xyz/infinit-cli/pull/23) [`fa582e0`](https://github.com/infinit-xyz/infinit-cli/commit/fa582e0a3696eded259d4bddf2ed72f64f86da04) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - update supported chains
+
+- [#22](https://github.com/infinit-xyz/infinit-cli/pull/22) [`814935d`](https://github.com/infinit-xyz/infinit-cli/commit/814935d5a3565785532a8e819d32945c1ec30b6a) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - update project init message
+
+## 0.0.0-alpha.3
+
+### Minor Changes
+
+- [#14](https://github.com/infinit-xyz/infinit-cli/pull/14) [`1c52471`](https://github.com/infinit-xyz/infinit-cli/commit/1c52471582aa78e75f484a2699d70d42514aa4c7) Thanks [@arintrongs](https://github.com/arintrongs)! - Add analytics
+
+### Patch Changes
+
+- [#17](https://github.com/infinit-xyz/infinit-cli/pull/17) [`0e739be`](https://github.com/infinit-xyz/infinit-cli/commit/0e739be7d0a37709db90232d7133d93ff95c8eb8) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - update script file to be camel case
+
+- [#17](https://github.com/infinit-xyz/infinit-cli/pull/17) [`0e739be`](https://github.com/infinit-xyz/infinit-cli/commit/0e739be7d0a37709db90232d7133d93ff95c8eb8) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - update default script file name
+
 ## 0.0.0-alpha.2
 
 ### Minor Changes

@@ -42,7 +42,11 @@ class Cache {
    * @returns InfinitCliCache
    */
   private loadCache(): InfinitCliCache {
-    const { isRunningFromRootProject } = isCwdRootProject()
+    const cwdRootProject = isCwdRootProject()
+    // This case should not happen, but it only occurred in the test `src/commands/script/execute/index.test.ts`.
+    if (!cwdRootProject) return Cache.getCacheDefault()
+
+    const { isRunningFromRootProject } = cwdRootProject
 
     if (!isRunningFromRootProject && !this.isCacheBasePathSpecified) return Cache.getCacheDefault()
 

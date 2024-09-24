@@ -1,21 +1,24 @@
+import type { ChainInfo } from '@constants/chains'
 import { chalkInfo } from '@constants/chalk'
 import { getAccountsList } from '@utils/account'
 import fs from 'fs'
 import { type PublicClient, createPublicClient, getAddress } from 'viem'
+import { mainnet } from 'viem/chains'
 import { type Mock, type MockInstance, afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
 import { handleListAccounts } from './index'
 
 vi.mock('viem')
 vi.mock('@utils/account')
 vi.mock('@utils/config', () => ({
-  getProjectChainInfo: () => ({
-    name: 'Ethereum Mainnet',
-    rpcList: [],
-    nativeCurrency: {
-      symbol: 'ETH',
-      decimals: 18,
-    },
-  }),
+  getProjectChainInfo: () =>
+    ({
+      name: 'Ethereum Mainnet',
+      shortName: 'Ethereum',
+      chainId: '1',
+      viemChain: { name: 'mainnet', instance: mainnet },
+      nativeCurrency: { name: 'Ethereum', symbol: 'ETH', decimals: 18 },
+    }) as unknown as ChainInfo,
+  getProjectRpc: () => 'https://fake-rpc.io',
 }))
 
 describe('Command: accounts - list', () => {

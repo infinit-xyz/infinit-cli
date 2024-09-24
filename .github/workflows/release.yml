@@ -14,7 +14,7 @@ jobs:
     uses: ./.github/workflows/check.yml
     secrets: inherit
     with:
-      skip-test: true
+      skip-format-and-type: true
 
   publish:
     name: Publish

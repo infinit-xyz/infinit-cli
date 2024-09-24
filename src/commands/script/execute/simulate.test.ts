@@ -1,13 +1,19 @@
-import type { ChainInfo } from '@constants/chains'
 import type { Action, InfinitCache } from '@infinit-xyz/core'
+
+import axios, { isAxiosError } from 'axios'
 import type { Ora } from 'ora'
 import { createServer } from 'prool'
 import { anvil } from 'prool/instances'
 import { type Address, type TestActions, createPublicClient, createTestClient } from 'viem'
+import { mainnet } from 'viem/chains'
 import type { Mock } from 'vitest'
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
+import type { ChainInfo } from '@constants/chains'
+import { getProjectRpc } from '@utils/config'
 import { simulateExecute } from './simulate'
+
+vi.mock('@utils/config')
 
 vi.mock('prool', () => ({
   createServer: vi.fn(),
@@ -22,6 +28,8 @@ vi.mock('viem', () => ({
   createTestClient: vi.fn(),
   http: vi.fn(),
 }))
+
+vi.mock('axios')
 
 describe('simulateExecute', () => {
   let action: Action
@@ -47,12 +55,18 @@ describe('simulateExecute', () => {
       address1: '0x1234',
     }
     chainInfo = {
+      name: 'Ethereum Mainnet',
+      shortName: 'Ethereum',
       chainId: '1',
       rpcList: ['https://fakerpc.io/rpc'],
-      viemChainInstance: {},
+      viemChain: {
+        name: 'mainnet',
+        instance: mainnet,
+      },
       nativeCurrency: {
-        decimals: 18,
+        name: 'Ethereum',
         symbol: 'ETH',
+        decimals: 18,
       },
     } as unknown as ChainInfo
 
@@ -80,6 +94,9 @@ describe('simulateExecute', () => {
     }
     ;(createTestClient as Mock).mockReturnValue(mockTestClient)
     ;(createPublicClient as Mock).mockReturnValue(publicClient)
+
+    vi.mocked(axios.get).mockImplementation(() => Promise.resolve({ data: 'mockData' }))
+    vi.mocked(isAxiosError).mockRejectedValue(true)
   })
 
   afterEach(() => {
@@ -87,6 +104,8 @@ describe('simulateExecute', () => {
   })
 
   test('should start and stop the server', async () => {
+    vi.mocked(getProjectRpc).mockReturnValue('https://fakerpc.io/rpc')
+
     const stopMockServer = vi.fn().mockName('stopMockServer')
     const startMockServer = vi.fn().mockName('startMockServer').mockResolvedValue(stopMockServer)
     const mockAnvilInstance = vi.fn().mockName('mockAnvilInstance')
@@ -102,6 +121,22 @@ describe('simulateExecute', () => {
 
     expect(startMockServer).toHaveBeenCalledOnce()
     expect(stopMockServer).toHaveBeenCalledOnce()
+  })
+
+  test('should handle when start pool failed', async () => {
+    vi.mocked(axios.get).mockImplementationOnce(() => {
+      throw new Error('Test error')
+    })
+
+    const stopMockServer = vi.fn().mockName('stopMockServer')
+    const startMockServer = vi.fn().mockName('startMockServer').mockResolvedValue(stopMockServer)
+    const mockAnvilInstance = vi.fn().mockName('mockAnvilInstance')
+    ;(createServer as Mock).mockReturnValue({ start: startMockServer })
+    ;(anvil as Mock).mockReturnValue(mockAnvilInstance)
+
+    await expect(simulateExecute(action, registry, chainInfo, signerAddresses, spinner, actionInfinitCache)).rejects.toThrowError(
+      'Start fork chain error: Error: Test error',
+    )
   })
 
   test('should simulate the action and log results', async () => {
@@ -136,6 +171,8 @@ describe('simulateExecute', () => {
   })
 
   test('should handle errors and stop the server', async () => {
+    vi.mocked(getProjectRpc).mockReturnValue('https://fakerpc.io/rpc')
+
     const startMock = vi.fn().mockResolvedValue(vi.fn())
     ;(createServer as Mock).mockReturnValue({ start: startMock })
     ;(action.run as Mock).mockRejectedValue(new Error('Test error'))

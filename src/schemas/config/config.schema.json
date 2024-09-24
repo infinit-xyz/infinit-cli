@@ -38,14 +38,36 @@
         "name": {
           "type": "string"
         },
+        "short_name": {
+          "type": "string"
+        },
         "network_id": {
           "type": "integer"
+        },
+        "native_currency": {
+          "additionalProperties": false,
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "symbol": {
+              "type": "string"
+            },
+            "decimals": {
+              "type": "integer"
+            }
+          },
+          "required": ["name", "symbol", "decimals"]
         },
         "rpc_url": {
           "$ref": "#/definitions/Url"
         }
       },
-      "required": ["name", "network_id", "rpc_url"]
+      "required": ["name", "short_name", "network_id", "native_currency", "rpc_url"]
+    },
+    "allow_analytics": {
+      "type": "boolean"
     }
   },
   "required": ["project_name", "protocol_module", "chain_info"]

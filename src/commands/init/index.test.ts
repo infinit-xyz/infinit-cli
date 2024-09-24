@@ -46,7 +46,7 @@ describe('Command: init', () => {
     test('should initialize INFINIT project successfully with npm', async () => {
       const [exitCode, logs] = await InfinitCLI()
         .setCwd(cwdPath)
-        .invoke(['init', '--directory', newProjectPath, '--chain', 'ARB_SEPOLIA', '--module', 'aave-v3', '--ignore-deployer'])
+        .invoke(['init', '--directory', newProjectPath, '--chain', 'Ethereum', '--module', 'aave-v3', '--ignore-deployer', '--ignore-analytics'])
 
       logs.should.contain('Successfully initialized a project')
 
@@ -56,7 +56,7 @@ describe('Command: init', () => {
     test('should throw error with project directory does not exist', async () => {
       const [exitCode, _logs, errorLogs] = await InfinitCLI()
         .setCwd(cwdPath)
-        .invoke(['init', '--directory', 'wrong', '--chain', 'ARB_SEPOLIA', '--module', 'aave_v3', '--ignore-deployer'])
+        .invoke(['init', '--directory', 'wrong', '--chain', 'Ethereum', '--module', 'aave_v3', '--ignore-deployer', '--ignore-analytics'])
 
       const expectedError = new ValidateInputValueError('Project directory does not exist')
       errorLogs.should.contain(expectedError.message)
@@ -66,7 +66,7 @@ describe('Command: init', () => {
     test('should throw error with protocol module is not supported', async () => {
       const [exitCode, _logs, errorLogs] = await InfinitCLI()
         .setCwd(cwdPath)
-        .invoke(['init', '--directory', newProjectPath, '--chain', 'ARB_SEPOLIA', '--module', 'abcd', '--ignore-deployer'])
+        .invoke(['init', '--directory', newProjectPath, '--chain', 'Ethereum', '--module', 'abcd', '--ignore-deployer', '--ignore-analytics'])
 
       const expectedError = new ValidateInputValueError('Protocol module is not supported')
       errorLogs.should.contain(expectedError.message)
@@ -98,7 +98,7 @@ describe('Command: init', () => {
 
       const [exitCode, logs] = await InfinitCLI()
         .setCwd(cwdPath)
-        .invoke(['init', '--directory', newProjectPath, '--chain', 'ARB_SEPOLIA', '--module', 'aave-v3', '--ignore-deployer'])
+        .invoke(['init', '--directory', newProjectPath, '--chain', 'Ethereum', '--module', 'aave-v3', '--ignore-deployer', '--ignore-analytics'])
 
       logs.should.contain('Successfully initialized a project')
 

@@ -1,6 +1,4 @@
-import { isRunOnLocalOnly } from '@utils/invoke-cli'
 import { Option, program } from 'commander'
-import { version } from '../package.json'
 
 import { handleDeleteAccount, handleExportAccount, handleGenerateAccount, handleImportAccount, handleListAccounts } from '@commands/account'
 import { handleListAction } from '@commands/action'
@@ -8,6 +6,9 @@ import { handleInitializeCli } from '@commands/init'
 import { handleCompileProject } from '@commands/project'
 import { handleExecuteScript, handleGenerateScript } from '@commands/script'
 import { chalkError } from '@constants/chalk'
+import { isRunOnLocalOnly } from '@utils/invoke-cli'
+
+import { version } from '../package.json'
 
 // Function to validate Node.js version
 const validateNodeVersion = () => {
@@ -39,6 +40,7 @@ program
   .option('--deployer <char>', 'Deployer account ID')
   // hidden
   .addOption(new Option('--ignore-deployer', 'Do not ask for deployer account ID').hideHelp())
+  .addOption(new Option('--ignore-analytics', 'Do not ask for analytics tracking').hideHelp())
 
   .action(async (input) => {
     await handleInitializeCli(input)
@@ -151,8 +153,8 @@ scriptCommands
 scriptCommands
   .command('execute')
   .description('Execute a specified script in the scripts/ folder')
-  .argument('<file>', 'Script file name') // required
-  .action(async (fileName) => {
+  .argument('[file]', 'Script file name') // optional
+  .action(async (fileName?: string) => {
     isRunOnLocalOnly()
     await handleExecuteScript(fileName)
   })

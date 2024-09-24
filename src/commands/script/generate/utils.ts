@@ -4,6 +4,7 @@ import fs from 'fs'
 import path from 'path'
 
 import { generateScriptText } from '@utils/script'
+import _ from 'lodash' // [TODO/INVESTIGATE] later on importing from lodash
 
 /**
  * Get the directory path for script files.
@@ -30,11 +31,12 @@ export const getScriptHistoryFileDirectory = (projectDirectory?: string): string
  * @returns {string} A unique script file name.
  */
 export const getUniqueScriptFileName = (actionClassName: string, folderPath: string, customId?: number): string => {
-  const scriptFileName = `${actionClassName}${!!customId ? `_${customId}` : ''}`
+  const camelCaseActionName = _.camelCase(actionClassName)
+  const scriptFileName = `${camelCaseActionName}${!!customId ? `_${customId}` : ''}`
   const filePath = path.resolve(folderPath, `${scriptFileName}.script.ts`)
   if (fs.existsSync(filePath)) {
     // file name duplicate
-    return getUniqueScriptFileName(actionClassName, folderPath, !!customId ? customId + 1 : 1)
+    return getUniqueScriptFileName(camelCaseActionName, folderPath, !!customId ? customId + 1 : 1)
   }
 
   return scriptFileName

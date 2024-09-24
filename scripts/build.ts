@@ -44,6 +44,7 @@ try {
     'js-sha3',
     '@openzeppelin',
     'hardhat',
+    'axios',
   ]
 
   if (new Set(externalPackages).size != externalPackages.length) {
