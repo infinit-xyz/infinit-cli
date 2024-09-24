@@ -7,6 +7,7 @@ import { type Address, type TestActions, createPublicClient, createTestClient } 
 import type { Mock } from 'vitest'
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
+import axios, { isAxiosError } from 'axios'
 import { simulateExecute } from './simulate'
 
 vi.mock('prool', () => ({
@@ -23,6 +24,8 @@ vi.mock('viem', () => ({
   http: vi.fn(),
 }))
 
+vi.mock('axios')
+
 describe('simulateExecute', () => {
   let action: Action
   let registry: Record<string, Address>
@@ -35,6 +38,8 @@ describe('simulateExecute', () => {
 
   beforeAll(() => {
     vi.spyOn(console, 'log').mockImplementation(() => undefined)
+    vi.mocked(axios.get).mockImplementation(() => Promise.resolve({ data: 'mockData' }))
+    vi.mocked(isAxiosError).mockRejectedValue(true)
   })
 
   beforeEach(() => {
