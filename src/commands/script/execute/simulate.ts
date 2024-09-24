@@ -2,6 +2,7 @@ import type { ChainInfo } from '@constants/chains'
 import type { Action, InfinitCache } from '@infinit-xyz/core'
 import type { CallbackKeys, CallbackParams, InfinitCallback } from '@infinit-xyz/core/types/callback'
 import { getProjectRpc } from '@utils/config'
+import axios from 'axios'
 import type { Ora } from 'ora'
 
 import { createServer } from 'prool'
@@ -38,6 +39,13 @@ export const simulateExecute = async (
 
     // start the prool server
     stopServer = await server.start()
+
+    try {
+      // ensure that pool 1 is started
+      await axios.get(`${FORK_CHAIN_HOST}:${FORK_CHAIN_PORT}/1/start`)
+    } catch (error) {
+      throw new Error(`Start fork chain error: ${error}`)
+    }
 
     spinner.start(getSpinnerProgressText(action.name, 0))
 
