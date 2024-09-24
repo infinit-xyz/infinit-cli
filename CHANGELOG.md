@@ -1,5 +1,11 @@
 # @infinit-xyz/cli
 
+## 0.0.0-alpha.7
+
+### Patch Changes
+
+- [`c4798fb`](https://github.com/infinit-xyz/infinit-cli/commit/c4798fb6f61ae29f149368ebc396455fe1c8ed38) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - update image in readme
+
 ## 0.0.0-alpha.6
 
 ### Patch Changes
