@@ -82,7 +82,6 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     },
     viemChain: {
       instance: viemChains.holesky,
-      name: 'holesky',
     },
   },
   // [CHAIN_ID.BSC]: {

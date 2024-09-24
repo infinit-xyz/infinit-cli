@@ -188,9 +188,6 @@ export const mockProjectConfig: InfinitConfigSchema = {
       symbol: 'ETH',
       decimals: 18,
     },
-    viem: {
-      name: 'ethereum',
-    },
   },
   allow_analytics: false,
 }
