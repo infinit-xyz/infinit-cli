@@ -1,5 +1,13 @@
 # @infinit-xyz/cli
 
+## 0.0.0-alpha.6
+
+### Patch Changes
+
+- [#27](https://github.com/infinit-xyz/infinit-cli/pull/27) [`f733d1c`](https://github.com/infinit-xyz/infinit-cli/commit/f733d1c65c94819ccdfed14369083b0c0227ab32) Thanks [@Pitchanai](https://github.com/Pitchanai)! - add Holesky chain
+
+- [#27](https://github.com/infinit-xyz/infinit-cli/pull/27) [`f733d1c`](https://github.com/infinit-xyz/infinit-cli/commit/f733d1c65c94819ccdfed14369083b0c0227ab32) Thanks [@Pitchanai](https://github.com/Pitchanai)! - get chain rpc from config file
+
 ## 0.0.0-alpha.5
 
 ### Patch Changes

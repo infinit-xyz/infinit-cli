@@ -1,6 +1,6 @@
 {
   "name": "@infinit-xyz/cli",
-  "version": "0.0.0-alpha.5",
+  "version": "0.0.0-alpha.6",
   "publishConfig": {
     "access": "public"
   },
