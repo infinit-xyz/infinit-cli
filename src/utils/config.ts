@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 
 import { DATA_FOLDER, DATA_SUBFOLDERS, HOME_DIRECTORY, config } from '@classes/Config/Config'
-import { CHAINS, type ChainInfo } from '@constants/chains'
+import { type ChainInfo } from '@constants/chains'
 import type { CHAIN_ID } from '@enums/chain'
 import { ensureAccessibilityAtPath } from '@utils/files'
 import * as viemChains from 'viem/chains'
@@ -35,18 +35,12 @@ export const getProjectChainInfo = (): ChainInfo => {
     throw new Error(`Chain not found`)
   }
 
-  const chainInfo = CHAINS[`${_config.chain_info.network_id}` as CHAIN_ID]
-
-  if (!chainInfo) {
-    throw new Error(`Chain ${_config.chain_info.network_id} is not supported`)
-  }
-
   return {
     name: _config.chain_info.name,
-    shortName: chainInfo.shortName,
+    shortName: _config.chain_info.short_name,
     chainId: _config.chain_info.network_id.toString() as CHAIN_ID,
     nativeCurrency: _config.chain_info.native_currency,
-    rpcList: _config.chain_info.rpc_url ? [_config.chain_info.rpc_url] : chainInfo.rpcList,
+    rpcList: [_config.chain_info.rpc_url],
     viemChain: {
       name: _config.chain_info.viem.name as keyof typeof viemChains,
       instance: viemChains[_config.chain_info.viem.name as keyof typeof viemChains],
