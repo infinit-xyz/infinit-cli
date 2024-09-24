@@ -109,7 +109,9 @@ export const initializeCliProject = async (
     protocol_module: protocolModule,
     chain_info: {
       name: chainInfo.name,
+      short_name: chainInfo.shortName,
       network_id: parseInt(chainInfo.chainId),
+      native_currency: chainInfo.nativeCurrency,
       rpc_url: chainInfo.rpcList[0],
     },
     allow_analytics: allowAnalytics,

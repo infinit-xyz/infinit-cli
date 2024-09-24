@@ -1,6 +1,6 @@
 import { CHAIN_ID } from '@enums/chain'
 import type { Chain } from 'viem'
-import { mainnet, mantle, sepolia } from 'viem/chains'
+import * as viemChains from 'viem/chains'
 
 type TokenDetail = {
   name: string
@@ -15,7 +15,9 @@ export type ChainInfo = {
   description?: string
   nativeCurrency: TokenDetail
   rpcList: string[]
-  viemChainInstance: Chain
+  viemChain: {
+    instance: Chain
+  }
 }
 
 export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
@@ -36,7 +38,9 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
       symbol: 'ETH',
       decimals: 18,
     },
-    viemChainInstance: mainnet,
+    viemChain: {
+      instance: viemChains.mainnet,
+    },
   },
   [CHAIN_ID.Mantle]: {
     chainId: CHAIN_ID.Mantle,
@@ -48,7 +52,9 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
       symbol: 'MNT',
       decimals: 18,
     },
-    viemChainInstance: mantle,
+    viemChain: {
+      instance: viemChains.mantle,
+    },
   },
   [CHAIN_ID.Sepolia]: {
     chainId: CHAIN_ID.Sepolia,
@@ -60,7 +66,23 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
       symbol: 'ETH',
       decimals: 18,
     },
-    viemChainInstance: sepolia,
+    viemChain: {
+      instance: viemChains.sepolia,
+    },
+  },
+  [CHAIN_ID.Holesky]: {
+    chainId: CHAIN_ID.Holesky,
+    name: '[Testnet] Holesky',
+    shortName: 'Holesky',
+    rpcList: ['https://holesky.drpc.org', 'https://ethereum-holesky-rpc.publicnode.com', 'https://ethereum-holesky.blockpi.network/v1/rpc/public'],
+    nativeCurrency: {
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    viemChain: {
+      instance: viemChains.holesky,
+    },
   },
   // [CHAIN_ID.BSC]: {
   //   chainId: CHAIN_ID.BSC,

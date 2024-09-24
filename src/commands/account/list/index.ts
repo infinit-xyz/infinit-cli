@@ -1,7 +1,7 @@
 import { type ChainInfo } from '@constants/chains'
 import { chalkInfo } from '@constants/chalk'
 import { getAccountsList } from '@utils/account'
-import { getProjectChainInfo } from '@utils/config'
+import { getProjectChainInfo, getProjectRpc } from '@utils/config'
 import CliTable3 from 'cli-table3'
 import fs from 'fs'
 import path from 'path'
@@ -30,7 +30,7 @@ export const handleListAccounts = async (): Promise<CliTable3.Table> => {
   try {
     // Setup public client
     chainInfo = getProjectChainInfo()
-    publicClient = createPublicClient({ chain: chainInfo.viemChainInstance, transport: http(chainInfo.rpcList[0]) })
+    publicClient = createPublicClient({ chain: chainInfo.viemChain.instance, transport: http(getProjectRpc()) })
   } catch (error) {
     console.warn('Warning: Cannot setup public client')
     console.warn(error)

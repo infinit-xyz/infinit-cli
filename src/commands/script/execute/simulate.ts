@@ -1,6 +1,7 @@
 import type { ChainInfo } from '@constants/chains'
 import type { Action, InfinitCache } from '@infinit-xyz/core'
 import type { CallbackKeys, CallbackParams, InfinitCallback } from '@infinit-xyz/core/types/callback'
+import { getProjectRpc } from '@utils/config'
 import axios from 'axios'
 import type { Ora } from 'ora'
 
@@ -30,7 +31,7 @@ export const simulateExecute = async (
     const server = createServer({
       instance: anvil({
         chainId: Number(chainInfo.chainId),
-        forkUrl: chainInfo.rpcList[0],
+        forkUrl: getProjectRpc(),
       }),
       limit: 1, // force to have only 1 pool since we are going to run 1 consequently action.
       port: FORK_CHAIN_PORT,
@@ -51,11 +52,11 @@ export const simulateExecute = async (
     // initialize test client and public client that connected to the fork chain.
     const testClient = createTestClient({
       mode: 'anvil',
-      chain: chainInfo.viemChainInstance,
+      chain: chainInfo.viemChain.instance,
       transport: http(FORK_CHAIN_URL, { timeout: 60_000 }),
     })
 
-    const publicClient = createPublicClient({ chain: chainInfo.viemChainInstance, transport: http(FORK_CHAIN_URL) })
+    const publicClient = createPublicClient({ chain: chainInfo.viemChain.instance, transport: http(FORK_CHAIN_URL) })
 
     // impersonate signer accounts and set balance to pay for gas fee.
     for (const signerAddress of signerAddresses) {

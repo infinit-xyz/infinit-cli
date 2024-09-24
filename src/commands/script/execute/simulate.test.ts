@@ -1,14 +1,19 @@
-import type { ChainInfo } from '@constants/chains'
 import type { Action, InfinitCache } from '@infinit-xyz/core'
+
+import axios, { isAxiosError } from 'axios'
 import type { Ora } from 'ora'
 import { createServer } from 'prool'
 import { anvil } from 'prool/instances'
 import { type Address, type TestActions, createPublicClient, createTestClient } from 'viem'
+import { mainnet } from 'viem/chains'
 import type { Mock } from 'vitest'
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
-import axios, { isAxiosError } from 'axios'
+import type { ChainInfo } from '@constants/chains'
+import { getProjectRpc } from '@utils/config'
 import { simulateExecute } from './simulate'
+
+vi.mock('@utils/config')
 
 vi.mock('prool', () => ({
   createServer: vi.fn(),
@@ -50,12 +55,18 @@ describe('simulateExecute', () => {
       address1: '0x1234',
     }
     chainInfo = {
+      name: 'Ethereum Mainnet',
+      shortName: 'Ethereum',
       chainId: '1',
       rpcList: ['https://fakerpc.io/rpc'],
-      viemChainInstance: {},
+      viemChain: {
+        name: 'mainnet',
+        instance: mainnet,
+      },
       nativeCurrency: {
-        decimals: 18,
+        name: 'Ethereum',
         symbol: 'ETH',
+        decimals: 18,
       },
     } as unknown as ChainInfo
 
@@ -93,6 +104,8 @@ describe('simulateExecute', () => {
   })
 
   test('should start and stop the server', async () => {
+    vi.mocked(getProjectRpc).mockReturnValue('https://fakerpc.io/rpc')
+
     const stopMockServer = vi.fn().mockName('stopMockServer')
     const startMockServer = vi.fn().mockName('startMockServer').mockResolvedValue(stopMockServer)
     const mockAnvilInstance = vi.fn().mockName('mockAnvilInstance')
@@ -158,6 +171,8 @@ describe('simulateExecute', () => {
   })
 
   test('should handle errors and stop the server', async () => {
+    vi.mocked(getProjectRpc).mockReturnValue('https://fakerpc.io/rpc')
+
     const startMock = vi.fn().mockResolvedValue(vi.fn())
     ;(createServer as Mock).mockReturnValue({ start: startMock })
     ;(action.run as Mock).mockRejectedValue(new Error('Test error'))
