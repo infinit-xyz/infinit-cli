@@ -21,7 +21,7 @@ import { confirm } from '@inquirer/prompts'
 import type { InfinitConfigSchema } from '@schemas/generated'
 import { checkIsAccountFound } from '@utils/account'
 import { sendOnChainEvent } from '@utils/analytics'
-import { getProjectChainInfo } from '@utils/config'
+import { getProjectChainInfo, getProjectRpc } from '@utils/config'
 import { ensureCwdRootProject, getFilesCurrentDir, readProjectRegistry } from '@utils/files'
 import { scriptFileNamePrompt } from './index.prompt'
 
@@ -225,7 +225,7 @@ export const handleExecuteScript = async (_fileName?: string) => {
       const privateKeyAccount = accounts.accounts[accountId]
       const signerAddress = privateKeyAccount.address
 
-      signerWalletRecord[signerKey] = new InfinitWallet(chainInfo.viemChainInstance, chainInfo.rpcList[0], privateKeyAccount)
+      signerWalletRecord[signerKey] = new InfinitWallet(chainInfo.viemChainInstance, getProjectRpc(), privateKeyAccount)
       simulationSignerWalletRecord[signerKey] = new InfinitWallet(chainInfo.viemChainInstance, FORK_CHAIN_URL, privateKeyAccount)
       signerAddresses.push(signerAddress)
     }

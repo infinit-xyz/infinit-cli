@@ -1,6 +1,7 @@
 import type { ChainInfo } from '@constants/chains'
 import type { Action, InfinitCache } from '@infinit-xyz/core'
 import type { CallbackKeys, CallbackParams, InfinitCallback } from '@infinit-xyz/core/types/callback'
+import { getProjectRpc } from '@utils/config'
 import type { Ora } from 'ora'
 
 import { createServer } from 'prool'
@@ -29,7 +30,7 @@ export const simulateExecute = async (
     const server = createServer({
       instance: anvil({
         chainId: Number(chainInfo.chainId),
-        forkUrl: chainInfo.rpcList[0],
+        forkUrl: getProjectRpc(),
       }),
       limit: 1, // force to have only 1 pool since we are going to run 1 consequently action.
       port: FORK_CHAIN_PORT,

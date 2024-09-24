@@ -16,6 +16,7 @@ vi.mock('@utils/config', () => ({
       decimals: 18,
     },
   }),
+  getProjectRpc: () => 'https://fake-rpc.io',
 }))
 
 describe('Command: accounts - list', () => {

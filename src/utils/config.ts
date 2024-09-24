@@ -42,3 +42,10 @@ export const getProjectChainInfo = (): ChainInfo => {
 
   return chainInfo
 }
+
+export const getProjectRpc = (): string => {
+  const _config = config.getProjectConfig()
+  const rpcUrl = _config.chain_info.rpc_url ?? getProjectChainInfo().rpcList[0]
+
+  return rpcUrl
+}

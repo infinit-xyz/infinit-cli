@@ -7,7 +7,10 @@ import { type Address, type TestActions, createPublicClient, createTestClient } 
 import type { Mock } from 'vitest'
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
+import { getProjectRpc } from '@utils/config'
 import { simulateExecute } from './simulate'
+
+vi.mock('@utils/config')
 
 vi.mock('prool', () => ({
   createServer: vi.fn(),
@@ -87,6 +90,8 @@ describe('simulateExecute', () => {
   })
 
   test('should start and stop the server', async () => {
+    vi.mocked(getProjectRpc).mockReturnValue('https://fakerpc.io/rpc')
+
     const stopMockServer = vi.fn().mockName('stopMockServer')
     const startMockServer = vi.fn().mockName('startMockServer').mockResolvedValue(stopMockServer)
     const mockAnvilInstance = vi.fn().mockName('mockAnvilInstance')
@@ -136,6 +141,8 @@ describe('simulateExecute', () => {
   })
 
   test('should handle errors and stop the server', async () => {
+    vi.mocked(getProjectRpc).mockReturnValue('https://fakerpc.io/rpc')
+
     const startMock = vi.fn().mockResolvedValue(vi.fn())
     ;(createServer as Mock).mockReturnValue({ start: startMock })
     ;(action.run as Mock).mockRejectedValue(new Error('Test error'))
