@@ -1,4 +1,4 @@
-![Infinit Logo](.github/infinit.png)
+![Infinit Logo](https://raw.githubusercontent.com/infinit-xyz/infinit-cli/refs/heads/main/.github/infinit.png)
 
 # INFINIT CLI - Alpha Release
 
