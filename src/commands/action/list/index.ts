@@ -1,6 +1,7 @@
 import { config } from '@classes'
 import { protocolModules } from '@constants/protocol-module'
 import type { PROTOCOL_MODULE } from '@enums/module'
+import { ValidateInputValueError } from '@errors/validate'
 import type { InfinitActionRecord } from '@infinit-xyz/core'
 import Table from 'cli-table3'
 
@@ -9,7 +10,7 @@ export const handleListAction = () => {
   const protocolModule = protocolModules[projectConfig.protocol_module as PROTOCOL_MODULE]
 
   if (!protocolModule) {
-    throw new Error('Protocol module not supported')
+    throw new ValidateInputValueError('Protocol module not supported')
   }
 
   const actions = protocolModule.actions as InfinitActionRecord

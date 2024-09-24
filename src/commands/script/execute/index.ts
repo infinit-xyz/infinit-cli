@@ -9,13 +9,20 @@ import path from 'path'
 import { match } from 'ts-pattern'
 import * as tsx from 'tsx/cjs/api'
 
-import { accounts } from '@classes'
+import { accounts, config } from '@classes'
 import { cache } from '@classes/Cache/Cache'
 import { TX_STATUS } from '@classes/Cache/Cache.enum'
 import { FORK_CHAIN_URL, simulateExecute } from '@commands/script/execute/simulate'
 import { getScriptFileDirectory, getScriptHistoryFileDirectory } from '@commands/script/generate/utils'
 import { loadAccountFromPrompt } from '@commons/prompts/accounts'
 import { chalkError, chalkInfo } from '@constants/chalk'
+import type { PROTOCOL_MODULE } from '@enums/module'
+import { AccountNotFoundError } from '@errors/account'
+import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
+import { FileNotFoundError } from '@errors/fs'
+import { ProtocolModuleLibError } from '@errors/lib'
+import { customErrorLog } from '@errors/log'
+import { ValidateInputValueError } from '@errors/validate'
 import { confirm } from '@inquirer/prompts'
 import { checkIsAccountFound } from '@utils/account'
 import { getProjectChainInfo } from '@utils/config'
@@ -105,6 +112,7 @@ export const executeActionCallbackHandler = (spinner: Ora, filename: string) => 
  */
 
 export const handleExecuteScript = async (fileName: string) => {
+  console.log('handleExecuteScripthandleExecuteScript')
   ensureCwdRootProject()
 
   const scriptFileDirectory = getScriptFileDirectory()
@@ -117,7 +125,7 @@ export const handleExecuteScript = async (fileName: string) => {
     // check script file
     const isFound = fs.existsSync(target)
     if (!isFound) {
-      throw new Error(`script ${fileName} is not found in ${target}`)
+      throw new FileNotFoundError('path', target)
     }
 
     spinner.start('Reading configuration and registry...')
@@ -141,7 +149,7 @@ export const handleExecuteScript = async (fileName: string) => {
 
     // validate signer
     if (!isSigner(signer)) {
-      throw new Error('Invalid signer')
+      throw new ValidateInputValueError('Invalid signer')
     }
     const accountIds = _.uniq(Object.values(signer))
     const notFoundAccounts = Object.values(signer).filter((accountId) => !checkIsAccountFound(accountId))
@@ -155,7 +163,7 @@ export const handleExecuteScript = async (fileName: string) => {
 
     // validate script file -> params, action
     if (!params || !Action) {
-      throw new Error('Invalid script file')
+      throw new ValidateInputValueError('Invalid script file')
     }
 
     // chain info
@@ -171,7 +179,7 @@ export const handleExecuteScript = async (fileName: string) => {
       const isAccountFound = checkIsAccountFound(accountId)
 
       if (!isAccountFound) {
-        throw new Error(`Account ${accountId} not found`)
+        throw new AccountNotFoundError(ERROR_MESSAGE_RECORD.ACCOUNT_NOT_FOUND(accountId))
       }
 
       await loadAccountFromPrompt(accountId)
@@ -254,9 +262,15 @@ export const handleExecuteScript = async (fileName: string) => {
     spinner.stop()
     process.exit(0)
   } catch (error) {
-    console.log('\n\n' + chalkError(error))
+    if (error instanceof Error) {
+      const projectConfig = config.getProjectConfig()
+      const customError = new ProtocolModuleLibError(projectConfig.protocol_module as PROTOCOL_MODULE, error.message)
+      // console.log('\n\n' + chalkError(error))
+      customErrorLog(customError)
+      // customErrorLog(error as Error)
 
-    spinner.stop()
-    process.exit(1)
+      spinner.stop()
+      process.exit(1)
+    }
   }
 }

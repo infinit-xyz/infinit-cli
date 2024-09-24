@@ -7,6 +7,7 @@ import { chainNamePrompt, protocolModulePrompt, selectDeployerPrompt } from '@co
 import { chalkError, chalkInfo, chalkSuccess } from '@constants/chalk'
 import { protocolModules } from '@constants/protocol-module'
 import type { CHAIN_ID } from '@enums/chain'
+import { ValidateInputValueError } from '@errors/validate'
 import { getAccountsList } from '@utils/account'
 import { getPackageManager } from '@utils/packageManager'
 import { compileProject, initializeCliProject } from '@utils/project'
@@ -23,9 +24,9 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
     const projectDirectory = cmdProjectDirectory ?? (await projectPathPrompt(defaultProjectDirectory))
 
     if (!projectDirectory) {
-      throw new Error('Project directory is required')
+      throw new ValidateInputValueError('Project directory is required')
     } else if (!fs.existsSync(projectDirectory)) {
-      throw new Error('Project directory does not exist')
+      throw new ValidateInputValueError('Project directory does not exist')
     }
 
     /**
@@ -35,9 +36,9 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
     const chainId = cmdChainId ?? (await chainNamePrompt())
 
     if (!chainId) {
-      throw new Error('Chain is required')
+      throw new ValidateInputValueError('Chain is required')
     } else if (!isSupportedChain(chainId)) {
-      throw new Error('Chain is not supported')
+      throw new ValidateInputValueError('Chain is not supported')
     }
 
     /**
@@ -52,7 +53,7 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
     }
 
     if (!protocolModule) {
-      throw new Error('Protocol module is not supported')
+      throw new ValidateInputValueError('Protocol module is not supported')
     }
 
     /**

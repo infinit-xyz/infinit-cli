@@ -8,6 +8,7 @@ import type { Address } from 'viem'
 
 import { FILE_NAMES } from '@constants'
 import { chalkError, chalkSuccess } from '@constants/chalk'
+import { FileNotFoundError, PermissionNotFoundError } from '@errors/fs'
 import type { FolderStructure } from '@utils/files.type'
 
 const { pathExistsSync } = fsExtra // prevent CLI failed to run due to fsExtra
@@ -31,7 +32,7 @@ export const ensureAccessibilityAtPath = (path: string, permissionMode?: number)
   try {
     fs.accessSync(path, permissionMode ?? fs.constants.F_OK)
   } catch (_) {
-    throw new Error('Permission required, run the command with sudo permission')
+    throw new PermissionNotFoundError()
   }
 }
 
@@ -154,7 +155,7 @@ export const writeFileSync = (filePath: string, data: string) => {
 export const readProjectRegistry = () => {
   const registryPath = path.resolve(process.cwd(), 'src', FILE_NAMES.REGISTRY)
   if (!fs.existsSync(registryPath)) {
-    throw new Error(`${FILE_NAMES.REGISTRY} not found`)
+    throw new FileNotFoundError('name', FILE_NAMES.REGISTRY)
   }
 
   const data = fs.readFileSync(registryPath, 'utf-8')

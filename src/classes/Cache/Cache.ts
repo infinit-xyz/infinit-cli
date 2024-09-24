@@ -5,6 +5,7 @@ import path from 'path'
 
 import { FILE_NAMES } from '@constants'
 import { chalkError } from '@constants/chalk'
+import { CacheNotFoundError } from '@errors/cache'
 import { isCwdRootProject, writeFileSync } from '@utils/files'
 import { jsonSafeParse, parseDateReviver, stringifyDateReplacer } from '@utils/json'
 import { type InfinitCliCache, type InfinitCliCacheTxAction, type InfinitCliCacheTxInfo, InfinitCliCacheZod, type ScriptHash, type TxHash } from './Cache.type'
@@ -152,7 +153,7 @@ class Cache {
    */
   public addTxCache(scriptHash: ScriptHash, info: Omit<InfinitCliCacheTxInfo, 'createdAt' | 'updatedAt'>) {
     if (!this.infinitCliCache.txs[scriptHash]) {
-      throw new Error(`ScriptHash: Script hash ${scriptHash} not found in cache`)
+      throw new CacheNotFoundError('script', scriptHash)
     }
 
     const now = new Date()
@@ -185,12 +186,12 @@ class Cache {
     const subActionIndex = this.infinitCliCache.txs[scriptHash].subActions.findIndex(({ txHashes }) => txHashes.some((tx) => tx.txHash === txHash))
 
     if (subActionIndex === -1) {
-      throw new Error(`SubActionIndex: Tx hash ${txHash} not found in cache`)
+      throw new CacheNotFoundError('tx', txHash)
     }
 
     const txIndex = this.infinitCliCache.txs[scriptHash].subActions[subActionIndex].txHashes.findIndex((tx) => tx.txHash === txHash)
     if (txIndex === -1) {
-      throw new Error(`Tx hash ${txHash} not found in cache`)
+      throw new CacheNotFoundError('tx', txHash)
     }
 
     const txHashInfo = this.infinitCliCache.txs[scriptHash].subActions[subActionIndex].txHashes[txIndex]
@@ -213,12 +214,12 @@ class Cache {
 
     const subActionIndex = this.infinitCliCache.txs[scriptHash].subActions.findIndex(({ txHashes }) => txHashes.some((tx) => tx.txHash === txHash))
     if (subActionIndex === -1) {
-      throw new Error(`SubActionIndex: Tx hash ${txHash} not found in cache`)
+      throw new CacheNotFoundError('tx', txHash)
     }
 
     const txIndex = this.infinitCliCache.txs[scriptHash].subActions[subActionIndex].txHashes.findIndex((tx) => tx.txHash === txHash)
     if (txIndex === -1) {
-      throw new Error(`Tx hash ${txHash} not found in cache`)
+      throw new CacheNotFoundError('tx', txHash)
     }
 
     this.infinitCliCache.txs[scriptHash].subActions[subActionIndex].txHashes.splice(txIndex, 1)
@@ -247,7 +248,7 @@ class Cache {
 
     const subActionIndex = this.infinitCliCache.txs[scriptHash].subActions.findIndex(({ subActionName }) => subActionName === subActionName)
     if (subActionIndex === -1) {
-      throw new Error(`SubActionIndex: Sub action ${subActionName} not found in cache`)
+      throw new CacheNotFoundError('subAction', subActionName)
     }
 
     this.infinitCliCache.txs[scriptHash].subActions.splice(subActionIndex, 1)
