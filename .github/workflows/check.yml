@@ -4,8 +4,8 @@ name: Check
 on:
   workflow_call:
     inputs:
-        skip-test:
-          description: 'Whether to skip setting up foundry and test or not. Default to false.'
+        skip-format-and-type:
+          description: 'Whether to skip step that format, lint, and check type or not. Default to false.'
           default: false
           type: boolean
           required: false
@@ -31,39 +31,36 @@ jobs:
       - name: Set up and install
         uses: ./.github/actions/setup-and-install
 
-      - name: Format and lint code
+      - if: ${{ inputs.skip-format-and-type == false }}
+        name: Format and lint code
         run: bun run format && bun run lint
 
-      - name: Build
-        run: bun run build
-
-      - name: Check code types
+      - if: ${{ inputs.skip-format-and-type == false }}
+        name: Check code types
         run: bun run typecheck
 
-      - if: ${{ inputs.skip-test == false }}
-        name: Setup nodejs for testing
+      - name: Setup nodejs for testing
         uses: actions/setup-node@v4
         with:
           node-version: '22'
       
-      - if: ${{ inputs.skip-test == false }}
-        name: Run test
+      - name: Run test
         run: bun run test:coverage
     
-      - if: ${{ inputs.skip-test == false }}
-        name: Upload results to Codecov
+      - name: Upload results to Codecov
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
-      # Auto commit new changes from format, lint, and make-badges
+      # Auto commit new changes from format and lint
       # ref: https://github.com/stefanzweifel/git-auto-commit-action
-      - name: Auto commit
+      - if: ${{ inputs.skip-format-and-type == false }}
+        name: Auto commit
         uses: stefanzweifel/git-auto-commit-action@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          commit_message: 'chore: format, lint, and coverage badges'
+          commit_message: 'chore: format and lint'
           commit_user_name: 'github-actions[bot]'
           commit_user_email: 'github-actions[bot]@users.noreply.github.com'
         
