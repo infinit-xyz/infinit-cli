@@ -6,6 +6,7 @@
   },
   "changesets": [
     "angry-bikes-train",
+    "cool-games-cry",
     "cuddly-carrots-repeat",
     "dirty-feet-laugh",
     "dull-dragons-mix",
@@ -13,8 +14,11 @@
     "eighty-foxes-pay",
     "fluffy-kiwis-learn",
     "heavy-beans-visit",
+    "moody-maps-report",
     "olive-turkeys-look",
     "serious-elephants-stare",
-    "smart-spiders-matter"
+    "smart-spiders-matter",
+    "tame-seas-compete",
+    "wise-frogs-sneeze"
   ]
 }
