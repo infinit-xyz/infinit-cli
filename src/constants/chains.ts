@@ -54,7 +54,7 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     chainId: CHAIN_ID.Sepolia,
     name: '[Testnet] Sepolia',
     shortName: 'Sepolia',
-    rpcList: ['https://endpoints.omniatech.io/v1/eth/sepolia/public', 'https://eth-sepolia.public.blastapi.io', 'https://rpc2.sepolia.org'],
+    rpcList: ['https://eth-sepolia.public.blastapi.io', 'https://endpoints.omniatech.io/v1/eth/sepolia/public', 'https://rpc2.sepolia.org'],
     nativeCurrency: {
       name: 'Ethereum',
       symbol: 'ETH',
