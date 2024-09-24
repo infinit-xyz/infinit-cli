@@ -70,6 +70,21 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
       instance: viemChains.sepolia,
     },
   },
+  [CHAIN_ID.Holesky]: {
+    chainId: CHAIN_ID.Holesky,
+    name: '[Testnet] Holesky',
+    shortName: 'Holesky',
+    rpcList: ['https://holesky.drpc.org', 'https://ethereum-holesky-rpc.publicnode.com', 'https://ethereum-holesky.blockpi.network/v1/rpc/public'],
+    nativeCurrency: {
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    viemChain: {
+      instance: viemChains.holesky,
+      name: 'holesky',
+    },
+  },
   // [CHAIN_ID.BSC]: {
   //   chainId: CHAIN_ID.BSC,
   //   name: 'BNB Smart Chain',
