@@ -1,6 +1,6 @@
-![Infinit Logo](infinit.png)
+![Infinit Logo](.github/infinit.png)
 
-# INFINIT CLI - Alpha
+# INFINIT CLI - Alpha Release
 
 ![NPM Version](https://img.shields.io/npm/v/@infinit-xyz/cli)
 [![codecov](https://codecov.io/gh/infinit-xyz/infinit-cli/graph/badge.svg?token=OKQQJS6U4K)](https://codecov.io/gh/infinit-xyz/infinit-cli)
@@ -67,6 +67,6 @@ We welcome contributions! If you are interested in contributing to the INFINIT C
 
 ## Support & Feedback
 
-If you encounter any issues or have feedback regarding the INFINIT CLI, feel free to open an issue on our GitHub repository or join the discussion with our community, [Discord](https://discord.com/invite/d24D5kjwj4) | [X](https://x.com/Infinit_Labs).
+If you encounter any issues or have feedback regarding the INFINIT CLI, feel free to open an issue on our GitHub repository or join the discussion with our community, [Discord](https://infinit.tech/discord) | [X](https://infinit.tech/x).
 
 
