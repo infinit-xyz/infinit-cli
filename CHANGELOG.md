@@ -1,5 +1,11 @@
 # @infinit-xyz/cli
 
+## 0.0.0-alpha.5
+
+### Patch Changes
+
+- [#26](https://github.com/infinit-xyz/infinit-cli/pull/26) [`73995b5`](https://github.com/infinit-xyz/infinit-cli/commit/73995b50f40fabfca7a7ac888eb3498af13120e0) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - handle prool error
+
 ## 0.0.0-alpha.4
 
 ### Patch Changes
