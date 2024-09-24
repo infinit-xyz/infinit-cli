@@ -2,10 +2,10 @@ import fs from 'fs'
 import path from 'path'
 
 import { DATA_FOLDER, DATA_SUBFOLDERS, HOME_DIRECTORY, config } from '@classes/Config/Config'
-import { type ChainInfo } from '@constants/chains'
+import { CHAINS, type ChainInfo } from '@constants/chains'
 import type { CHAIN_ID } from '@enums/chain'
 import { ensureAccessibilityAtPath } from '@utils/files'
-import * as viemChains from 'viem/chains'
+import { defineChain } from 'viem'
 
 /**
  *  create data folder structure
@@ -35,6 +35,20 @@ export const getProjectChainInfo = (): ChainInfo => {
     throw new Error(`Chain not found`)
   }
 
+  const chainInfo = CHAINS[_config.chain_info.network_id.toString() as CHAIN_ID]
+
+  const customInstance = defineChain({
+    id: _config.chain_info.network_id,
+    name: _config.chain_info.name,
+    nativeCurrency: _config.chain_info.native_currency,
+    rpcUrls: {
+      default: {
+        http: [_config.chain_info.rpc_url],
+      },
+    },
+  })
+  const viemInstance = chainInfo?.viemChain.instance ?? customInstance
+
   return {
     name: _config.chain_info.name,
     shortName: _config.chain_info.short_name,
@@ -42,8 +56,7 @@ export const getProjectChainInfo = (): ChainInfo => {
     nativeCurrency: _config.chain_info.native_currency,
     rpcList: [_config.chain_info.rpc_url],
     viemChain: {
-      name: _config.chain_info.viem.name as keyof typeof viemChains,
-      instance: viemChains[_config.chain_info.viem.name as keyof typeof viemChains],
+      instance: viemInstance,
     },
   }
 }

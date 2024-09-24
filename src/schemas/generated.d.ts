@@ -27,9 +27,6 @@ export interface InfinitConfigSchema {
       decimals: number
     }
     rpc_url: Url
-    viem: {
-      name?: string
-    }
   }
   allow_analytics?: boolean
 }

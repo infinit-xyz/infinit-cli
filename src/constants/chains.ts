@@ -17,7 +17,6 @@ export type ChainInfo = {
   rpcList: string[]
   viemChain: {
     instance: Chain
-    name: keyof typeof viemChains
   }
 }
 
@@ -41,7 +40,6 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     },
     viemChain: {
       instance: viemChains.mainnet,
-      name: 'mainnet',
     },
   },
   [CHAIN_ID.Mantle]: {
@@ -56,7 +54,6 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     },
     viemChain: {
       instance: viemChains.mantle,
-      name: 'mantle',
     },
   },
   [CHAIN_ID.Sepolia]: {
@@ -71,7 +68,6 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     },
     viemChain: {
       instance: viemChains.sepolia,
-      name: 'sepolia',
     },
   },
   // [CHAIN_ID.BSC]: {

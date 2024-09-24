@@ -13,7 +13,6 @@ const mockedChainInfo: InfinitConfigSchema['chain_info'] = {
     decimals: 18,
   },
   rpc_url: 'https://fakerpc.io/rpc',
-  viem: { name: 'mainnet' },
 }
 
 vi.mock('@classes/Config/Config', () => ({
@@ -30,7 +29,6 @@ describe('Config', () => {
       const chainInfo = getProjectChainInfo()
       expect(chainInfo.name).toBe('Ethereum')
       expect(chainInfo.chainId).toBe('1')
-      expect(chainInfo.viemChain.name).toBe('mainnet')
       expect(chainInfo.viemChain.instance.id).toBe(mainnet.id)
     })
   })

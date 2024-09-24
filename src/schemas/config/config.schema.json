@@ -62,18 +62,9 @@
         },
         "rpc_url": {
           "$ref": "#/definitions/Url"
-        },
-        "viem": {
-          "additionalProperties": false,
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string"
-            }
-          }
         }
       },
-      "required": ["name", "short_name", "network_id", "native_currency", "rpc_url", "viem"]
+      "required": ["name", "short_name", "network_id", "native_currency", "rpc_url"]
     },
     "allow_analytics": {
       "type": "boolean"
