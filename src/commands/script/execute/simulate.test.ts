@@ -5,6 +5,7 @@ import type { Ora } from 'ora'
 import { createServer } from 'prool'
 import { anvil } from 'prool/instances'
 import { type Address, type TestActions, createPublicClient, createTestClient } from 'viem'
+import { mainnet } from 'viem/chains'
 import type { Mock } from 'vitest'
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
@@ -54,12 +55,18 @@ describe('simulateExecute', () => {
       address1: '0x1234',
     }
     chainInfo = {
+      name: 'Ethereum Mainnet',
+      shortName: 'Ethereum',
       chainId: '1',
       rpcList: ['https://fakerpc.io/rpc'],
-      viemChainInstance: {},
+      viemChain: {
+        name: 'mainnet',
+        instance: mainnet,
+      },
       nativeCurrency: {
-        decimals: 18,
+        name: 'Ethereum',
         symbol: 'ETH',
+        decimals: 18,
       },
     } as unknown as ChainInfo
 

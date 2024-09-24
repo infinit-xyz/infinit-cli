@@ -55,7 +55,10 @@ describe('Command: accounts - generate', () => {
         symbol: 'ETH',
         decimals: 18,
       },
-      viemChainInstance: mainnet,
+      viemChain: {
+        instance: mainnet,
+        name: 'mainnet',
+      },
     }))
     vi.mocked(checkIsAccountFound).mockReturnValue(false)
     vi.mocked(ensureAccessibilityAtPath).mockImplementation(() => {})

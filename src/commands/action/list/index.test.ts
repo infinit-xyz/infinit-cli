@@ -13,7 +13,18 @@ describe('Action: list', () => {
     const projectConfigSpy = vi.spyOn(config, 'getProjectConfig').mockImplementation(() => ({
       project_name: 'test',
       protocol_module: mockedProtocol,
-      chain_info: { name: 'Arbitrum Sepolia', network_id: 421614, rpc_url: 'https://arbitrum-sepolia.blockpi.network/v1/rpc/public' },
+      chain_info: {
+        name: 'Arbitrum Sepolia',
+        short_name: 'ARB Sepolia',
+        network_id: 421614,
+        rpc_url: 'https://arbitrum-sepolia.blockpi.network/v1/rpc/public',
+        native_currency: {
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+        },
+        viem: { name: 'arbitrumSepolia' },
+      },
     }))
 
     const protocolDetails = protocolModules[mockedProtocol]
@@ -34,7 +45,18 @@ describe('Action: list', () => {
     vi.spyOn(config, 'getProjectConfig').mockImplementation(() => ({
       project_name: 'test',
       protocol_module: mockedProtocol as PROTOCOL_MODULE,
-      chain_info: { name: 'Arbitrum Sepolia', network_id: 421614, rpc_url: 'https://arbitrum-sepolia.blockpi.network/v1/rpc/public' },
+      chain_info: {
+        name: 'Arbitrum Sepolia',
+        short_name: 'ARB Sepolia',
+        network_id: 421614,
+        rpc_url: 'https://arbitrum-sepolia.blockpi.network/v1/rpc/public',
+        native_currency: {
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+        },
+        viem: { name: 'arbitrumSepolia' },
+      },
     }))
 
     // assert

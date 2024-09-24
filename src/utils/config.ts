@@ -5,6 +5,7 @@ import { DATA_FOLDER, DATA_SUBFOLDERS, HOME_DIRECTORY, config } from '@classes/C
 import { CHAINS, type ChainInfo } from '@constants/chains'
 import type { CHAIN_ID } from '@enums/chain'
 import { ensureAccessibilityAtPath } from '@utils/files'
+import * as viemChains from 'viem/chains'
 
 /**
  *  create data folder structure
@@ -40,7 +41,17 @@ export const getProjectChainInfo = (): ChainInfo => {
     throw new Error(`Chain ${_config.chain_info.network_id} is not supported`)
   }
 
-  return chainInfo
+  return {
+    name: _config.chain_info.name,
+    shortName: chainInfo.shortName,
+    chainId: _config.chain_info.network_id.toString() as CHAIN_ID,
+    nativeCurrency: _config.chain_info.native_currency,
+    rpcList: _config.chain_info.rpc_url ? [_config.chain_info.rpc_url] : chainInfo.rpcList,
+    viemChain: {
+      name: _config.chain_info.viem.name as keyof typeof viemChains,
+      instance: viemChains[_config.chain_info.viem.name as keyof typeof viemChains],
+    },
+  }
 }
 
 export const getProjectRpc = (): string => {

@@ -52,11 +52,11 @@ export const simulateExecute = async (
     // initialize test client and public client that connected to the fork chain.
     const testClient = createTestClient({
       mode: 'anvil',
-      chain: chainInfo.viemChainInstance,
+      chain: chainInfo.viemChain.instance,
       transport: http(FORK_CHAIN_URL, { timeout: 60_000 }),
     })
 
-    const publicClient = createPublicClient({ chain: chainInfo.viemChainInstance, transport: http(FORK_CHAIN_URL) })
+    const publicClient = createPublicClient({ chain: chainInfo.viemChain.instance, transport: http(FORK_CHAIN_URL) })
 
     // impersonate signer accounts and set balance to pay for gas fee.
     for (const signerAddress of signerAddresses) {

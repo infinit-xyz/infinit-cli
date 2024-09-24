@@ -19,8 +19,17 @@ export interface InfinitConfigSchema {
   protocol_module: string
   chain_info: {
     name: string
+    short_name: string
     network_id: number
+    native_currency: {
+      name: string
+      symbol: string
+      decimals: number
+    }
     rpc_url: Url
+    viem: {
+      name?: string
+    }
   }
   allow_analytics?: boolean
 }

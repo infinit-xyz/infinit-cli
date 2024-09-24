@@ -1,6 +1,6 @@
 import { CHAIN_ID } from '@enums/chain'
 import type { Chain } from 'viem'
-import { mainnet, mantle, sepolia } from 'viem/chains'
+import * as viemChains from 'viem/chains'
 
 type TokenDetail = {
   name: string
@@ -15,7 +15,10 @@ export type ChainInfo = {
   description?: string
   nativeCurrency: TokenDetail
   rpcList: string[]
-  viemChainInstance: Chain
+  viemChain: {
+    instance: Chain
+    name: keyof typeof viemChains
+  }
 }
 
 export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
@@ -36,7 +39,10 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
       symbol: 'ETH',
       decimals: 18,
     },
-    viemChainInstance: mainnet,
+    viemChain: {
+      instance: viemChains.mainnet,
+      name: 'mainnet',
+    },
   },
   [CHAIN_ID.Mantle]: {
     chainId: CHAIN_ID.Mantle,
@@ -48,7 +54,10 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
       symbol: 'MNT',
       decimals: 18,
     },
-    viemChainInstance: mantle,
+    viemChain: {
+      instance: viemChains.mantle,
+      name: 'mantle',
+    },
   },
   [CHAIN_ID.Sepolia]: {
     chainId: CHAIN_ID.Sepolia,
@@ -60,7 +69,10 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
       symbol: 'ETH',
       decimals: 18,
     },
-    viemChainInstance: sepolia,
+    viemChain: {
+      instance: viemChains.sepolia,
+      name: 'sepolia',
+    },
   },
   // [CHAIN_ID.BSC]: {
   //   chainId: CHAIN_ID.BSC,

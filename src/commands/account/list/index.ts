@@ -30,7 +30,7 @@ export const handleListAccounts = async (): Promise<CliTable3.Table> => {
   try {
     // Setup public client
     chainInfo = getProjectChainInfo()
-    publicClient = createPublicClient({ chain: chainInfo.viemChainInstance, transport: http(getProjectRpc()) })
+    publicClient = createPublicClient({ chain: chainInfo.viemChain.instance, transport: http(getProjectRpc()) })
   } catch (error) {
     console.warn('Warning: Cannot setup public client')
     console.warn(error)

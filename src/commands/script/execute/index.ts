@@ -225,8 +225,8 @@ export const handleExecuteScript = async (_fileName?: string) => {
       const privateKeyAccount = accounts.accounts[accountId]
       const signerAddress = privateKeyAccount.address
 
-      signerWalletRecord[signerKey] = new InfinitWallet(chainInfo.viemChainInstance, getProjectRpc(), privateKeyAccount)
-      simulationSignerWalletRecord[signerKey] = new InfinitWallet(chainInfo.viemChainInstance, FORK_CHAIN_URL, privateKeyAccount)
+      signerWalletRecord[signerKey] = new InfinitWallet(chainInfo.viemChain.instance, getProjectRpc(), privateKeyAccount)
+      simulationSignerWalletRecord[signerKey] = new InfinitWallet(chainInfo.viemChain.instance, FORK_CHAIN_URL, privateKeyAccount)
       signerAddresses.push(signerAddress)
     }
 
