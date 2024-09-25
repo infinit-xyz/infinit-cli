@@ -8,7 +8,7 @@ import ora, { type Ora } from 'ora'
 import path from 'path'
 import { match } from 'ts-pattern'
 import * as tsx from 'tsx/cjs/api'
-import type { Address } from 'viem'
+import { type Address } from 'viem'
 
 import { accounts, config } from '@classes'
 import { cache } from '@classes/Cache/Cache'
@@ -271,15 +271,22 @@ export const handleExecuteScript = async (_fileName?: string) => {
       return
     }
 
-    // setup the real action with real signer
-    const action = new Action({ params, signer: signerWalletRecord }) as BaseAction
-    const newRegistry = await action.run(registry, actionInfinitCache, executeActionCallbackHandler(spinner, fileName, projectConfig, signerAddresses))
+    try {
+      // setup the real action with real signer
+      const action = new Action({ params, signer: signerWalletRecord }) as BaseAction
+      const newRegistry = await action.run(registry, actionInfinitCache, executeActionCallbackHandler(spinner, fileName, projectConfig, signerAddresses))
+
+      // write new registry
+      fs.writeFileSync(registryPath, JSON.stringify(newRegistry, null, 2))
+    } catch (error) {
+      if (error instanceof Error) {
+        const customError = new ProtocolModuleLibError(projectConfig.protocol_module as PROTOCOL_MODULE, error.message)
+        customErrorLog(customError)
+      }
+    }
 
     // clear cache if all sub actions are finished
     cache.deleteTxActionCache(fileName)
-
-    // write new registry
-    fs.writeFileSync(registryPath, JSON.stringify(newRegistry, null, 2))
 
     // move file to archive
     const scriptFileHistoryDirectory = getScriptHistoryFileDirectory()
@@ -292,15 +299,8 @@ export const handleExecuteScript = async (_fileName?: string) => {
     spinner.stop()
     process.exit(0)
   } catch (error) {
-    if (error instanceof Error) {
-      const projectConfig = config.getProjectConfig()
-      const customError = new ProtocolModuleLibError(projectConfig.protocol_module as PROTOCOL_MODULE, error.message)
-      // console.log('\n\n' + chalkError(error))
-      customErrorLog(customError)
-      // customErrorLog(error as Error)
-
-      spinner.stop()
-      process.exit(1)
-    }
+    spinner.stop()
+    customErrorLog(error as Error)
+    process.exit(1)
   }
 }
