@@ -8,6 +8,7 @@ import { chainNamePrompt, protocolModulePrompt, selectDeployerPrompt } from '@co
 import { chalkError, chalkInfo, chalkSuccess, chalkWarning } from '@constants/chalk'
 import { protocolModules } from '@constants/protocol-module'
 import type { CHAIN_ID } from '@enums/chain'
+import { PACKAGE_EXECUTE } from '@enums/package-managers'
 import { getAccountsList } from '@utils/account'
 import { getPackageManager } from '@utils/packageManager'
 import { compileProject, initializeCliProject } from '@utils/project'
@@ -93,6 +94,7 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
      */
 
     const packageManager = getPackageManager(projectDirectory)
+    const packageExecute = PACKAGE_EXECUTE[packageManager]
 
     /**
      * Initialize CLI Project
@@ -103,8 +105,9 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
     try {
       await compileProject(projectDirectory, protocolModule)
     } catch {
-      console.log(
-        chalkWarning('⚠️ Failed to compile the project. Please run ' + chalkInfo('`bunx infinit compile`') + 'to compile the project after initializing.'),
+      const compileCmd = `${packageExecute} infinit project compile`
+      console.warn(
+        chalkWarning('⚠️ Failed to compile the project. Please run ' + chalkInfo('`' + compileCmd + '`') + ' to compile the project after initializing.'),
       )
     }
 
