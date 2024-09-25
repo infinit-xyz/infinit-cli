@@ -10,6 +10,7 @@ import { protocolModules } from '@constants/protocol-module'
 import type { CHAIN_ID } from '@enums/chain'
 import { PACKAGE_EXECUTE } from '@enums/package-managers'
 import { getAccountsList } from '@utils/account'
+import { isCwdRootProject } from '@utils/files'
 import { getPackageManager } from '@utils/packageManager'
 import { compileProject, initializeCliProject } from '@utils/project'
 import { getProtocolModule } from '@utils/protocol-module'
@@ -28,6 +29,12 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
       throw new Error('Project directory is required')
     } else if (!fs.existsSync(projectDirectory)) {
       throw new Error('Project directory does not exist')
+    }
+
+    const { isRunningFromRootProject } = isCwdRootProject(projectDirectory)
+
+    if (isRunningFromRootProject) {
+      throw new Error('INFINIT Project already exists in that directory. Please try another directory.')
     }
 
     /**
