@@ -301,7 +301,7 @@ export const handleExecuteScript = async (_fileName?: string) => {
     process.exit(0)
   } catch (error) {
     spinner.stop()
-    customErrorLog(error as Error)
+    console.error(customErrorLog(error as Error))
     process.exit(1)
   }
 }
