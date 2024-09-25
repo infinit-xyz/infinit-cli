@@ -9,9 +9,7 @@ import { isCwdRootProject } from '@utils/files/isCwdRootProject'
  * If not, exit the process with code 1
  */
 export const ensureCwdRootProject = () => {
-  console.log(1)
   const { currentCwd, isRunningFromRootProject } = isCwdRootProject()
-  console.log(2)
 
   if (!isRunningFromRootProject) {
     console.error(chalkError(`Can't find ${chalk.bold(FILE_NAMES.CONFIG)}`))
