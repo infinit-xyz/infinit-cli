@@ -5,3 +5,5 @@ export const chalkError = chalk.red
 export const chalkInfo = chalk.cyan
 
 export const chalkSuccess = chalk.green
+
+export const chalkWarning = chalk.yellow
