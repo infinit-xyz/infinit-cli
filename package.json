@@ -1,6 +1,14 @@
 {
   "name": "@infinit-xyz/cli",
   "version": "0.0.0-alpha.7",
+  "homepage": "https://infinit.tech",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/infinit-xyz/infinit-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/infinit-xyz/infinit-cli/issues"
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -9,11 +17,7 @@
   "bin": {
     "infinit": "bin/cli.js"
   },
-  "files": [
-    "/bin",
-    "/dist",
-    ".bun.lockb"
-  ],
+  "files": ["/bin", "/dist", ".bun.lockb"],
   "scripts": {
     "dev": "bun scripts/dev.ts",
     "build": "bun run clean:bin && bun run build:script",
