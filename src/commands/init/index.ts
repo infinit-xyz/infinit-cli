@@ -123,7 +123,7 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
     if (error instanceof Error) {
       console.error(chalkError(error.message))
     } else {
-      console.error(chalkError(error))
+      console.error(error)
     }
   }
 }

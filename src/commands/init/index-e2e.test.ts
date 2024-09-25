@@ -57,7 +57,7 @@ describe('Command: init', () => {
         .setCwd(cwdPath)
         .invoke(['init', '--directory', 'wrong', '--chain', 'Ethereum', '--module', 'aave_v3', '--ignore-deployer', '--ignore-analytics'])
 
-      errorLogs.should.contain('Error: Project directory does not exist')
+      errorLogs.should.contain('Project directory does not exist')
       expect(exitCode).toBe(0)
     })
 
@@ -66,7 +66,7 @@ describe('Command: init', () => {
         .setCwd(cwdPath)
         .invoke(['init', '--directory', newProjectPath, '--chain', 'Ethereum', '--module', 'abcd', '--ignore-deployer', '--ignore-analytics'])
 
-      errorLogs.should.contain('Error: Protocol module is not supported')
+      errorLogs.should.contain('Protocol module is not supported')
       expect(exitCode).toBe(0)
     })
   })
