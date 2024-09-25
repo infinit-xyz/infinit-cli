@@ -3,7 +3,7 @@ import { chalkError } from '@constants/chalk'
 import { isCwdRootProject } from '@utils/files/isCwdRootProject'
 import chalk from 'chalk'
 import { describe, expect, test, vi } from 'vitest'
-import { ensureCwdRootProject } from './ensureCwdRootProject' // Adjust the import path as necessary
+import { ensureCwdRootProject } from './ensureCwdRootProject'
 
 vi.mock('@utils/files/isCwdRootProject')
 

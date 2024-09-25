@@ -2,7 +2,7 @@ import type { FolderStructure } from '@utils/files/files.type'
 import fs from 'fs'
 import type { Dirent } from 'fs-extra'
 import { describe, expect, test, vi } from 'vitest'
-import { checkFilesExist } from './checkFilesExist' // Adjust the import path as necessary
+import { checkFilesExist } from './checkFilesExist'
 
 vi.mock('fs')
 vi.mock('@constants/chalk', () => ({

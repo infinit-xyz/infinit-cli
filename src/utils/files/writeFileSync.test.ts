@@ -2,7 +2,7 @@ import fs from 'fs'
 import fsExtra from 'fs-extra'
 import path from 'path'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
-import { writeFileSync } from './writeFileSync' // Adjust the import path as necessary
+import { writeFileSync } from './writeFileSync'
 
 vi.mock('fs')
 vi.mock('fs-extra')
