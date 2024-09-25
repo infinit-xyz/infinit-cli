@@ -19,9 +19,9 @@ import path from 'path'
 import { pipeInto } from 'ts-functional-pipe'
 
 export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
-  const defaultProjectDirectory = path.resolve()
-
   try {
+    const defaultProjectDirectory = path.resolve()
+
     const cmdProjectDirectory = pipeInto(cmdInput.directory, trim)
     const projectDirectory = cmdProjectDirectory ?? (await projectPathPrompt(defaultProjectDirectory))
 
@@ -50,7 +50,7 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
     }
 
     /**
-     * Protocol Template
+     * Protocol Module
      */
     const inputModule = cmdInput.module
     let protocolModule = getProtocolModule(inputModule)
@@ -67,7 +67,7 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
     /**
      * Deployer Account
      */
-    let deployerId: string | undefined
+    let deployerId: string | undefined = undefined
 
     if (!cmdInput.ignoreDeployer) {
       const { accountFiles } = getAccountsList()
@@ -120,6 +120,10 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
 
     console.log(chalkSuccess(`🔥 Successfully initialized a project, go to ${chalkInfo(`src/scripts/${generatedScriptFile}`)} to start building.`))
   } catch (error) {
-    console.error(chalkError(error))
+    if (error instanceof Error) {
+      console.error(chalkError(error.message))
+    } else {
+      console.error(chalkError(error))
+    }
   }
 }
