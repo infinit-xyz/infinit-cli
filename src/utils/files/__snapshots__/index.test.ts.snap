@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`@utils/files > should match snapshot 1`] = `
+{
+  "checkFilesExist": [Function],
+  "ensureAccessibilityAtPath": [Function],
+  "ensureCwdRootProject": [Function],
+  "getFilesCurrentDir": [Function],
+  "isCwdRootProject": [Function],
+  "readProjectRegistry": [Function],
+  "writeFileSync": [Function],
+}
+`;
