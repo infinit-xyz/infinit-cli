@@ -36,6 +36,6 @@ export const handleDeleteAccount = async (accountId: string) => {
       console.error(chalkError('User denied the confirmation to delete the account.'))
     }
   } catch (error) {
-    customErrorLog(error as Error)
+    console.error(customErrorLog(error as Error))
   }
 }

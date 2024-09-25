@@ -1,5 +1,5 @@
 import { chalkError } from '@constants/chalk'
 
 export const customErrorLog = (error: Error) => {
-  console.error(chalkError(error.message))
+  return chalkError(`${error.name}: ${error.message}`)
 }

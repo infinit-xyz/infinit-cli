@@ -26,7 +26,7 @@ export const loadAccountFromPrompt = async (accountId: string, currentAttempt: n
       console.error(chalkError(`Failed to load account ${accountId} after ${maxAttempts} incorrect password attempts`))
       return
     } else {
-      customErrorLog(error as Error)
+      console.error(customErrorLog(error as Error))
     }
 
     // if invalid password -> retry

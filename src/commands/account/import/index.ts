@@ -49,6 +49,6 @@ export const handleImportAccount = async (accountId?: string) => {
       sendOffChainEvent({ action: 'account import', payload: { walletAddress } })
     }
   } catch (error) {
-    customErrorLog(error as Error)
+    console.error(customErrorLog(error as Error))
   }
 }

@@ -281,7 +281,8 @@ export const handleExecuteScript = async (_fileName?: string) => {
     } catch (error) {
       if (error instanceof Error) {
         const customError = new ProtocolModuleLibError(projectConfig.protocol_module as PROTOCOL_MODULE, error.message)
-        customErrorLog(customError)
+
+        console.error(customErrorLog(customError))
       }
     }
 

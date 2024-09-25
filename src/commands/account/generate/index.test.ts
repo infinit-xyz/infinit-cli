@@ -1,7 +1,7 @@
 import { MOCK_FILENAME, MOCK_PASSWORD } from '@commands/account/__mock__'
 import { handleGenerateAccount } from '@commands/account/generate'
 import { notDuplicatedAccountIdPrompt, passwordWithConfirmPrompt } from '@commands/account/prompt'
-import { chalkError, chalkInfo } from '@constants/chalk'
+import { chalkInfo } from '@constants/chalk'
 import { checkIsAccountFound } from '@utils/account'
 import { ensureAccessibilityAtPath } from '@utils/files'
 import { beforeAll, describe, expect, test, vi } from 'vitest'
@@ -11,6 +11,7 @@ import type { KeystoreV3 } from '@classes/Accounts/Accounts.type'
 import { mockProjectConfig } from '@classes/Cache/__mocks__/constants'
 import { CHAIN_ID } from '@enums/chain'
 import { PermissionNotFoundError } from '@errors/fs'
+import { customErrorLog } from '@errors/log'
 import { Wallet } from '@ethereumjs/wallet'
 import { getProjectChainInfo } from '@utils/config'
 import { hexToBytes } from 'viem'
@@ -40,7 +41,7 @@ describe('Command: accounts - generate', () => {
 
     // assert
     const permissionNotFoundError = new PermissionNotFoundError()
-    expect(consoleErrorSpy).toHaveBeenCalledWith(chalkError(permissionNotFoundError.message))
+    expect(consoleErrorSpy).toHaveBeenCalledWith(customErrorLog(permissionNotFoundError))
   })
 
   test('should generate the account successfully', async () => {

@@ -40,7 +40,7 @@ const getProjectName = async ({ currentDirectoryFiles, currentProjectName }: Get
 
     return projectName
   } catch (error) {
-    customErrorLog(error as Error)
+    console.error(customErrorLog(error as Error))
 
     // retry
     const newProjectName = await projectNamePrompt()
@@ -181,6 +181,6 @@ export const handleProjectCreate = async (cmdInput: CreateInput) => {
     console.log(`${chalkSuccess('Create project successfully!')} You can go to the project with the following command.\n`)
     console.log(`cd ${chalkInfo(projectDirectory)}`)
   } catch (error) {
-    customErrorLog(error as Error)
+    console.error(customErrorLog(error as Error))
   }
 }

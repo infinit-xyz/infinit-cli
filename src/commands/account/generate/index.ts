@@ -53,6 +53,6 @@ export const handleGenerateAccount = async (accountId?: string) => {
       sendOffChainEvent({ action: 'account generate', payload: { walletAddress } })
     }
   } catch (error) {
-    customErrorLog(error as Error)
+    console.error(customErrorLog(error as Error))
   }
 }

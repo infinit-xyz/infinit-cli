@@ -5,8 +5,9 @@ import { MOCK_PASSWORD, MOCK_PRIVATE_KEY, MOCK_WALLET_ADDRESS } from '@commands/
 import { handleImportAccount } from '@commands/account/import'
 import { notDuplicatedAccountIdPrompt, passwordWithConfirmPrompt, privateKeyInputPrompt } from '@commands/account/prompt'
 import { CHAINS } from '@constants/chains'
-import { chalkError, chalkInfo } from '@constants/chalk'
+import { chalkInfo } from '@constants/chalk'
 import { PermissionNotFoundError } from '@errors/fs'
+import { customErrorLog } from '@errors/log'
 import { checkIsAccountFound } from '@utils/account'
 import { createDataFolder, getProjectChainInfo } from '@utils/config'
 import { ensureAccessibilityAtPath } from '@utils/files'
@@ -42,7 +43,7 @@ describe('Command: accounts - import', () => {
 
     // assert
     const expectedError = new PermissionNotFoundError()
-    expect(consoleSpy).toHaveBeenCalledWith(chalkError(expectedError.message))
+    expect(consoleSpy).toHaveBeenCalledWith(customErrorLog(expectedError))
   })
 
   test('should import an account successfully', async () => {

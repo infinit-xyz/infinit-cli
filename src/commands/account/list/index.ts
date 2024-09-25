@@ -71,7 +71,7 @@ export const handleListAccounts = async (): Promise<CliTable3.Table> => {
     } catch (_error) {
       // should not happen
       const customError = new AccountNotFoundError(`Something went wrong while reading the account file for account ID: ${accountId}`)
-      customErrorLog(customError)
+      console.error(customErrorLog(customError))
     }
   }
 

@@ -1,9 +1,10 @@
 import { accounts } from '@classes'
 import { MOCK_FILENAME, MOCK_PASSWORD, MOCK_PRIVATE_KEY, MOCK_WALLET_ADDRESS } from '@commands/account/__mock__'
 import { handleExportAccount } from '@commands/account/export'
-import { chalkError, chalkInfo } from '@constants/chalk'
+import { chalkInfo } from '@constants/chalk'
 import { AccountValidateError } from '@errors/account'
 import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
+import { customErrorLog } from '@errors/log'
 import { Wallet } from '@ethereumjs/wallet'
 import { checkIsAccountFound } from '@utils/account'
 import { describe, expect, test, vi } from 'vitest'
@@ -24,7 +25,7 @@ describe('Command: accounts - export', () => {
     const accountNotFoundMsg = ERROR_MESSAGE_RECORD.ACCOUNT_NOT_FOUND(accountId)
     const expectedError = new AccountValidateError(accountNotFoundMsg)
 
-    expect(consoleSpy).toHaveBeenCalledWith(chalkError(expectedError.message))
+    expect(consoleSpy).toHaveBeenCalledWith(customErrorLog(expectedError))
   })
 
   test('should export account successfully', async () => {

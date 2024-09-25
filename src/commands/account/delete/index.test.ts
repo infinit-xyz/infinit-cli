@@ -6,6 +6,7 @@ import { chalkError, chalkInfo } from '@constants/chalk'
 import { AccountValidateError } from '@errors/account'
 import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
 import { PermissionNotFoundError } from '@errors/fs'
+import { customErrorLog } from '@errors/log'
 import { Wallet } from '@ethereumjs/wallet'
 import { confirm } from '@inquirer/prompts'
 import { checkIsAccountFound } from '@utils/account'
@@ -26,7 +27,7 @@ describe('Command: accounts - delete', () => {
 
     const accountNotFoundMsg = ERROR_MESSAGE_RECORD.ACCOUNT_NOT_FOUND(MOCK_FILENAME)
     const expectedError = new AccountValidateError(accountNotFoundMsg)
-    expect(consoleSpy).toHaveBeenCalledWith(chalkError(expectedError.message))
+    expect(consoleSpy).toHaveBeenCalledWith(customErrorLog(expectedError))
   })
 
   test('should get error with permission denied', async () => {
@@ -42,7 +43,7 @@ describe('Command: accounts - delete', () => {
 
     // assert
     const expectedError = new PermissionNotFoundError()
-    expect(consoleSpy).toHaveBeenCalledWith(chalkError(expectedError.message))
+    expect(consoleSpy).toHaveBeenCalledWith(customErrorLog(expectedError))
   })
 
   test('should get error user denied to delete the account', async () => {

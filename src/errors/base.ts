@@ -30,7 +30,12 @@ export class BaseError extends Error {
     })()
 
     const nodeVersion = process.versions.node
-    const message = [shortMessage, ...(details ? [`Details: ${details}`] : []), `${cliName}: ${cliVersion}`, `Node: ${nodeVersion}`].join('\n')
+    const message = [
+      shortMessage || 'An error occurred.',
+      ...(details ? [`Details: ${details}`] : []),
+      `${cliName}: ${cliVersion}`,
+      `Node: ${nodeVersion}`,
+    ].join('\n')
 
     super(message, args.cause ? { cause: args.cause } : undefined)
 

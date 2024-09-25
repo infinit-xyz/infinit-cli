@@ -21,6 +21,6 @@ export const handleExportAccount = async (accountId: string) => {
     console.log(`Wallet address: ${chalkInfo(wallet.getAddressString())}`)
     console.log(`Private key: ${chalkInfo(wallet.getPrivateKeyString())}`)
   } catch (error) {
-    customErrorLog(error as Error)
+    console.error(customErrorLog(error as Error))
   }
 }

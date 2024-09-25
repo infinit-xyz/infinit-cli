@@ -106,6 +106,6 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
 
     console.log(chalkSuccess(`🔥 Successfully initialized a project, go to ${chalkInfo(`src/scripts/${generatedScriptFile}`)} to start building.`))
   } catch (error) {
-    customErrorLog(error as Error)
+    console.error(customErrorLog(error as Error))
   }
 }
