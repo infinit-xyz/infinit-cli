@@ -2,7 +2,7 @@ import { FILE_NAMES } from '@constants'
 import { chalkError } from '@constants/chalk'
 import { isCwdRootProject } from '@utils/files/isCwdRootProject'
 import chalk from 'chalk'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, test, vi } from 'vitest'
 import { ensureCwdRootProject } from './ensureCwdRootProject' // Adjust the import path as necessary
 
 vi.mock('@utils/files/isCwdRootProject')
@@ -14,7 +14,7 @@ describe('ensureCwdRootProject', () => {
 
   const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
 
-  it('should not exit if running from root project', () => {
+  test('should not exit if running from root project', () => {
     vi.mocked(isCwdRootProject).mockReturnValue({
       currentCwd: '/current/project/path',
       isRunningFromRootProject: true,
@@ -24,7 +24,7 @@ describe('ensureCwdRootProject', () => {
     expect(mockExit).not.toHaveBeenCalled()
   })
 
-  it('should exit if not running from root project', () => {
+  test('should exit if not running from root project', () => {
     vi.mocked(isCwdRootProject).mockReturnValue({
       currentCwd: '/current/project/path',
       isRunningFromRootProject: false,
