@@ -6,9 +6,9 @@ consistent workflow.
 ## Table of Contents
 
 1. [Branch Naming Convention](#branch-naming-convention)
-2. [Commit Message Guidelines](#commit-message-guidelines)
+2. [Commit Message Guidelines](#pr-types)
 3. [Pull Request Checklist](#pull-request-checklist)
-4. Versioning
+4. [Versioning](#versioning)
 5. [Code of Conduct](#code-of-conduct)
 
 ## Branch Naming Convention
