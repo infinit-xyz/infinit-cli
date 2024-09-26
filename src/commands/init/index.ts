@@ -109,6 +109,10 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
 
     const { generatedScriptFile } = await initializeCliProject(projectDirectory, protocolModule, chainId, packageManager, deployerId, allowAnalytics)
 
+    /**
+     * Compile contracts
+     */
+
     try {
       await compileProject(projectDirectory, protocolModule)
     } catch {
@@ -117,6 +121,10 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
         chalkWarning('⚠️ Failed to compile the project. Please run ' + chalkInfo('`' + compileCmd + '`') + ' to compile the project after initializing.'),
       )
     }
+
+    /**
+     * Success message
+     */
 
     console.log(chalkSuccess(`🔥 Successfully initialized a project, go to ${chalkInfo(`src/scripts/${generatedScriptFile}`)} to start building.`))
   } catch (error) {

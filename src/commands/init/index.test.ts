@@ -12,7 +12,7 @@ import { confirm } from '@inquirer/prompts'
 import { getAccountsList } from '@utils/account'
 import { isSupportedChain } from '@utils/chain'
 import { getPackageManager } from '@utils/packageManager'
-import { initializeCliProject } from '@utils/project'
+import { compileProject, initializeCliProject } from '@utils/project'
 import { type MockInstance, afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import { handleInitializeCli } from './index'
 
@@ -26,6 +26,7 @@ vi.mock('@constants/chalk', () => ({
   chalkError: (str: string) => str,
   chalkInfo: (str: string) => str,
   chalkSuccess: (str: string) => str,
+  chalkWarning: (str: string) => str,
 }))
 vi.mock('@utils/files', () => ({
   isCwdRootProject: vi.fn(),
@@ -66,6 +67,10 @@ describe('handleInitializeCli', () => {
     deployer: 'deployer-1',
   } satisfies InitProjectInput
 
+  let consoleLogSpy: MockInstance<typeof console.log>
+  let consoleErrorSpy: MockInstance<typeof console.error>
+  let consoleWarnSpy: MockInstance<typeof console.error>
+
   const mockIsProjectDirectoryExist = (isExist: boolean) => {
     vi.mocked(fs.existsSync).mockReturnValue(isExist)
   }
@@ -82,14 +87,12 @@ describe('handleInitializeCli', () => {
     vi.mocked(confirm).mockResolvedValue(value)
   }
 
-  let consoleLogSpy: MockInstance<typeof console.log>
-  let consoleErrorSpy: MockInstance<typeof console.error>
-
   beforeEach(() => {
     vi.mocked(path.resolve).mockReturnValue(defaultProjectDirectory)
     vi.mocked(getPackageManager).mockReturnValue(PACKAGE_MANAGER.bun)
     consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
   })
 
   afterEach(() => {
@@ -326,6 +329,37 @@ describe('handleInitializeCli', () => {
       await expect(handleInitializeCli(cmdInput)).resolves.toBeUndefined()
 
       expect(initializeCliProject).toHaveBeenCalledWith('/mock/project/directory', 'aave-v3', '1', 'XXX', undefined, false)
+    })
+  })
+
+  describe('compile project', () => {
+    beforeEach(() => {
+      mockIsProjectDirectoryExist(true)
+      mockIsRunningInExistingProject(false)
+      mockIsSupportedChain(true)
+      mockGetAccountsList([])
+      mockConfirmAnalytics(false)
+    })
+
+    test('should compile project successfully', async () => {
+      vi.mocked(compileProject).mockResolvedValue()
+
+      await expect(handleInitializeCli(cmdInput)).resolves.toBeUndefined()
+
+      expect(consoleLogSpy).toHaveBeenLastCalledWith('🔥 Successfully initialized a project, go to src/scripts/action1.script.ts to start building.')
+      expect(consoleWarnSpy).not.toHaveBeenCalled()
+    })
+
+    test('should show warning if failed to compile project', async () => {
+      vi.mocked(compileProject).mockRejectedValueOnce(new Error('Failed to compile project'))
+
+      await expect(handleInitializeCli(cmdInput)).resolves.toBeUndefined()
+
+      expect(consoleWarnSpy).toHaveBeenLastCalledWith(
+        '⚠️ Failed to compile the project. Please run `bunx infinit project compile` to compile the project after initializing.',
+      )
+      expect(consoleLogSpy).toHaveBeenLastCalledWith('🔥 Successfully initialized a project, go to src/scripts/action1.script.ts to start building.')
+      expect(consoleErrorSpy).not.toHaveBeenCalled()
     })
   })
 })
