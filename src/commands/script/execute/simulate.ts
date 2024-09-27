@@ -56,7 +56,8 @@ export const simulateExecute = async (
       transport: http(FORK_CHAIN_URL, { timeout: 60_000 }),
     })
 
-    const publicClient = createPublicClient({ chain: chainInfo.viemChain.instance, transport: http(FORK_CHAIN_URL) })
+    const forkClient = createPublicClient({ chain: chainInfo.viemChain.instance, transport: http(FORK_CHAIN_URL) })
+    const publicClient = createPublicClient({ chain: chainInfo.viemChain.instance, transport: http(getProjectRpc()) })
 
     // impersonate signer accounts and set balance to pay for gas fee.
     for (const signerAddress of signerAddresses) {
@@ -76,7 +77,7 @@ export const simulateExecute = async (
         .with('txConfirmed', async () => {
           const parsedValue = value as CallbackParams['txConfirmed']
 
-          const txReceipt = await publicClient.getTransactionReceipt({ hash: parsedValue.txHash })
+          const txReceipt = await forkClient.getTransactionReceipt({ hash: parsedValue.txHash })
 
           totalGasUsed += txReceipt.gasUsed
           ++txCount
