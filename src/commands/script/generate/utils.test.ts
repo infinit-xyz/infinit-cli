@@ -35,11 +35,11 @@ describe('generate/utils.ts', () => {
 
   describe('getScriptHistoryFileDirectory', () => {
     test('should get correct script history file directory', async () => {
-      expect(getScriptHistoryFileDirectory()).toBe(`${mockProcessCwd}/src/scripts-history`)
+      expect(getScriptHistoryFileDirectory()).toBe(`${mockProcessCwd}/scripts-history`)
     })
 
     test('should get correct script history file directory with custom project root', async () => {
-      expect(getScriptHistoryFileDirectory('FAKE_ROOT')).toBe(`FAKE_ROOT/src/scripts-history`)
+      expect(getScriptHistoryFileDirectory('FAKE_ROOT')).toBe(`FAKE_ROOT/scripts-history`)
     })
   })
 
