@@ -60,7 +60,7 @@
     "ts-functional-pipe": "^3.1.2",
     "ts-pattern": "^5.3.1",
     "tsx": "^4.16.2",
-    "viem": "2.21.9",
+    "viem": "2.21.15",
     "zod": "^3.23.8"
   },
   "devDependencies": {
