@@ -1,5 +1,11 @@
 # @infinit-xyz/cli
 
+## 0.0.0-alpha.9
+
+### Minor Changes
+
+- [#45](https://github.com/infinit-xyz/infinit-cli/pull/45) [`c678d30`](https://github.com/infinit-xyz/infinit-cli/commit/c678d3088671fdb65c164b8382a6969a9cf14009) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - Support `BNB Chain`
+
 ## 0.0.0-alpha.8
 
 ### Patch Changes
