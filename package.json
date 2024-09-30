@@ -43,7 +43,7 @@
     "@ethereumjs/wallet": "2.0.4",
     "@infinit-xyz/aave-v3": "0.0.0-alpha.10",
     "@infinit-xyz/core": "0.0.0-alpha.7",
-    "@infinit-xyz/token": "0.0.0-alpha.9",
+    "@infinit-xyz/token": "0.0.0-alpha.10",
     "@infinit-xyz/uniswap-v3": "0.0.0-alpha.10",
     "@inquirer/prompts": "^6.0.1",
     "axios": "^1.7.7",
