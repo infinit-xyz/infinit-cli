@@ -1,5 +1,27 @@
 # @infinit-xyz/cli
 
+## 0.0.0-alpha.9
+
+### Minor Changes
+
+- [#45](https://github.com/infinit-xyz/infinit-cli/pull/45) [`c678d30`](https://github.com/infinit-xyz/infinit-cli/commit/c678d3088671fdb65c164b8382a6969a9cf14009) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - Support `BNB Chain`
+
+## 0.0.0-alpha.8
+
+### Patch Changes
+
+- [#39](https://github.com/infinit-xyz/infinit-cli/pull/39) [`7b9a209`](https://github.com/infinit-xyz/infinit-cli/commit/7b9a209428e435ca68100ae40736c4c34d535557) Thanks [@Pitchanai](https://github.com/Pitchanai)! - Add the warning when the compile fails during initialization
+
+- [#44](https://github.com/infinit-xyz/infinit-cli/pull/44) [`9a06dc7`](https://github.com/infinit-xyz/infinit-cli/commit/9a06dc77748fa72e6a42fc3609ddd877238049f1) Thanks [@mintcnn](https://github.com/mintcnn)! - Fix scripts history path
+
+- [#34](https://github.com/infinit-xyz/infinit-cli/pull/34) [`fea0987`](https://github.com/infinit-xyz/infinit-cli/commit/fea098736f6a8aababa309c7f5ab6327895efddf) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - update packagejson
+
+## 0.0.0-alpha.7
+
+### Patch Changes
+
+- [`c4798fb`](https://github.com/infinit-xyz/infinit-cli/commit/c4798fb6f61ae29f149368ebc396455fe1c8ed38) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - update image in readme
+
 ## 0.0.0-alpha.6
 
 ### Patch Changes

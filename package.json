@@ -1,6 +1,14 @@
 {
   "name": "@infinit-xyz/cli",
-  "version": "0.0.0-alpha.6",
+  "version": "0.0.0-alpha.9",
+  "homepage": "https://infinit.tech",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/infinit-xyz/infinit-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/infinit-xyz/infinit-cli/issues"
+  },
   "publishConfig": {
     "access": "public"
   },

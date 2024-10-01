@@ -1,8 +1,8 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, test, vi } from 'vitest'
 import { jsonSafeParse } from './json'
 
 describe('jsonSafeParse', () => {
-  it('should parse a valid JSON string', () => {
+  test('should parse a valid JSON string', () => {
     const jsonString = '{"name": "John", "age": 30}'
     const expected = { name: 'John', age: 30 }
     const result = jsonSafeParse(jsonString)
@@ -12,7 +12,7 @@ describe('jsonSafeParse', () => {
     expect(result.parsedJson).toEqual(JSON.parse(jsonString))
   })
 
-  it('should return false for an invalid JSON string', () => {
+  test('should return false for an invalid JSON string', () => {
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
 
     const jsonString = '{"name": "John", "age": 30'
@@ -22,7 +22,7 @@ describe('jsonSafeParse', () => {
     expect(consoleErrorSpy).toHaveBeenCalledOnce()
   })
 
-  it('should parse a valid JSON string with a reviver function', () => {
+  test('should parse a valid JSON string with a reviver function', () => {
     const jsonString = '{"name": "John", "age": 30}'
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const reviver = (key: string, value: any) => {

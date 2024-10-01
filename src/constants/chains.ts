@@ -84,26 +84,28 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
       instance: viemChains.holesky,
     },
   },
-  // [CHAIN_ID.BSC]: {
-  //   chainId: CHAIN_ID.BSC,
-  //   name: 'BNB Smart Chain',
-  //   shortName: 'BSC',
-  //   rpcList: [
-  //     'https://1rpc.io/bnb',
-  //     'https://binance.llamarpc.com',
-  //     'https://rpc.ankr.com/bsc',
-  //     'https://bsc-dataseed1.bnbchain.org',
-  //     'https://bsc-dataseed2.bnbchain.org',
-  //     'https://bsc-dataseed3.bnbchain.org',
-  //     'https://bsc-dataseed4.bnbchain.org',
-  //   ],
-  //   nativeCurrency: {
-  //     name: 'Binance Coin',
-  //     symbol: 'BNB',
-  //     decimals: 18,
-  //   },
-  //   viemChainInstance: bsc,
-  // },
+  [CHAIN_ID.BNB_Chain]: {
+    chainId: CHAIN_ID.BNB_Chain,
+    name: 'BNB Chain',
+    shortName: 'BSC',
+    rpcList: [
+      'https://rpc.ankr.com/bsc',
+      'https://1rpc.io/bnb',
+      'https://binance.llamarpc.com',
+      'https://bsc-dataseed1.bnbchain.org',
+      'https://bsc-dataseed2.bnbchain.org',
+      'https://bsc-dataseed3.bnbchain.org',
+      'https://bsc-dataseed4.bnbchain.org',
+    ],
+    nativeCurrency: {
+      name: 'Binance Coin',
+      symbol: 'BNB',
+      decimals: 18,
+    },
+    viemChain: {
+      instance: viemChains.bsc,
+    },
+  },
   // [CHAIN_ID.Arbitrum]: {
   //   chainId: CHAIN_ID.Arbitrum,
   //   name: 'Arbitrum One',

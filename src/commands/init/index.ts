@@ -5,9 +5,10 @@ import { trim } from '@utils/string'
 import { projectPathPrompt } from '@commands/init/index.prompt'
 import type { InitProjectInput } from '@commands/init/index.type'
 import { chainNamePrompt, protocolModulePrompt, selectDeployerPrompt } from '@commands/project/create.prompt'
-import { chalkInfo, chalkSuccess } from '@constants/chalk'
+import { chalkInfo, chalkSuccess, chalkWarning } from '@constants/chalk'
 import { protocolModules } from '@constants/protocol-module'
 import type { CHAIN_ID } from '@enums/chain'
+import { PACKAGE_EXECUTE } from '@enums/package-managers'
 import { customErrorLog } from '@errors/log'
 import { ValidateInputValueError } from '@errors/validate'
 import { getAccountsList } from '@utils/account'
@@ -95,6 +96,7 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
      */
 
     const packageManager = getPackageManager(projectDirectory)
+    const packageExecute = PACKAGE_EXECUTE[packageManager]
 
     /**
      * Initialize CLI Project
@@ -102,7 +104,14 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
 
     const { generatedScriptFile } = await initializeCliProject(projectDirectory, protocolModule, chainId, packageManager, deployerId, allowAnalytics)
 
-    await compileProject(projectDirectory, protocolModule)
+    try {
+      await compileProject(projectDirectory, protocolModule)
+    } catch {
+      const compileCmd = `${packageExecute} infinit project compile`
+      console.warn(
+        chalkWarning('⚠️ Failed to compile the project. Please run ' + chalkInfo('`' + compileCmd + '`') + ' to compile the project after initializing.'),
+      )
+    }
 
     console.log(chalkSuccess(`🔥 Successfully initialized a project, go to ${chalkInfo(`src/scripts/${generatedScriptFile}`)} to start building.`))
   } catch (error) {

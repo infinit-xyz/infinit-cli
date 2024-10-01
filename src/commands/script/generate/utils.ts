@@ -20,7 +20,7 @@ export const getScriptFileDirectory = (projectDirectory?: string): string => pat
  * @param {string} [projectDirectory] - The base project directory. Defaults to the current working directory.
  * @returns {string} The path to the script history files directory.
  */
-export const getScriptHistoryFileDirectory = (projectDirectory?: string): string => path.join(projectDirectory ?? process.cwd(), 'src', 'scripts-history')
+export const getScriptHistoryFileDirectory = (projectDirectory?: string): string => path.join(projectDirectory ?? process.cwd(), 'scripts-history')
 
 /**
  * Generate a unique script file name.
