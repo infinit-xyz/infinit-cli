@@ -1,4 +1,4 @@
-import { FILE_NAMES } from '@constants'
+import { FileNotFoundError } from '@errors/fs'
 import fs from 'fs'
 import path from 'path'
 import type { Address } from 'viem'
@@ -21,7 +21,8 @@ describe('readProjectRegistry', () => {
   test('should throw an error if the registry file does not exist', () => {
     vi.mocked(fs.existsSync).mockReturnValue(false)
 
-    expect(() => readProjectRegistry()).toThrow(`${FILE_NAMES.REGISTRY} not found`)
+    const expectedError = new FileNotFoundError(mockRegistryPath)
+    expect(() => readProjectRegistry()).toThrow(expectedError)
   })
 
   test('should return the registry data if the registry file exists', () => {
