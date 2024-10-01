@@ -1,3 +1,4 @@
+import { PermissionNotFoundError } from '@errors/fs'
 import fs from 'fs'
 
 /**
@@ -9,6 +10,6 @@ export const ensureAccessibilityAtPath = (path: string, permissionMode?: number)
   try {
     fs.accessSync(path, permissionMode ?? fs.constants.F_OK)
   } catch (_) {
-    throw new Error('Permission required, run the command with sudo permission')
+    throw new PermissionNotFoundError()
   }
 }
