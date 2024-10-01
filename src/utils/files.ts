@@ -155,7 +155,7 @@ export const writeFileSync = (filePath: string, data: string) => {
 export const readProjectRegistry = () => {
   const registryPath = path.resolve(process.cwd(), 'src', FILE_NAMES.REGISTRY)
   if (!fs.existsSync(registryPath)) {
-    throw new FileNotFoundError('name', FILE_NAMES.REGISTRY)
+    throw new FileNotFoundError(registryPath)
   }
 
   const data = fs.readFileSync(registryPath, 'utf-8')

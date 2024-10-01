@@ -8,18 +8,18 @@ import { handleExecuteScript, handleGenerateScript } from '@commands/script'
 import { chalkError } from '@constants/chalk'
 import { isRunOnLocalOnly } from '@utils/invoke-cli'
 
+import { EXPECTED_NODE_VERSION } from '@constants'
 import { version } from '../package.json'
 
 // Function to validate Node.js version
 const validateNodeVersion = () => {
-  const expectedNodeVersion = '22.0.0'
   const currentVersion = process.versions.node
 
   const [currentMajor] = currentVersion.split('.')
-  const [requiredMajor] = expectedNodeVersion.split('.')
+  const [requiredMajor] = EXPECTED_NODE_VERSION.split('.')
 
   if (parseInt(currentMajor) < parseInt(requiredMajor)) {
-    console.error(chalkError(`Error: Node.js version must be ${expectedNodeVersion} or higher. You are using ${currentVersion}.`))
+    console.error(chalkError(`Error: Node.js version must be ${EXPECTED_NODE_VERSION} or higher. You are using ${currentVersion}.`))
     process.exit(1)
   }
 }

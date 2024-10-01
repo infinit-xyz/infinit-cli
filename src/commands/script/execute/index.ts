@@ -152,7 +152,7 @@ export const handleExecuteScript = async (_fileName?: string) => {
     // check script file
     const isFound = fs.existsSync(target)
     if (!isFound) {
-      throw new FileNotFoundError('path', target)
+      throw new FileNotFoundError(target)
     }
 
     spinner.start('Reading configuration and registry...')

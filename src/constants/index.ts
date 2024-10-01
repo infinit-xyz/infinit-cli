@@ -12,3 +12,5 @@ export const FILE_NAMES = {
 }
 
 export const DEFAULT_ACTION_KEY = 'init'
+
+export const EXPECTED_NODE_VERSION = '22.0.0'

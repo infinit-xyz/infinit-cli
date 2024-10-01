@@ -32,7 +32,7 @@ export class Config {
     const expectedConfigPath = path.join(process.cwd(), 'src', FILE_NAMES.CONFIG)
 
     if (!isConfigFileExist) {
-      throw new FileNotFoundError('path', expectedConfigPath)
+      throw new FileNotFoundError(expectedConfigPath)
     }
 
     const config = yaml.load(fs.readFileSync(expectedConfigPath, 'utf-8')) as InfinitConfigSchema
