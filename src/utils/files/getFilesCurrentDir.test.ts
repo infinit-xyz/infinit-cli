@@ -1,7 +1,7 @@
 import fs from 'fs'
 import type { Dirent } from 'fs-extra'
 import { describe, expect, test, vi } from 'vitest'
-import { getFilesCurrentDir } from './getFilesCurrentDir' // Adjust the import path as necessary
+import { getFilesCurrentDir } from './getFilesCurrentDir'
 
 vi.mock('fs')
 

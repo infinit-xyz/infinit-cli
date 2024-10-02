@@ -10,6 +10,7 @@ import { protocolModules } from '@constants/protocol-module'
 import type { CHAIN_ID } from '@enums/chain'
 import { PACKAGE_EXECUTE } from '@enums/package-managers'
 import { getAccountsList } from '@utils/account'
+import { isCwdRootProject } from '@utils/files'
 import { getPackageManager } from '@utils/packageManager'
 import { compileProject, initializeCliProject } from '@utils/project'
 import { getProtocolModule } from '@utils/protocol-module'
@@ -18,9 +19,9 @@ import path from 'path'
 import { pipeInto } from 'ts-functional-pipe'
 
 export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
-  const defaultProjectDirectory = path.resolve()
-
   try {
+    const defaultProjectDirectory = path.resolve()
+
     const cmdProjectDirectory = pipeInto(cmdInput.directory, trim)
     const projectDirectory = cmdProjectDirectory ?? (await projectPathPrompt(defaultProjectDirectory))
 
@@ -28,6 +29,12 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
       throw new Error('Project directory is required')
     } else if (!fs.existsSync(projectDirectory)) {
       throw new Error('Project directory does not exist')
+    }
+
+    const { isRunningFromRootProject } = isCwdRootProject(projectDirectory)
+
+    if (isRunningFromRootProject) {
+      throw new Error('INFINIT Project already exists in that directory. Please try another directory.')
     }
 
     /**
@@ -43,7 +50,7 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
     }
 
     /**
-     * Protocol Template
+     * Protocol Module
      */
     const inputModule = cmdInput.module
     let protocolModule = getProtocolModule(inputModule)
@@ -60,7 +67,7 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
     /**
      * Deployer Account
      */
-    let deployerId: string | undefined
+    let deployerId: string | undefined = undefined
 
     if (!cmdInput.ignoreDeployer) {
       const { accountFiles } = getAccountsList()
@@ -102,6 +109,10 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
 
     const { generatedScriptFile } = await initializeCliProject(projectDirectory, protocolModule, chainId, packageManager, deployerId, allowAnalytics)
 
+    /**
+     * Compile contracts
+     */
+
     try {
       await compileProject(projectDirectory, protocolModule)
     } catch {
@@ -111,8 +122,16 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
       )
     }
 
+    /**
+     * Success message
+     */
+
     console.log(chalkSuccess(`🔥 Successfully initialized a project, go to ${chalkInfo(`src/scripts/${generatedScriptFile}`)} to start building.`))
   } catch (error) {
-    console.error(chalkError(error))
+    if (error instanceof Error) {
+      console.error(chalkError(error.message))
+    } else {
+      console.error(error)
+    }
   }
 }
