@@ -56,7 +56,7 @@ export const simulateExecute = async (
       transport: http(FORK_CHAIN_URL, { timeout: 60_000 }),
     })
 
-    const publicClient = createPublicClient({ chain: chainInfo.viemChain.instance, transport: http(FORK_CHAIN_URL) })
+    const forkClient = createPublicClient({ chain: chainInfo.viemChain.instance, transport: http(FORK_CHAIN_URL) })
 
     // impersonate signer accounts and set balance to pay for gas fee.
     for (const signerAddress of signerAddresses) {
@@ -76,7 +76,7 @@ export const simulateExecute = async (
         .with('txConfirmed', async () => {
           const parsedValue = value as CallbackParams['txConfirmed']
 
-          const txReceipt = await publicClient.getTransactionReceipt({ hash: parsedValue.txHash })
+          const txReceipt = await forkClient.getTransactionReceipt({ hash: parsedValue.txHash })
 
           totalGasUsed += txReceipt.gasUsed
           ++txCount
@@ -95,14 +95,17 @@ export const simulateExecute = async (
       text: `Simulation Completed.`,
     })
 
-    const simulatedGasPrice = await publicClient.getGasPrice()
-    const totalGasCost = totalGasUsed * simulatedGasPrice
+    // get latest gas price to calculate total gas cost -> use public client to get gas price
+    const publicClient = createPublicClient({ chain: chainInfo.viemChain.instance, transport: http(getProjectRpc()) })
+    const latestGasPrice = await publicClient.getGasPrice()
+
+    const totalGasCost = totalGasUsed * latestGasPrice
     const gasCurrencyDecimals = BigInt(10) ** BigInt(chainInfo.nativeCurrency.decimals)
 
     // log data from simulation
     spinner.info(`Total Transactions: ${txCount}`)
     spinner.info(`Gas Used: ${totalGasUsed} gas`)
-    spinner.info(`Simulate Gas Price: ${simulatedGasPrice / BigInt(1e9)} gwei`)
+    spinner.info(`Simulate Gas Price: ${latestGasPrice / BigInt(1e9)} gwei`)
     spinner.info(`Estimated Cost: ${Number(totalGasCost) / Number(gasCurrencyDecimals)} ${chainInfo.nativeCurrency.symbol}`)
 
     console.log()

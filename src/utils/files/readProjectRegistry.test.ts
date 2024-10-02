@@ -3,7 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import type { Address } from 'viem'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
-import { readProjectRegistry } from './readProjectRegistry' // Adjust the import path as necessary
+import { readProjectRegistry } from './readProjectRegistry'
 
 vi.mock('fs')
 vi.mock('path')

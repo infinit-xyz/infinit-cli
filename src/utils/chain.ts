@@ -15,7 +15,10 @@ export const isChainNameSupported = (chainName?: string): boolean => {
  * @returns
  */
 export const isSupportedChain = (value: string) => {
-  return Object.values(CHAINS).some((chain) => chain.name.toLowerCase() === value || chain.shortName.toLowerCase() === value || chain.chainId === value)
+  const _value = value.toString().toLowerCase()
+  return Object.values(CHAINS).some(
+    (chain) => chain.name.toLowerCase() === _value || chain.shortName.toLowerCase() === _value || chain.chainId.toString() === _value,
+  )
 }
 
 export const toSupportedChainID = (chainName?: string): CHAIN_ID | undefined => {

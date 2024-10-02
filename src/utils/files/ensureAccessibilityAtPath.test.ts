@@ -1,7 +1,7 @@
 import { PermissionNotFoundError } from '@errors/fs'
 import fs from 'fs'
 import { describe, expect, test, vi } from 'vitest'
-import { ensureAccessibilityAtPath } from './ensureAccessibilityAtPath' // Adjust the import path as necessary
+import { ensureAccessibilityAtPath } from './ensureAccessibilityAtPath'
 
 vi.mock('fs')
 
