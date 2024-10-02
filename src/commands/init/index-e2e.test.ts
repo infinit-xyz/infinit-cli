@@ -44,12 +44,12 @@ describe('Command: init', () => {
     })
 
     test('should initialize INFINIT project successfully with npm', async () => {
-      const [exitCode, _logs, errorLogs] = await InfinitCLI()
+      const [exitCode, logs] = await InfinitCLI()
         .setCwd(cwdPath)
         .invoke(['init', '--directory', newProjectPath, '--chain', 'Ethereum', '--module', 'aave-v3', '--ignore-deployer', '--ignore-analytics'])
 
-      const expectedError = new ValidateInputValueError('Project directory does not exist')
-      errorLogs.should.contain(expectedError.message)
+      logs.should.contain('Successfully initialized a project')
+
       expect(exitCode).toBe(0)
     })
 
