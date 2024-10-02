@@ -1,4 +1,5 @@
 import { PACKAGE_MANAGER } from '@enums/package-managers'
+import { ValidateInputValueError } from '@errors/validate'
 import { spawnChild } from '@utils/childprocess'
 import { InfinitCLI } from '@utils/invoke-cli'
 import { getPackageManagerInstallArgs } from '@utils/packageManager'
@@ -66,7 +67,8 @@ describe('Command: init', () => {
         .setCwd(cwdPath)
         .invoke(['init', '--directory', newProjectPath, '--chain', 'Ethereum', '--module', 'abcd', '--ignore-deployer', '--ignore-analytics'])
 
-      errorLogs.should.contain('Protocol module is not supported')
+      const expectedError = new ValidateInputValueError('Protocol module is not supported')
+      errorLogs.should.contain(expectedError.message)
       expect(exitCode).toBe(0)
     })
   })

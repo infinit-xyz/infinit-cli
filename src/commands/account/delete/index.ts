@@ -1,6 +1,9 @@
 import { accounts } from '@classes'
 import { loadAccountFromPrompt } from '@commons/prompts/accounts'
 import { chalkError, chalkInfo } from '@constants/chalk'
+import { AccountValidateError } from '@errors/account'
+import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
+import { customErrorLog } from '@errors/log'
 import { confirm } from '@inquirer/prompts'
 import { checkIsAccountFound } from '@utils/account'
 import { ensureAccessibilityAtPath } from '@utils/files'
@@ -11,7 +14,8 @@ export const handleDeleteAccount = async (accountId: string) => {
     // 1. check if found account
     const isAccountFound = checkIsAccountFound(accountId)
     if (!isAccountFound) {
-      throw new Error(`Account with id ${accountId} not found`)
+      const accountNotFoundMsg = ERROR_MESSAGE_RECORD.ACCOUNT_NOT_FOUND(accountId)
+      throw new AccountValidateError(accountNotFoundMsg)
     }
 
     const accountFilePath = accounts.getAccountFilePath(accountId)
@@ -32,6 +36,6 @@ export const handleDeleteAccount = async (accountId: string) => {
       console.error(chalkError('User denied the confirmation to delete the account.'))
     }
   } catch (error) {
-    console.error(chalkError(error))
+    console.error(customErrorLog(error as Error))
   }
 }

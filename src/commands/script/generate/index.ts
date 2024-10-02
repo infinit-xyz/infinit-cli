@@ -5,6 +5,8 @@ import { config } from '@classes'
 import { chalkError, chalkInfo } from '@constants/chalk'
 import { protocolModules } from '@constants/protocol-module'
 import type { PROTOCOL_MODULE } from '@enums/module'
+import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
+import { ValidateInputValueError } from '@errors/validate'
 import { sendOffChainEvent } from '@utils/analytics'
 import { ensureCwdRootProject } from '@utils/files'
 import type { ProtocolModuleActionKey } from './index.type'
@@ -18,7 +20,7 @@ export const handleGenerateScript = async (actionId?: string) => {
   const protocolModule = protocolModules[projectConfig.protocol_module as PROTOCOL_MODULE]
 
   if (!protocolModule) {
-    throw new Error('Protocol module not supported')
+    throw new ValidateInputValueError(ERROR_MESSAGE_RECORD.PROTOCOL_NOT_SUPPORTED)
   }
 
   let actionKey: ProtocolModuleActionKey | undefined = undefined
@@ -37,7 +39,7 @@ export const handleGenerateScript = async (actionId?: string) => {
   }
 
   if (!actionKey) {
-    throw new Error('ActionKey is required')
+    throw new ValidateInputValueError('ActionKey is required')
   }
 
   const isConfirm = await confirm({

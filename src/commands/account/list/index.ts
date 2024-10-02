@@ -1,5 +1,7 @@
 import { type ChainInfo } from '@constants/chains'
 import { chalkInfo } from '@constants/chalk'
+import { AccountNotFoundError } from '@errors/account'
+import { customErrorLog } from '@errors/log'
 import { getAccountsList } from '@utils/account'
 import { getProjectChainInfo, getProjectRpc } from '@utils/config'
 import CliTable3 from 'cli-table3'
@@ -66,9 +68,10 @@ export const handleListAccounts = async (): Promise<CliTable3.Table> => {
 
       // push the account to table
       table.push([accountId, walletAddress, walletBalanceDisplayText])
-    } catch (error) {
-      console.warn('Something went wrong while reading the account file for account ID:', accountId)
-      console.warn(error)
+    } catch (_error) {
+      // should not happen
+      const customError = new AccountNotFoundError(`Something went wrong while reading the account file for account ID: ${accountId}`)
+      console.error(customErrorLog(customError))
     }
   }
 

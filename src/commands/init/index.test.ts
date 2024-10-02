@@ -1,19 +1,20 @@
-import { projectPathPrompt } from '@commands/init/index.prompt'
-import { chainNamePrompt, protocolModulePrompt, selectDeployerPrompt } from '@commands/project/create.prompt'
-import { CHAIN_ID } from '@enums/chain'
-import { isCwdRootProject } from '@utils/files'
 import fs from 'fs'
 import path from 'path'
+import { type MockInstance, afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
+import { projectPathPrompt } from '@commands/init/index.prompt'
 import type { InitProjectInput } from '@commands/init/index.type'
+import { chainNamePrompt, protocolModulePrompt, selectDeployerPrompt } from '@commands/project/create.prompt'
+import { CHAIN_ID } from '@enums/chain'
 import { PROTOCOL_MODULE } from '@enums/module'
 import { PACKAGE_MANAGER } from '@enums/package-managers'
 import { confirm } from '@inquirer/prompts'
 import { getAccountsList } from '@utils/account'
 import { isSupportedChain } from '@utils/chain'
+import { isCwdRootProject } from '@utils/files'
 import { getPackageManager } from '@utils/packageManager'
 import { compileProject, initializeCliProject } from '@utils/project'
-import { type MockInstance, afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+
 import { handleInitializeCli } from './index'
 
 vi.mock('fs')
@@ -134,7 +135,7 @@ describe('handleInitializeCli', () => {
 
       await expect(handleInitializeCli(cmdInput)).resolves.toBeUndefined()
 
-      expect(consoleErrorSpy).toHaveBeenLastCalledWith('Project directory does not exist')
+      expect(consoleErrorSpy).toHaveBeenLastCalledWith(expect.stringContaining('Project directory does not exist'))
     })
 
     test('should show error if INFINIT project already exists in the directory', async () => {
@@ -143,7 +144,9 @@ describe('handleInitializeCli', () => {
 
       await expect(handleInitializeCli(cmdInput)).resolves.toBeUndefined()
 
-      expect(consoleErrorSpy).toHaveBeenLastCalledWith('INFINIT Project already exists in that directory. Please try another directory.')
+      expect(consoleErrorSpy).toHaveBeenLastCalledWith(
+        expect.stringContaining('INFINIT Project already exists in that directory. Please try another directory.'),
+      )
     })
   })
 
@@ -178,7 +181,7 @@ describe('handleInitializeCli', () => {
 
       await expect(handleInitializeCli({ ...cmdInput, chain: '' })).resolves.toBeUndefined()
 
-      expect(consoleErrorSpy).toHaveBeenLastCalledWith('Chain is required')
+      expect(consoleErrorSpy).toHaveBeenLastCalledWith(expect.stringContaining('Chain is required'))
     })
 
     test('should show error if got unsupported chain', async () => {
@@ -188,7 +191,7 @@ describe('handleInitializeCli', () => {
 
       await expect(handleInitializeCli({ ...cmdInput, chain: '' })).resolves.toBeUndefined()
 
-      expect(consoleErrorSpy).toHaveBeenLastCalledWith('Chain is not supported')
+      expect(consoleErrorSpy).toHaveBeenLastCalledWith(expect.stringContaining('Chain is not supported'))
     })
   })
 
@@ -220,7 +223,7 @@ describe('handleInitializeCli', () => {
 
       await expect(handleInitializeCli({ ...cmdInput, module: '' })).resolves.toBeUndefined()
 
-      expect(consoleErrorSpy).toHaveBeenLastCalledWith('Protocol module is not supported')
+      expect(consoleErrorSpy).toHaveBeenLastCalledWith(expect.stringContaining('Protocol module is not supported'))
     })
   })
 

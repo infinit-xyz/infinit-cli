@@ -5,12 +5,13 @@ import type { Hex } from 'viem'
 
 import { accounts, config } from '@classes'
 import { DATA_FOLDER } from '@classes/Config/Config'
-import { chalkError, chalkInfo } from '@constants/chalk'
+import { chalkInfo } from '@constants/chalk'
 
 import { notDuplicatedAccountIdPrompt } from '@commands/account/prompt'
 import { ensureAccessibilityAtPath } from '@utils/files'
 
 import { passwordWithConfirmPrompt } from '@commands/account/prompt'
+import { customErrorLog } from '@errors/log'
 import { sendOffChainEvent } from '@utils/analytics'
 import { getProjectChainInfo } from '@utils/config'
 
@@ -52,6 +53,6 @@ export const handleGenerateAccount = async (accountId?: string) => {
       sendOffChainEvent({ action: 'account generate', payload: { walletAddress } })
     }
   } catch (error) {
-    console.error(chalkError(error))
+    console.error(customErrorLog(error as Error))
   }
 }

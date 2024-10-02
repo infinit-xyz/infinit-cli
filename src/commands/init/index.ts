@@ -5,10 +5,12 @@ import { trim } from '@utils/string'
 import { projectPathPrompt } from '@commands/init/index.prompt'
 import type { InitProjectInput } from '@commands/init/index.type'
 import { chainNamePrompt, protocolModulePrompt, selectDeployerPrompt } from '@commands/project/create.prompt'
-import { chalkError, chalkInfo, chalkSuccess, chalkWarning } from '@constants/chalk'
+import { chalkInfo, chalkSuccess, chalkWarning } from '@constants/chalk'
 import { protocolModules } from '@constants/protocol-module'
 import type { CHAIN_ID } from '@enums/chain'
 import { PACKAGE_EXECUTE } from '@enums/package-managers'
+import { customErrorLog } from '@errors/log'
+import { ValidateInputValueError } from '@errors/validate'
 import { getAccountsList } from '@utils/account'
 import { isCwdRootProject } from '@utils/files'
 import { getPackageManager } from '@utils/packageManager'
@@ -26,9 +28,9 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
     const projectDirectory = cmdProjectDirectory ?? (await projectPathPrompt(defaultProjectDirectory))
 
     if (!projectDirectory) {
-      throw new Error('Project directory is required')
+      throw new ValidateInputValueError('Project directory is required')
     } else if (!fs.existsSync(projectDirectory)) {
-      throw new Error('Project directory does not exist')
+      throw new ValidateInputValueError('Project directory does not exist')
     }
 
     const { isRunningFromRootProject } = isCwdRootProject(projectDirectory)
@@ -44,9 +46,9 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
     const chainId = cmdChainId ?? (await chainNamePrompt())
 
     if (!chainId) {
-      throw new Error('Chain is required')
+      throw new ValidateInputValueError('Chain is required')
     } else if (!isSupportedChain(chainId)) {
-      throw new Error('Chain is not supported')
+      throw new ValidateInputValueError('Chain is not supported')
     }
 
     /**
@@ -61,7 +63,7 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
     }
 
     if (!protocolModule) {
-      throw new Error('Protocol module is not supported')
+      throw new ValidateInputValueError('Protocol module is not supported')
     }
 
     /**
@@ -129,7 +131,7 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
     console.log(chalkSuccess(`🔥 Successfully initialized a project, go to ${chalkInfo(`src/scripts/${generatedScriptFile}`)} to start building.`))
   } catch (error) {
     if (error instanceof Error) {
-      console.error(chalkError(error.message))
+      console.error(customErrorLog(error as Error))
     } else {
       console.error(error)
     }

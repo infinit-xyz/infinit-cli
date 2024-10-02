@@ -5,7 +5,9 @@ import { MOCK_PASSWORD, MOCK_PRIVATE_KEY, MOCK_WALLET_ADDRESS } from '@commands/
 import { handleImportAccount } from '@commands/account/import'
 import { notDuplicatedAccountIdPrompt, passwordWithConfirmPrompt, privateKeyInputPrompt } from '@commands/account/prompt'
 import { CHAINS } from '@constants/chains'
-import { chalkError, chalkInfo } from '@constants/chalk'
+import { chalkInfo } from '@constants/chalk'
+import { PermissionNotFoundError } from '@errors/fs'
+import { customErrorLog } from '@errors/log'
 import { checkIsAccountFound } from '@utils/account'
 import { createDataFolder, getProjectChainInfo } from '@utils/config'
 import { ensureAccessibilityAtPath } from '@utils/files'
@@ -27,10 +29,10 @@ describe('Command: accounts - import', () => {
   test('should get error with permission denied', async () => {
     vi.mocked(checkIsAccountFound).mockReturnValue(false)
     vi.mocked(ensureAccessibilityAtPath).mockImplementation(() => {
-      throw new Error('Permission required, run the command with sudo permission')
+      throw new PermissionNotFoundError()
     })
     vi.spyOn(fs, 'accessSync').mockImplementation(() => {
-      throw new Error('Permission required, run the command with sudo permission')
+      throw new PermissionNotFoundError()
     })
 
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
@@ -40,7 +42,8 @@ describe('Command: accounts - import', () => {
     await expect(handleImportAccount(mockedAccountId)).resolves.toBeUndefined()
 
     // assert
-    expect(consoleSpy).toHaveBeenCalledWith(chalkError('Error: Permission required, run the command with sudo permission'))
+    const expectedError = new PermissionNotFoundError()
+    expect(consoleSpy).toHaveBeenCalledWith(customErrorLog(expectedError))
   })
 
   test('should import an account successfully', async () => {

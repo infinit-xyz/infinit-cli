@@ -8,7 +8,7 @@ import ora, { type Ora } from 'ora'
 import path from 'path'
 import { match } from 'ts-pattern'
 import * as tsx from 'tsx/cjs/api'
-import type { Address } from 'viem'
+import { type Address } from 'viem'
 
 import { accounts, config } from '@classes'
 import { cache } from '@classes/Cache/Cache'
@@ -17,6 +17,13 @@ import { FORK_CHAIN_URL, simulateExecute } from '@commands/script/execute/simula
 import { getScriptFileDirectory, getScriptHistoryFileDirectory } from '@commands/script/generate/utils'
 import { loadAccountFromPrompt } from '@commons/prompts/accounts'
 import { chalkError, chalkInfo } from '@constants/chalk'
+import type { PROTOCOL_MODULE } from '@enums/module'
+import { AccountNotFoundError } from '@errors/account'
+import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
+import { FileNotFoundError } from '@errors/fs'
+import { ProtocolModuleLibError } from '@errors/lib'
+import { customErrorLog } from '@errors/log'
+import { ValidateInputValueError } from '@errors/validate'
 import { confirm } from '@inquirer/prompts'
 import type { InfinitConfigSchema } from '@schemas/generated'
 import { checkIsAccountFound } from '@utils/account'
@@ -145,7 +152,7 @@ export const handleExecuteScript = async (_fileName?: string) => {
     // check script file
     const isFound = fs.existsSync(target)
     if (!isFound) {
-      throw new Error(`script ${fileName} is not found in ${target}`)
+      throw new FileNotFoundError(target)
     }
 
     spinner.start('Reading configuration and registry...')
@@ -172,7 +179,7 @@ export const handleExecuteScript = async (_fileName?: string) => {
 
     // validate signer
     if (!isSigner(signer)) {
-      throw new Error('Invalid signer')
+      throw new ValidateInputValueError('Invalid signer')
     }
     const accountIds = _.uniq(Object.values(signer))
     const notFoundAccounts = Object.values(signer).filter((accountId) => !checkIsAccountFound(accountId))
@@ -186,7 +193,7 @@ export const handleExecuteScript = async (_fileName?: string) => {
 
     // validate script file -> params, action
     if (!params || !Action) {
-      throw new Error('Invalid script file')
+      throw new ValidateInputValueError('Invalid script file')
     }
 
     // chain info
@@ -202,7 +209,7 @@ export const handleExecuteScript = async (_fileName?: string) => {
       const isAccountFound = checkIsAccountFound(accountId)
 
       if (!isAccountFound) {
-        throw new Error(`Account ${accountId} not found`)
+        throw new AccountNotFoundError(ERROR_MESSAGE_RECORD.ACCOUNT_NOT_FOUND(accountId))
       }
 
       await loadAccountFromPrompt(accountId)
@@ -264,15 +271,23 @@ export const handleExecuteScript = async (_fileName?: string) => {
       return
     }
 
-    // setup the real action with real signer
-    const action = new Action({ params, signer: signerWalletRecord }) as BaseAction
-    const newRegistry = await action.run(registry, actionInfinitCache, executeActionCallbackHandler(spinner, fileName, projectConfig, signerAddresses))
+    try {
+      // setup the real action with real signer
+      const action = new Action({ params, signer: signerWalletRecord }) as BaseAction
+      const newRegistry = await action.run(registry, actionInfinitCache, executeActionCallbackHandler(spinner, fileName, projectConfig, signerAddresses))
+
+      // write new registry
+      fs.writeFileSync(registryPath, JSON.stringify(newRegistry, null, 2))
+    } catch (error) {
+      if (error instanceof Error) {
+        const customError = new ProtocolModuleLibError(projectConfig.protocol_module as PROTOCOL_MODULE, error.message)
+
+        console.error(customErrorLog(customError))
+      }
+    }
 
     // clear cache if all sub actions are finished
     cache.deleteTxActionCache(fileName)
-
-    // write new registry
-    fs.writeFileSync(registryPath, JSON.stringify(newRegistry, null, 2))
 
     // move file to archive
     const scriptFileHistoryDirectory = getScriptHistoryFileDirectory()
@@ -285,9 +300,8 @@ export const handleExecuteScript = async (_fileName?: string) => {
     spinner.stop()
     process.exit(0)
   } catch (error) {
-    console.log('\n\n' + chalkError(error))
-
     spinner.stop()
+    console.error(customErrorLog(error as Error))
     process.exit(1)
   }
 }

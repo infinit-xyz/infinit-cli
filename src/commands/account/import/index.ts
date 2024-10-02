@@ -1,6 +1,7 @@
 import { DATA_FOLDER, accounts, config } from '@classes'
 import { notDuplicatedAccountIdPrompt, passwordWithConfirmPrompt, privateKeyInputPrompt } from '@commands/account/prompt'
-import { chalkError, chalkInfo } from '@constants/chalk'
+import { chalkInfo } from '@constants/chalk'
+import { customErrorLog } from '@errors/log'
 import { sendOffChainEvent } from '@utils/analytics'
 import { getProjectChainInfo } from '@utils/config'
 import { ensureAccessibilityAtPath } from '@utils/files'
@@ -48,6 +49,6 @@ export const handleImportAccount = async (accountId?: string) => {
       sendOffChainEvent({ action: 'account import', payload: { walletAddress } })
     }
   } catch (error) {
-    console.error(chalkError(error))
+    console.error(customErrorLog(error as Error))
   }
 }

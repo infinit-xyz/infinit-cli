@@ -1,6 +1,8 @@
 import { accounts } from '@classes'
 import { passwordInputPrompt } from '@commands/account/prompt'
-import { chalkError, chalkInfo } from '@constants/chalk'
+import { chalkInfo } from '@constants/chalk'
+import { AccountValidateError } from '@errors/account'
+import { customErrorLog } from '@errors/log'
 import type { Wallet } from '@ethereumjs/wallet'
 
 const maxAttempts = 3
@@ -22,10 +24,11 @@ export const loadAccountFromPrompt = async (accountId: string, currentAttempt: n
   } catch (error) {
     // limit to 3 attempts
     if (newAttempt >= maxAttempts) {
-      console.log(chalkError(`${error}, Failed to load account ${accountId} after ${maxAttempts} incorrect password attempts`))
+      const error = new AccountValidateError(`Failed to load account ${accountId} after ${maxAttempts} incorrect password attempts`)
+      console.error(customErrorLog(error))
       return
     } else {
-      console.log(chalkError(`${error}, Please try again`))
+      console.error(customErrorLog(error as Error))
     }
 
     // if invalid password -> retry

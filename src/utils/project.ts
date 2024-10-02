@@ -10,6 +10,7 @@ import { protocolModules } from '@constants/protocol-module'
 import type { CHAIN_ID } from '@enums/chain'
 import { PROTOCOL_MODULE } from '@enums/module'
 import type { PACKAGE_MANAGER } from '@enums/package-managers'
+import { ValidateInputValueError } from '@errors/validate'
 import { ContractProvider } from '@infinit-xyz/core'
 import type { InfinitConfigSchema } from '@schemas/generated'
 import { sendOffChainEvent } from '@utils/analytics'
@@ -123,7 +124,7 @@ export const initializeCliProject = async (
   const initAction = actions[DEFAULT_ACTION_KEY]
 
   if (!initAction) {
-    throw new Error('Initialize action not found')
+    throw new ValidateInputValueError('Initialize action not found')
   }
   const scriptFolderPath = getScriptFileDirectory(projectDirectory)
   const camelCaseActionName = _.camelCase(initAction.actionClassName)

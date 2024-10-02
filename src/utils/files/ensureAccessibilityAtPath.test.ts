@@ -1,3 +1,4 @@
+import { PermissionNotFoundError } from '@errors/fs'
 import fs from 'fs'
 import { describe, expect, test, vi } from 'vitest'
 import { ensureAccessibilityAtPath } from './ensureAccessibilityAtPath'
@@ -16,7 +17,8 @@ describe('ensureAccessibilityAtPath', () => {
       throw new Error('Permission denied')
     })
 
-    expect(() => ensureAccessibilityAtPath('/path/to/file')).toThrow('Permission required, run the command with sudo permission')
+    const expectedError = new PermissionNotFoundError()
+    expect(() => ensureAccessibilityAtPath('/path/to/file')).toThrow(expectedError)
   })
 
   test('should use the provided permission mode', () => {

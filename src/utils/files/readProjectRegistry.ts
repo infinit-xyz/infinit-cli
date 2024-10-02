@@ -3,6 +3,7 @@ import path from 'path'
 import type { Address } from 'viem'
 
 import { FILE_NAMES } from '@constants'
+import { FileNotFoundError } from '@errors/fs'
 
 /**
  * Get the project registry
@@ -11,7 +12,7 @@ import { FILE_NAMES } from '@constants'
 export const readProjectRegistry = () => {
   const registryPath = path.resolve(process.cwd(), 'src', FILE_NAMES.REGISTRY)
   if (!fs.existsSync(registryPath)) {
-    throw new Error(`${FILE_NAMES.REGISTRY} not found`)
+    throw new FileNotFoundError(registryPath)
   }
 
   const data = fs.readFileSync(registryPath, 'utf-8')

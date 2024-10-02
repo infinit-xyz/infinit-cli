@@ -4,6 +4,7 @@ import os from 'os'
 import path from 'path'
 
 import { FILE_NAMES } from '@constants'
+import { FileNotFoundError } from '@errors/fs'
 import type { InfinitConfigSchema } from '@schemas/generated'
 import { checkFilesExist, ensureCwdRootProject } from '@utils/files'
 
@@ -31,7 +32,7 @@ export class Config {
     const expectedConfigPath = path.join(process.cwd(), 'src', FILE_NAMES.CONFIG)
 
     if (!isConfigFileExist) {
-      throw new Error(`Config file not found at ${expectedConfigPath}`)
+      throw new FileNotFoundError(expectedConfigPath)
     }
 
     const config = yaml.load(fs.readFileSync(expectedConfigPath, 'utf-8')) as InfinitConfigSchema

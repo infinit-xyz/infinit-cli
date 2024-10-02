@@ -1,5 +1,7 @@
 import type { KeystoreV3 } from '@classes/Accounts/Accounts.type'
 import { DATA_FOLDER } from '@classes/Config/Config'
+import { AccountValidateError } from '@errors/account'
+import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
 import { Wallet } from '@ethereumjs/wallet'
 import { createDataFolder } from '@utils/config'
 import { ensureAccessibilityAtPath } from '@utils/files'
@@ -54,16 +56,11 @@ export class Accounts {
    * @returns wallet
    */
   public async load(id: string, password: string): Promise<Wallet> {
-    // check is id duplicate
-    if (this.accounts[id]) {
-      throw new Error('Load account failed, Id is duplicate')
-    }
-
     const filePath = this.getAccountFilePath(id)
 
     // load json file
     if (!fs.existsSync(filePath)) {
-      throw new Error(`${id}.json not found, please check ${filePath} again`)
+      throw new AccountValidateError(ERROR_MESSAGE_RECORD.ACCOUNT_NOT_FOUND(id))
     }
 
     const file = fs.readFileSync(filePath, 'utf8')
@@ -74,7 +71,7 @@ export class Accounts {
     try {
       wallet = await Wallet.fromV3(keystoreEncypted, password)
     } catch (_) {
-      throw new Error('Invalid password')
+      throw new AccountValidateError('Invalid password, please try again', { isStackDisabled: true })
     }
 
     const privateKey = wallet.getPrivateKeyString() as Hex

@@ -11,6 +11,8 @@ import { chalkError, chalkInfo, chalkSuccess } from '@constants/chalk'
 import { protocolModules } from '@constants/protocol-module'
 import type { CHAIN_ID } from '@enums/chain'
 import { PACKAGE_MANAGER } from '@enums/package-managers'
+import { customErrorLog } from '@errors/log'
+import { ValidateInputValueError } from '@errors/validate'
 import { confirm } from '@inquirer/prompts'
 import { getAccountsList } from '@utils/account'
 import { toSupportedChainID } from '@utils/chain'
@@ -29,16 +31,16 @@ const getProjectName = async ({ currentDirectoryFiles, currentProjectName }: Get
 
     // shouldn't happen
     if (!projectName) {
-      throw new Error('Project name is required')
+      throw new ValidateInputValueError('Project name is required')
     }
     // check if the project name folder is already exist
     else if (currentDirectoryFiles.includes(projectName)) {
-      throw new Error(`${projectName} is already exists`)
+      throw new ValidateInputValueError(`${projectName} is already exists`)
     }
 
     return projectName
   } catch (error) {
-    console.log(chalkError(error))
+    console.error(customErrorLog(error as Error))
 
     // retry
     const newProjectName = await projectNamePrompt()
@@ -68,7 +70,7 @@ export const handleProjectCreate = async (cmdInput: CreateInput) => {
     const chainId = cmdChainId ?? (await chainNamePrompt())
 
     if (!chainId) {
-      throw new Error('Chain is required')
+      throw new ValidateInputValueError('Chain is required')
     }
 
     /**
@@ -83,7 +85,7 @@ export const handleProjectCreate = async (cmdInput: CreateInput) => {
     }
 
     if (!protocolModule) {
-      throw new Error('Protocol module is required')
+      throw new ValidateInputValueError('Protocol module is required')
     }
 
     /**
@@ -179,6 +181,6 @@ export const handleProjectCreate = async (cmdInput: CreateInput) => {
     console.log(`${chalkSuccess('Create project successfully!')} You can go to the project with the following command.\n`)
     console.log(`cd ${chalkInfo(projectDirectory)}`)
   } catch (error) {
-    console.log(chalkError(error))
+    console.error(customErrorLog(error as Error))
   }
 }
