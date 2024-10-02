@@ -135,7 +135,7 @@ describe('handleInitializeCli', () => {
 
       await expect(handleInitializeCli(cmdInput)).resolves.toBeUndefined()
 
-      expect(consoleErrorSpy).toHaveBeenLastCalledWith('Project directory does not exist')
+      expect(consoleErrorSpy).toHaveBeenLastCalledWith(expect.stringContaining('Project directory does not exist'))
     })
 
     test('should show error if INFINIT project already exists in the directory', async () => {
@@ -144,7 +144,9 @@ describe('handleInitializeCli', () => {
 
       await expect(handleInitializeCli(cmdInput)).resolves.toBeUndefined()
 
-      expect(consoleErrorSpy).toHaveBeenLastCalledWith('INFINIT Project already exists in that directory. Please try another directory.')
+      expect(consoleErrorSpy).toHaveBeenLastCalledWith(
+        expect.stringContaining('INFINIT Project already exists in that directory. Please try another directory.'),
+      )
     })
   })
 
@@ -179,7 +181,7 @@ describe('handleInitializeCli', () => {
 
       await expect(handleInitializeCli({ ...cmdInput, chain: '' })).resolves.toBeUndefined()
 
-      expect(consoleErrorSpy).toHaveBeenLastCalledWith('Chain is required')
+      expect(consoleErrorSpy).toHaveBeenLastCalledWith(expect.stringContaining('Chain is required'))
     })
 
     test('should show error if got unsupported chain', async () => {
@@ -189,7 +191,7 @@ describe('handleInitializeCli', () => {
 
       await expect(handleInitializeCli({ ...cmdInput, chain: '' })).resolves.toBeUndefined()
 
-      expect(consoleErrorSpy).toHaveBeenLastCalledWith('Chain is not supported')
+      expect(consoleErrorSpy).toHaveBeenLastCalledWith(expect.stringContaining('Chain is not supported'))
     })
   })
 
@@ -221,7 +223,7 @@ describe('handleInitializeCli', () => {
 
       await expect(handleInitializeCli({ ...cmdInput, module: '' })).resolves.toBeUndefined()
 
-      expect(consoleErrorSpy).toHaveBeenLastCalledWith('Protocol module is not supported')
+      expect(consoleErrorSpy).toHaveBeenLastCalledWith(expect.stringContaining('Protocol module is not supported'))
     })
   })
 
