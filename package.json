@@ -17,11 +17,7 @@
   "bin": {
     "infinit": "bin/cli.js"
   },
-  "files": [
-    "/bin",
-    "/dist",
-    ".bun.lockb"
-  ],
+  "files": ["/bin", "/dist", ".bun.lockb"],
   "scripts": {
     "dev": "bun scripts/dev.ts",
     "build": "bun run clean:bin && bun run build:script",
@@ -41,10 +37,10 @@
   },
   "dependencies": {
     "@ethereumjs/wallet": "2.0.4",
-    "@infinit-xyz/aave-v3": "0.0.0-alpha.10",
-    "@infinit-xyz/core": "0.0.0-alpha.7",
-    "@infinit-xyz/token": "0.0.0-alpha.9",
-    "@infinit-xyz/uniswap-v3": "0.0.0-alpha.10",
+    "@infinit-xyz/aave-v3": "0.0.0-alpha.14",
+    "@infinit-xyz/core": "0.0.0-alpha.9",
+    "@infinit-xyz/token": "0.0.0-alpha.12",
+    "@infinit-xyz/uniswap-v3": "0.0.0-alpha.13",
     "@inquirer/prompts": "^6.0.1",
     "axios": "^1.7.7",
     "chalk": "^5.3.0",
@@ -60,7 +56,7 @@
     "ts-functional-pipe": "^3.1.2",
     "ts-pattern": "^5.3.1",
     "tsx": "^4.16.2",
-    "viem": "2.21.9",
+    "viem": "^2.21.16",
     "zod": "^3.23.8"
   },
   "devDependencies": {
