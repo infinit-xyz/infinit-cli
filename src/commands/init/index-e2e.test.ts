@@ -1,4 +1,5 @@
 import { PACKAGE_MANAGER } from '@enums/package-managers'
+import { ValidateInputValueError } from '@errors/validate'
 import { spawnChild } from '@utils/childprocess'
 import { InfinitCLI } from '@utils/invoke-cli'
 import { getPackageManagerInstallArgs } from '@utils/packageManager'
@@ -43,12 +44,12 @@ describe('Command: init', () => {
     })
 
     test('should initialize INFINIT project successfully with npm', async () => {
-      const [exitCode, logs] = await InfinitCLI()
+      const [exitCode, _logs, errorLogs] = await InfinitCLI()
         .setCwd(cwdPath)
         .invoke(['init', '--directory', newProjectPath, '--chain', 'Ethereum', '--module', 'aave-v3', '--ignore-deployer', '--ignore-analytics'])
 
-      logs.should.contain('Successfully initialized a project')
-
+      const expectedError = new ValidateInputValueError('Project directory does not exist')
+      errorLogs.should.contain(expectedError.message)
       expect(exitCode).toBe(0)
     })
 
@@ -66,7 +67,8 @@ describe('Command: init', () => {
         .setCwd(cwdPath)
         .invoke(['init', '--directory', newProjectPath, '--chain', 'Ethereum', '--module', 'abcd', '--ignore-deployer', '--ignore-analytics'])
 
-      errorLogs.should.contain('Protocol module is not supported')
+      const expectedError = new ValidateInputValueError('Protocol module is not supported')
+      errorLogs.should.contain(expectedError.message)
       expect(exitCode).toBe(0)
     })
   })
