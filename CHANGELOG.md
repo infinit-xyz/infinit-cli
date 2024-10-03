@@ -1,5 +1,30 @@
 # @infinit-xyz/cli
 
+## 0.0.0-alpha.10
+
+### Minor Changes
+
+- [#15](https://github.com/infinit-xyz/infinit-cli/pull/15) [`f09950e`](https://github.com/infinit-xyz/infinit-cli/commit/f09950e02888fd20aeaf643ebcbc2fb4f6f99469) Thanks [@mintcnn](https://github.com/mintcnn)! - Add error wrapper
+
+- [#56](https://github.com/infinit-xyz/infinit-cli/pull/56) [`3a48500`](https://github.com/infinit-xyz/infinit-cli/commit/3a485001e58c106fb23129ed65a6f5ccee6a9531) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - bump library versions
+
+### Patch Changes
+
+- [#46](https://github.com/infinit-xyz/infinit-cli/pull/46) [`4e234b7`](https://github.com/infinit-xyz/infinit-cli/commit/4e234b7967635b39acb8b0700e998924ed115504) Thanks [@Pitchanai](https://github.com/Pitchanai)! - Fix the issue of getting the wrong gas price.
+
+- [#57](https://github.com/infinit-xyz/infinit-cli/pull/57) [`a354b95`](https://github.com/infinit-xyz/infinit-cli/commit/a354b955964f51c41871ca8a255b0986d8251817) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - update infinit library version:
+
+  - @infinit-xyz/aave-v3@0.0.0-alpha.17
+  - @infinit-xyz/core@0.1.0-alpha.2
+  - @infinit-xyz/token@0.0.0-alpha.14
+  - @infinit-xyz/uniswap-v3@0.0.0-alpha.15
+
+- [#55](https://github.com/infinit-xyz/infinit-cli/pull/55) [`e9972a5`](https://github.com/infinit-xyz/infinit-cli/commit/e9972a5c9120471b888f8546c5694d930cd73993) Thanks [@arintrongs](https://github.com/arintrongs)! - Fix viem version
+
+- [#42](https://github.com/infinit-xyz/infinit-cli/pull/42) [`54c435c`](https://github.com/infinit-xyz/infinit-cli/commit/54c435c995ccb45f4eb69e839e762697fe486a17) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - prevent init on existing infinit project
+
+- [#55](https://github.com/infinit-xyz/infinit-cli/pull/55) [`e9972a5`](https://github.com/infinit-xyz/infinit-cli/commit/e9972a5c9120471b888f8546c5694d930cd73993) Thanks [@arintrongs](https://github.com/arintrongs)! - update built CLI to have `NODE_ENV` as `production`
+
 ## 0.0.0-alpha.9
 
 ### Minor Changes
