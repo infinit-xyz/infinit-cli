@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const ANALYTICS_ENDPOINT = 'https://analytics.infinit.tech'
 
-const analyticsInstance = axios.create({
+export const analyticsInstance = axios.create({
   baseURL: ANALYTICS_ENDPOINT,
   timeout: 3000,
 })
@@ -15,10 +15,31 @@ type OnChainEvent = {
   txHash: string
 }
 
-export const sendOnChainEvent = async (event: OnChainEvent) => {
+export type EventResponse = {
+  result: string
+  message: string
+}
+
+export const sendOnChainEvent = async (event: OnChainEvent): Promise<EventResponse> => {
+  if (process.env.NODE_ENV !== 'production') {
+    return {
+      result: 'failed',
+      message: 'Not in production environment',
+    }
+  }
+
   try {
     await analyticsInstance.post('/events', { type: 'on-chain', events: [event] })
-  } catch {}
+    return {
+      result: 'success',
+      message: 'Event sent successfully',
+    }
+  } catch {
+    return {
+      result: 'failed',
+      message: 'Failed to send event',
+    }
+  }
 }
 
 type OffChainEvent = {
@@ -27,8 +48,25 @@ type OffChainEvent = {
   payload: object
 }
 
-export const sendOffChainEvent = async (event: OffChainEvent) => {
+export const sendOffChainEvent = async (event: OffChainEvent): Promise<EventResponse> => {
+  if (process.env.NODE_ENV !== 'production') {
+    return {
+      result: 'failed',
+      message: 'Not in production environment',
+    }
+  }
+
   try {
     await analyticsInstance.post('/events', { type: 'off-chain', events: [event] })
-  } catch {}
+
+    return {
+      result: 'success',
+      message: 'Event sent successfully',
+    }
+  } catch {
+    return {
+      result: 'failed',
+      message: 'Failed to send event',
+    }
+  }
 }
