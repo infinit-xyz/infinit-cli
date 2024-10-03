@@ -1,6 +1,6 @@
-import { analyticsInstance, sendOffChainEvent, sendOnChainEvent } from '@utils/analytics'
+import { EVENT_RESPONSE_MESSAGE, analyticsInstance, sendOffChainEvent, sendOnChainEvent } from '@utils/analytics'
 import AxiosMockAdapter from 'axios-mock-adapter'
-import { beforeEach, describe, expect, test, vi } from 'vitest'
+import { afterAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
 describe('analytics utils', () => {
   const mockOnChainEvent = {
@@ -23,13 +23,17 @@ describe('analytics utils', () => {
     vi.stubEnv('NODE_ENV', 'production')
   })
 
+  afterAll(() => {
+    vi.unstubAllEnvs()
+  })
+
   describe('sendOnChainEvent', async () => {
     test('should send the on-chain event successfully', async () => {
       const result = await sendOnChainEvent(mockOnChainEvent)
 
       expect(result).toEqual({
         result: 'success',
-        message: 'Event sent successfully',
+        message: EVENT_RESPONSE_MESSAGE.SUCCESS,
       })
     })
 
@@ -40,7 +44,7 @@ describe('analytics utils', () => {
 
       expect(result).toEqual({
         result: 'failed',
-        message: 'Not in production environment',
+        message: EVENT_RESPONSE_MESSAGE.WRONG_ENV,
       })
     })
 
@@ -53,7 +57,7 @@ describe('analytics utils', () => {
 
       expect(result).toEqual({
         result: 'failed',
-        message: 'Failed to send event',
+        message: EVENT_RESPONSE_MESSAGE.FAILED,
       })
     })
   })
@@ -64,7 +68,7 @@ describe('analytics utils', () => {
 
       expect(result).toEqual({
         result: 'success',
-        message: 'Event sent successfully',
+        message: EVENT_RESPONSE_MESSAGE.SUCCESS,
       })
     })
 
@@ -75,7 +79,7 @@ describe('analytics utils', () => {
 
       expect(result).toEqual({
         result: 'failed',
-        message: 'Not in production environment',
+        message: EVENT_RESPONSE_MESSAGE.WRONG_ENV,
       })
     })
 
@@ -88,7 +92,7 @@ describe('analytics utils', () => {
 
       expect(result).toEqual({
         result: 'failed',
-        message: 'Failed to send event',
+        message: EVENT_RESPONSE_MESSAGE.FAILED,
       })
     })
   })
