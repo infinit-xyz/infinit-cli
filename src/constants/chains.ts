@@ -56,6 +56,28 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
       instance: viemChains.mantle,
     },
   },
+  [CHAIN_ID.BNB_Chain]: {
+    chainId: CHAIN_ID.BNB_Chain,
+    name: 'BNB Chain',
+    shortName: 'BSC',
+    rpcList: [
+      'https://rpc.ankr.com/bsc',
+      'https://1rpc.io/bnb',
+      'https://binance.llamarpc.com',
+      'https://bsc-dataseed1.bnbchain.org',
+      'https://bsc-dataseed2.bnbchain.org',
+      'https://bsc-dataseed3.bnbchain.org',
+      'https://bsc-dataseed4.bnbchain.org',
+    ],
+    nativeCurrency: {
+      name: 'Binance Coin',
+      symbol: 'BNB',
+      decimals: 18,
+    },
+    viemChain: {
+      instance: viemChains.bsc,
+    },
+  },
   [CHAIN_ID.Sepolia]: {
     chainId: CHAIN_ID.Sepolia,
     name: '[Testnet] Sepolia',
@@ -84,26 +106,18 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
       instance: viemChains.holesky,
     },
   },
-  [CHAIN_ID.BNB_Chain]: {
-    chainId: CHAIN_ID.BNB_Chain,
-    name: 'BNB Chain',
-    shortName: 'BSC',
-    rpcList: [
-      'https://rpc.ankr.com/bsc',
-      'https://1rpc.io/bnb',
-      'https://binance.llamarpc.com',
-      'https://bsc-dataseed1.bnbchain.org',
-      'https://bsc-dataseed2.bnbchain.org',
-      'https://bsc-dataseed3.bnbchain.org',
-      'https://bsc-dataseed4.bnbchain.org',
-    ],
+  [CHAIN_ID.Berachain_bArtio]: {
+    chainId: CHAIN_ID.Berachain_bArtio,
+    name: '[Testnet] Berachain bArtio',
+    shortName: 'Berachain bArtio',
+    rpcList: ['https://bartio.rpc.berachain.com', 'https://bartio.drpc.org'],
     nativeCurrency: {
-      name: 'Binance Coin',
-      symbol: 'BNB',
+      name: 'BERA Token',
+      symbol: 'BERA',
       decimals: 18,
     },
     viemChain: {
-      instance: viemChains.bsc,
+      instance: viemChains.berachainTestnetbArtio,
     },
   },
   // [CHAIN_ID.Arbitrum]: {
