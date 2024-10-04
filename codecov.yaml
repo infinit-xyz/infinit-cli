@@ -2,7 +2,7 @@ codecov:
   require_ci_to_pass: false
 
 comment:
-  layout: 'header, diff, flags, files'
+  layout: 'condensed_header, condensed_files, condensed_footer'
 
 coverage:
   status:
