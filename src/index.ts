@@ -80,7 +80,6 @@ projectCommands
 /**
  * Account scope commands
  */
-
 const accountCommands = program.command('account').description('Manage local accounts')
 
 accountCommands
@@ -128,7 +127,6 @@ accountCommands
 /**
  * Action scope commands
  */
-
 const actionCommands = program.command('action').description('Manage INFINIT actions')
 
 actionCommands
@@ -139,6 +137,9 @@ actionCommands
     handleListAction()
   })
 
+/**
+ * Script scope commands
+ */
 const scriptCommands = program.command('script').description('Manage INFINIT scripts')
 
 scriptCommands
@@ -154,9 +155,10 @@ scriptCommands
   .command('execute')
   .description('Execute a specified script in the scripts/ folder')
   .argument('[file]', 'Script file name') // optional
-  .action(async (fileName?: string) => {
+  .option('--ignore-cache', 'Execute without using saved cache (if any)')
+  .action(async (fileName, option) => {
     isRunOnLocalOnly()
-    await handleExecuteScript(fileName)
+    await handleExecuteScript(fileName, option)
   })
 
 program.showSuggestionAfterError(true)
