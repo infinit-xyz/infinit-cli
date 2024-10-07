@@ -21,6 +21,24 @@ export class Config {
     // this.#loadConfig()
   }
 
+  /**
+   * Private
+   */
+
+  private getExpectedConfigPath() {
+    return path.join(process.cwd(), 'src', FILE_NAMES.CONFIG)
+  }
+
+  private saveConfig() {
+    ensureCwdRootProject()
+
+    const expectedConfigPath = this.getExpectedConfigPath()
+    fs.writeFileSync(expectedConfigPath, yaml.dump(this.infinitConfig))
+  }
+
+  /**
+   * Public
+   */
   public getProjectConfig(): InfinitConfigSchema {
     if (this.infinitConfig) {
       return this.infinitConfig
@@ -29,7 +47,7 @@ export class Config {
     ensureCwdRootProject()
 
     const isConfigFileExist = checkFilesExist({ src: { [FILE_NAMES.CONFIG]: true } }, process.cwd(), 'require', true)
-    const expectedConfigPath = path.join(process.cwd(), 'src', FILE_NAMES.CONFIG)
+    const expectedConfigPath = this.getExpectedConfigPath()
 
     if (!isConfigFileExist) {
       throw new FileNotFoundError(expectedConfigPath)
@@ -38,6 +56,18 @@ export class Config {
     const config = yaml.load(fs.readFileSync(expectedConfigPath, 'utf-8')) as InfinitConfigSchema
     this.infinitConfig = config
     return config
+  }
+
+  // check Blockscout
+  public setProjectConfigBlockExplorer(config: Partial<InfinitConfigSchema['chain_info']['block_explorer']>) {
+    const projectConfig = this.getProjectConfig()
+    projectConfig.chain_info.block_explorer = {
+      ...projectConfig.chain_info.block_explorer,
+      ...config,
+    }
+    this.infinitConfig = projectConfig
+
+    this.saveConfig()
   }
 }
 

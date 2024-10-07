@@ -1,16 +1,25 @@
-import { $ } from 'bun'
+import { $, ShellError } from 'bun'
 import { watch } from 'fs'
 
-const BUILD_COMMAND = $`bun run clean:bin && bun run build:script`
+const runBuild = async () => {
+  try {
+    const output = await $`bun run typecheck && bun run clean:bin && NODE_ENV=production bun run build:script`.text()
+    console.log(output)
 
-const _output = await BUILD_COMMAND.text()
-console.log(_output)
+    await $`bun link`.quiet()
+  } catch (err) {
+    const _err = err as ShellError
+    console.error(err)
+    console.error(_err?.stdout?.toString() ?? 'no stdout')
+  }
+}
+
+await runBuild()
 console.log('Watching for changes...\n')
 
 const watcher = watch(`src`, { recursive: true }, async (event, filename) => {
   console.log(`Detected ${event} in ${filename}`)
-  const output = await BUILD_COMMAND.text()
-  console.log(output)
+  await runBuild()
 })
 
 process.on('SIGINT', () => {

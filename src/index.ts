@@ -2,13 +2,14 @@ import { Option, program } from 'commander'
 
 import { handleDeleteAccount, handleExportAccount, handleGenerateAccount, handleImportAccount, handleListAccounts } from '@commands/account'
 import { handleListAction } from '@commands/action'
+import { handleVerifyContract } from '@commands/contract/verify'
 import { handleInitializeCli } from '@commands/init'
 import { handleCompileProject } from '@commands/project'
 import { handleExecuteScript, handleGenerateScript } from '@commands/script'
+import { EXPECTED_NODE_VERSION } from '@constants'
 import { chalkError } from '@constants/chalk'
 import { isRunOnLocalOnly } from '@utils/invoke-cli'
 
-import { EXPECTED_NODE_VERSION } from '@constants'
 import { version } from '../package.json'
 
 // Function to validate Node.js version
@@ -139,6 +140,10 @@ actionCommands
     handleListAction()
   })
 
+/**
+ * Script scope commands
+ */
+
 const scriptCommands = program.command('script').description('Manage INFINIT scripts')
 
 scriptCommands
@@ -157,6 +162,20 @@ scriptCommands
   .action(async (fileName?: string) => {
     isRunOnLocalOnly()
     await handleExecuteScript(fileName)
+  })
+
+/**
+ * Contract scope commands
+ */
+
+const contractCommands = program.command('contract').description('Manage INFINIT contracts')
+
+contractCommands
+  .command('verify')
+  .description('Verify a contract on the blockchain')
+  .action(async () => {
+    isRunOnLocalOnly()
+    await handleVerifyContract()
   })
 
 program.showSuggestionAfterError(true)

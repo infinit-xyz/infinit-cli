@@ -23,6 +23,12 @@ describe('Action: list', () => {
           symbol: 'ETH',
           decimals: 18,
         },
+        block_explorer: {
+          name: '',
+          url: '',
+          api_url: '',
+          api_key: '',
+        },
         viem: { name: 'arbitrumSepolia' },
       },
     }))
@@ -54,6 +60,12 @@ describe('Action: list', () => {
           name: 'Ethereum',
           symbol: 'ETH',
           decimals: 18,
+        },
+        block_explorer: {
+          name: '',
+          url: '',
+          api_url: '',
+          api_key: '',
         },
         viem: { name: 'arbitrumSepolia' },
       },

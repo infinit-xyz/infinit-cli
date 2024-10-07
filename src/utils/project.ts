@@ -114,6 +114,12 @@ export const initializeCliProject = async (
       network_id: parseInt(chainInfo.chainId),
       native_currency: chainInfo.nativeCurrency,
       rpc_url: chainInfo.rpcList[0],
+      block_explorer: {
+        name: chainInfo.viemChain.instance.blockExplorers?.default.name ?? '',
+        url: chainInfo.viemChain.instance.blockExplorers?.default.url ?? '',
+        api_url: chainInfo.viemChain.instance.blockExplorers?.default.apiUrl ?? '',
+        api_key: '',
+      },
     },
     allow_analytics: allowAnalytics,
   }

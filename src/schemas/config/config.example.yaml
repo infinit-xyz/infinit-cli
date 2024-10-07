@@ -4,6 +4,16 @@ project_name: "My Project"
 protocol_module: "init-capital"
 chain_info:
   name: 'Ethereum'
+  short_name: 'ETH'
   network_id: 1
   rpc_url: https://example.com
+  native_currency:
+    name: 'Ether'
+    symbol: 'ETH'
+    decimals: 18
+  block_explorer:
+    name: 'Etherscan'
+    url: "https://etherscan.io"
+    api_url: "https://api.etherscan.io"
+    api_key: "MY_API_KEY"
 allow_analytics: false

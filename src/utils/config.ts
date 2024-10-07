@@ -51,6 +51,13 @@ export const getProjectChainInfo = (): ChainInfo => {
         http: [_config.chain_info.rpc_url],
       },
     },
+    blockExplorers: {
+      default: {
+        name: _config.chain_info.block_explorer.name ?? 'Custom Explorer',
+        url: _config.chain_info.block_explorer.url,
+        apiUrl: _config.chain_info.block_explorer.api_url,
+      },
+    },
   })
   const viemInstance = chainInfo?.viemChain.instance ?? customInstance
 

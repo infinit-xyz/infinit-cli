@@ -17,14 +17,10 @@
   "bin": {
     "infinit": "bin/cli.js"
   },
-  "files": [
-    "/bin",
-    "/dist",
-    ".bun.lockb"
-  ],
+  "files": ["/bin", "/dist", ".bun.lockb"],
   "scripts": {
     "dev": "bun scripts/dev.ts",
-    "build": "bun run clean:bin && NODE_ENV=production bun run build:script",
+    "build": "bun run typecheck && bun run clean:bin && NODE_ENV=production bun run build:script",
     "build:script": "bun scripts/build.ts",
     "clean:bin": "find bin ! -name 'cli.js' -type f -exec rm -f {} +",
     "clean": "bun run clean:bin && rm -rf node_modules dist",
