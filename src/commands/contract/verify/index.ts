@@ -17,11 +17,6 @@ export const handleVerifyContract = async () => {
   const projectConfig = config.getProjectConfig()
   const { registry } = readProjectRegistry()
 
-  // let explorerName: string = projectConfig.chain_info.block_explorer.name?.trim()
-  // if (explorerName === '') {
-  //   explorerName = await explorerNamePrompt()
-  // }
-
   let explorerApiUrl: string = projectConfig.chain_info.block_explorer.api_url?.trim()
   if (explorerApiUrl === '') {
     explorerApiUrl = await explorerApiUrlPrompt()
