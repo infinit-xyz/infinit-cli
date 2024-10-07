@@ -73,6 +73,7 @@
     "@types/inquirer": "^9.0.7",
     "@types/js-yaml": "^4.0.9",
     "@types/lodash": "^4.17.6",
+    "@types/mute-stream": "^0.0.4",
     "@vitest/coverage-v8": "^2.1.1",
     "axios-mock-adapter": "^2.0.0",
     "execa": "^9.3.0",
