@@ -1,5 +1,13 @@
 # @infinit-xyz/cli
 
+## 0.0.0-alpha.11
+
+### Patch Changes
+
+- [#61](https://github.com/infinit-xyz/infinit-cli/pull/61) [`f8347e0`](https://github.com/infinit-xyz/infinit-cli/commit/f8347e04e53d0dc5d4fb2d5c7f2048268bf57a5a) Thanks [@dependabot](https://github.com/apps/dependabot)! - bump @inquirer/prompts from 6.0.1 to 7.0.0
+
+- [#58](https://github.com/infinit-xyz/infinit-cli/pull/58) [`9a1ec4b`](https://github.com/infinit-xyz/infinit-cli/commit/9a1ec4b1ffb8e653b69304a2f5594072bc983b1c) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - add berachain bArtio
+
 ## 0.0.0-alpha.10
 
 ### Minor Changes
