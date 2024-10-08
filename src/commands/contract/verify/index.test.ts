@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash'
+import { cloneDeep, set } from 'lodash'
 import { beforeAll, describe, expect, test, vi } from 'vitest'
 
 import { config } from '@classes'
@@ -69,9 +69,9 @@ describe('handleVerifyContract', () => {
 
     expect(mockVerifier).toHaveBeenCalledTimes(1)
     expect(mockVerifier).toHaveBeenCalledWith(mockPublicClient, {
-      apiKey: MOCK_PROJECT_CONFIG.chain_info.block_explorer.api_key,
-      apiUrl: MOCK_PROJECT_CONFIG.chain_info.block_explorer.api_url,
-      url: MOCK_PROJECT_CONFIG.chain_info.block_explorer.url,
+      apiKey: MOCK_PROJECT_CONFIG.chain_info.block_explorer?.api_key,
+      apiUrl: MOCK_PROJECT_CONFIG.chain_info.block_explorer?.api_url,
+      url: MOCK_PROJECT_CONFIG.chain_info.block_explorer?.url,
     })
 
     expect(mockVerifyContract).toHaveBeenCalledTimes(1)
@@ -80,9 +80,9 @@ describe('handleVerifyContract', () => {
 
   test('should prompt for explorer info if not provided', async () => {
     const newMockConfig = cloneDeep(MOCK_PROJECT_CONFIG)
-    newMockConfig.chain_info.block_explorer.api_url = ''
-    newMockConfig.chain_info.block_explorer.api_key = ''
-    newMockConfig.chain_info.block_explorer.url = ''
+    set(newMockConfig, 'chain_info.block_explorer.api_url', '')
+    set(newMockConfig, 'chain_info.block_explorer.api_key', '')
+    set(newMockConfig, 'chain_info.block_explorer.url', '')
 
     vi.spyOn(config, 'getProjectConfig').mockReturnValue(newMockConfig)
     const setProjectConfigBlockExplorerSpy = vi.spyOn(config, 'setProjectConfigBlockExplorer').mockImplementationOnce(vi.fn())
