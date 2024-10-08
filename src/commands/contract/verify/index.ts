@@ -57,19 +57,23 @@ export const handleVerifyContract = async () => {
   const projectConfig = config.getProjectConfig()
   const { registry } = readProjectRegistry()
 
-  let explorerApiUrl: string = projectConfig.chain_info.block_explorer.api_url?.trim()
+  let explorerApiUrl: string | undefined = projectConfig.chain_info.block_explorer?.api_url?.trim()
   if (explorerApiUrl === '') {
     explorerApiUrl = await explorerApiUrlPrompt()
   }
 
-  let apiKey: string = projectConfig.chain_info.block_explorer.api_key?.trim()
+  let apiKey: string | undefined = projectConfig.chain_info.block_explorer?.api_key?.trim()
   if (apiKey === '') {
     apiKey = await explorerApiKeyPrompt()
   }
 
-  let explorerUrl: string = projectConfig.chain_info.block_explorer.url?.trim()
+  let explorerUrl: string | undefined = projectConfig.chain_info.block_explorer?.url?.trim()
   if (explorerUrl === '') {
     explorerUrl = await explorerUrlPrompt()
+  }
+
+  if (!explorerApiUrl || !apiKey || !explorerUrl) {
+    throw new Error('Block explorer configuration is required')
   }
 
   config.setProjectConfigBlockExplorer({

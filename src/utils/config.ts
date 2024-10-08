@@ -42,6 +42,10 @@ export const getProjectChainInfo = (): ChainInfo => {
     throw new ValidateInputValueError(`Chain ${_config.chain_info.network_id} is not supported`)
   }
 
+  if (!_config.chain_info.block_explorer) {
+    throw new ValidateInputValueError(`Block explorer info not found`)
+  }
+
   const customInstance = defineChain({
     id: _config.chain_info.network_id,
     name: _config.chain_info.name,
@@ -53,9 +57,9 @@ export const getProjectChainInfo = (): ChainInfo => {
     },
     blockExplorers: {
       default: {
-        name: _config.chain_info.block_explorer.name ?? 'Custom Explorer',
-        url: _config.chain_info.block_explorer.url,
-        apiUrl: _config.chain_info.block_explorer.api_url,
+        name: _config.chain_info.block_explorer?.name ?? 'Custom Explorer',
+        url: _config.chain_info.block_explorer?.url ?? '',
+        apiUrl: _config.chain_info.block_explorer?.api_url,
       },
     },
   })

@@ -26,7 +26,7 @@ export interface InfinitConfigSchema {
       symbol: string
       decimals: number
     }
-    block_explorer: {
+    block_explorer?: {
       name?: string
       url: Url
       api_url: Url

@@ -59,12 +59,11 @@ export class Config {
   }
 
   // check Blockscout
-  public setProjectConfigBlockExplorer(config: Partial<InfinitConfigSchema['chain_info']['block_explorer']>) {
+  public setProjectConfigBlockExplorer(config: InfinitConfigSchema['chain_info']['block_explorer']) {
     const projectConfig = this.getProjectConfig()
-    projectConfig.chain_info.block_explorer = {
-      ...projectConfig.chain_info.block_explorer,
-      ...config,
-    }
+
+    projectConfig.chain_info.block_explorer = config
+
     this.infinitConfig = projectConfig
 
     this.saveConfig()

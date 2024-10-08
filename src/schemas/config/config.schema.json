@@ -83,7 +83,7 @@
           "$ref": "#/definitions/Url"
         }
       },
-      "required": ["name", "short_name", "network_id", "native_currency", "rpc_url", "block_explorer"]
+      "required": ["name", "short_name", "network_id", "native_currency", "rpc_url"]
     },
     "allow_analytics": {
       "type": "boolean"
