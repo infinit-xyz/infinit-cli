@@ -1,7 +1,7 @@
 import { cloneDeep, set } from 'lodash'
-import { beforeAll, describe, expect, test, vi } from 'vitest'
+import { type MockInstance, afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
 
-import { config } from '@classes'
+import { Config, config } from '@classes'
 import { protocolModules } from '@constants/protocol-module'
 import { PROTOCOL_MODULE } from '@enums/module'
 import type { InfinitConfigSchema } from '@schemas/generated'
@@ -50,15 +50,21 @@ describe('handleVerifyContract', () => {
     }
   })
   const mockPublicClient = vi.fn() as unknown as PublicClient
+  let setProjectConfigBlockExplorerSpy: MockInstance<Config['setProjectConfigBlockExplorer']>
 
   beforeAll(() => {
     vi.mocked(protocolModules)['aave-v3'].Verifier = mockVerifier
     vi.mocked(createPublicClient).mockReturnValue(mockPublicClient)
+
+    setProjectConfigBlockExplorerSpy = vi.spyOn(config, 'setProjectConfigBlockExplorer').mockImplementation(vi.fn())
+  })
+
+  afterEach(() => {
+    vi.clearAllMocks()
   })
 
   test('should handle explorer info and call verify contract correctly', async () => {
     vi.spyOn(config, 'getProjectConfig').mockReturnValue(MOCK_PROJECT_CONFIG)
-    const setProjectConfigBlockExplorerSpy = vi.spyOn(config, 'setProjectConfigBlockExplorer')
 
     await handleVerifyContract()
 
@@ -78,34 +84,56 @@ describe('handleVerifyContract', () => {
     expect(mockVerifyContract).toHaveBeenCalledWith({}, expect.any(Function))
   })
 
-  test('should prompt for explorer info if not provided', async () => {
-    const newMockConfig = cloneDeep(MOCK_PROJECT_CONFIG)
-    set(newMockConfig, 'chain_info.block_explorer.api_url', '')
-    set(newMockConfig, 'chain_info.block_explorer.api_key', '')
-    set(newMockConfig, 'chain_info.block_explorer.url', '')
+  describe('no block explorer info from config', () => {
+    beforeAll(() => {
+      const newMockConfig = cloneDeep(MOCK_PROJECT_CONFIG)
+      set(newMockConfig, 'chain_info.block_explorer.api_url', '')
+      set(newMockConfig, 'chain_info.block_explorer.api_key', '')
+      set(newMockConfig, 'chain_info.block_explorer.url', '')
 
-    vi.spyOn(config, 'getProjectConfig').mockReturnValue(newMockConfig)
-    const setProjectConfigBlockExplorerSpy = vi.spyOn(config, 'setProjectConfigBlockExplorer').mockImplementationOnce(vi.fn())
+      vi.spyOn(config, 'getProjectConfig').mockReturnValue(newMockConfig)
+    })
 
-    const userInputApiUrl = 'FAKE_USER_INPUT_API_URL'
-    const userInputApiKey = 'FAKE_USER_INPUT_API_KEY'
-    const userInputUrl = 'FAKE_USER_INPUT_URL'
+    test('should prompt for explorer info if not provided', async () => {
+      const userInputApiUrl = 'FAKE_USER_INPUT_API_URL'
+      const userInputApiKey = 'FAKE_USER_INPUT_API_KEY'
+      const userInputUrl = 'FAKE_USER_INPUT_URL'
 
-    vi.mocked(explorerApiUrlPrompt).mockResolvedValue(userInputApiUrl)
-    vi.mocked(explorerApiKeyPrompt).mockResolvedValue(userInputApiKey)
-    vi.mocked(explorerUrlPrompt).mockResolvedValue(userInputUrl)
+      vi.mocked(explorerApiUrlPrompt).mockResolvedValue(userInputApiUrl)
+      vi.mocked(explorerApiKeyPrompt).mockResolvedValue(userInputApiKey)
+      vi.mocked(explorerUrlPrompt).mockResolvedValue(userInputUrl)
 
-    await handleVerifyContract()
+      await handleVerifyContract()
 
-    expect(explorerApiUrlPrompt).toHaveBeenCalledTimes(1)
-    expect(explorerApiKeyPrompt).toHaveBeenCalledTimes(1)
-    expect(explorerUrlPrompt).toHaveBeenCalledTimes(1)
-    expect(setProjectConfigBlockExplorerSpy).toHaveBeenCalledTimes(1)
+      expect(explorerApiUrlPrompt).toHaveBeenCalledTimes(1)
+      expect(explorerApiKeyPrompt).toHaveBeenCalledTimes(1)
+      expect(explorerUrlPrompt).toHaveBeenCalledTimes(1)
+      expect(setProjectConfigBlockExplorerSpy).toHaveBeenCalledTimes(1)
 
-    expect(setProjectConfigBlockExplorerSpy).toHaveBeenCalledWith({
-      api_url: userInputApiUrl,
-      api_key: userInputApiKey,
-      url: userInputUrl,
+      expect(setProjectConfigBlockExplorerSpy).toHaveBeenCalledWith({
+        api_url: userInputApiUrl,
+        api_key: userInputApiKey,
+        url: userInputUrl,
+      })
+    })
+
+    test('should throw error if explorer info is missing', async () => {
+      const userInputApiUrl = ''
+      const userInputApiKey = ''
+      const userInputUrl = ''
+
+      vi.mocked(explorerApiUrlPrompt).mockResolvedValue(userInputApiUrl)
+      vi.mocked(explorerApiKeyPrompt).mockResolvedValue(userInputApiKey)
+      vi.mocked(explorerUrlPrompt).mockResolvedValue(userInputUrl)
+
+      await expect(handleVerifyContract()).rejects.toThrow('Block explorer configuration is required')
+
+      expect(explorerApiUrlPrompt).toHaveBeenCalledTimes(1)
+      expect(explorerApiKeyPrompt).toHaveBeenCalledTimes(1)
+      expect(explorerUrlPrompt).toHaveBeenCalledTimes(1)
+      expect(setProjectConfigBlockExplorerSpy).not.toHaveBeenCalled()
+      expect(mockVerifier).not.toHaveBeenCalled()
+      expect(mockVerifyContract).not.toHaveBeenCalled()
     })
   })
 })
