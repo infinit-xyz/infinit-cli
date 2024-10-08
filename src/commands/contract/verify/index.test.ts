@@ -8,13 +8,6 @@ const rm = completelyRemoveAnsi
 
 describe('contract verify', () => {
   test('callback handler', () => {
-    // const spinner = {
-    //   start: vi.fn((v) => rm(v)).mockImplementation((v) => rm(v)),
-    //   stopAndPersist: vi.fn((v) => rm(v)),
-    //   fail: vi.fn(),
-    //   info: vi.fn(),
-    //   text: '',
-    // } as unknown as Ora
     const customStream = new BufferedStream()
 
     const spinner = ora({ spinner: 'dots', stream: customStream })
