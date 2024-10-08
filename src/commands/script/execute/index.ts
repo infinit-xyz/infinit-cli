@@ -30,7 +30,12 @@ import { checkIsAccountFound } from '@utils/account'
 import { sendOnChainEvent } from '@utils/analytics'
 import { getProjectChainInfo, getProjectRpc } from '@utils/config'
 import { ensureCwdRootProject, getFilesCurrentDir, readProjectRegistry } from '@utils/files'
+import { isValidTypescriptFileName } from '@utils/string'
 import { scriptFileNamePrompt } from './index.prompt'
+
+type HandleExecuteScriptOption = {
+  ignoreCache?: boolean
+}
 
 // type casting
 // biome-ignore lint/suspicious/noExplicitAny: must assign any from reading the file
@@ -125,19 +130,21 @@ export const executeActionCallbackHandler = (spinner: Ora, filename: string, pro
  * Handlers
  */
 
-export const handleExecuteScript = async (_fileName?: string) => {
+export const handleExecuteScript = async (_fileName?: string, option: HandleExecuteScriptOption = {}) => {
   ensureCwdRootProject()
 
   const scriptFileDirectory = getScriptFileDirectory()
-  let fileName = _fileName
+  let fileName: string | undefined = _fileName
 
   if (!fileName) {
     const currentFileList = getFilesCurrentDir(scriptFileDirectory)
-    if (currentFileList.length === 0) {
+    const currentTsFileList = currentFileList.filter((v) => isValidTypescriptFileName(v))
+
+    if (currentTsFileList.length === 0) {
       throw new Error('No script file found. Please generate a script file before executing any script.')
     }
 
-    fileName = await scriptFileNamePrompt(currentFileList)
+    fileName = await scriptFileNamePrompt(currentTsFileList)
   }
 
   if (!fileName) {
@@ -145,7 +152,9 @@ export const handleExecuteScript = async (_fileName?: string) => {
   }
 
   const target = path.resolve(scriptFileDirectory, fileName)
+
   console.log('🏃 Starting Execution...\n')
+
   const spinner = ora({ spinner: 'dots' })
 
   try {
@@ -214,6 +223,7 @@ export const handleExecuteScript = async (_fileName?: string) => {
 
       await loadAccountFromPrompt(accountId)
 
+      // new line
       console.log()
 
       spinner.stopAndPersist({
@@ -242,14 +252,20 @@ export const handleExecuteScript = async (_fileName?: string) => {
       text: `Signer wallets initialized.`,
     })
 
-    // load action cache
-    const actionInfinitCache: InfinitCache | undefined = cache.getActionTxCacheForExecute(fileName)
+    let actionCache: InfinitCache | undefined = undefined
 
-    if (actionInfinitCache) {
-      spinner.stopAndPersist({
-        symbol: '✅',
-        text: `Cache found.`,
-      })
+    if (!option.ignoreCache) {
+      spinner.start('Checking cache...')
+
+      // load action cache
+      actionCache = cache.getActionTxCacheForExecute(fileName)
+
+      if (actionCache) {
+        spinner.stopAndPersist({
+          symbol: '✅',
+          text: `Cache found.`,
+        })
+      }
     }
 
     console.log()
@@ -261,7 +277,7 @@ export const handleExecuteScript = async (_fileName?: string) => {
     if (isConfirmedSimulate) {
       // setup simulation for the action
       const simulationAction = new Action({ params, signer: simulationSignerWalletRecord }) as BaseAction
-      await simulateExecute(simulationAction, registry, chainInfo, signerAddresses, spinner, actionInfinitCache)
+      await simulateExecute(simulationAction, registry, chainInfo, signerAddresses, spinner, actionCache)
     }
 
     const isConfirmedExecute = await confirm({ message: 'Confirm execution?', default: true })
@@ -274,7 +290,7 @@ export const handleExecuteScript = async (_fileName?: string) => {
     try {
       // setup the real action with real signer
       const action = new Action({ params, signer: signerWalletRecord }) as BaseAction
-      const newRegistry = await action.run(registry, actionInfinitCache, executeActionCallbackHandler(spinner, fileName, projectConfig, signerAddresses))
+      const newRegistry = await action.run(registry, actionCache, executeActionCallbackHandler(spinner, fileName, projectConfig, signerAddresses))
 
       // write new registry
       fs.writeFileSync(registryPath, JSON.stringify(newRegistry, null, 2))
@@ -293,6 +309,7 @@ export const handleExecuteScript = async (_fileName?: string) => {
     const scriptFileHistoryDirectory = getScriptHistoryFileDirectory()
     await fsExtra.move(target, path.resolve(scriptFileHistoryDirectory, fileName), { overwrite: true })
 
+    // new line
     console.log()
 
     spinner.succeed(`Successfully execute ${chalkInfo(fileName)}, go to ${chalkInfo(`infinit.registry.json`)} to see the contract addesses.`)
