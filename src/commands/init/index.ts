@@ -118,7 +118,7 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
     try {
       await compileProject(projectDirectory, protocolModule)
     } catch {
-      const compileCmd = `${packageExecute} infinit project compile`
+      const compileCmd = `${packageExecute} infinit contract compile`
       console.warn(
         chalkWarning('⚠️ Failed to compile the project. Please run ' + chalkInfo('`' + compileCmd + '`') + ' to compile the project after initializing.'),
       )
