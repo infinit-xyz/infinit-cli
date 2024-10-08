@@ -30,6 +30,7 @@ import { checkIsAccountFound } from '@utils/account'
 import { sendOnChainEvent } from '@utils/analytics'
 import { getProjectChainInfo, getProjectRpc } from '@utils/config'
 import { ensureCwdRootProject, getFilesCurrentDir, readProjectRegistry } from '@utils/files'
+import { isValidTypescriptFileName } from '@utils/string'
 import { scriptFileNamePrompt } from './index.prompt'
 
 type HandleExecuteScriptOption = {
@@ -137,7 +138,7 @@ export const handleExecuteScript = async (_fileName?: string, option: HandleExec
 
   if (!fileName) {
     const currentFileList = getFilesCurrentDir(scriptFileDirectory)
-    const currentTsFileList = currentFileList.filter((v) => v.endsWith('.ts'))
+    const currentTsFileList = currentFileList.filter((v) => isValidTypescriptFileName(v))
 
     if (currentTsFileList.length === 0) {
       throw new Error('No script file found. Please generate a script file before executing any script.')
