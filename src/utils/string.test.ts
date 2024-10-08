@@ -1,4 +1,4 @@
-import { capitalize, isPrivateKeyString, toLowerCase, trim } from '@utils/string'
+import { capitalize, isPrivateKeyString, isValidTypescriptFileName, toLowerCase, trim } from '@utils/string'
 
 import { describe, expect, test } from 'vitest'
 
@@ -65,6 +65,34 @@ describe('string', () => {
 
     test('should handle undefined correctly', () => {
       const result = isPrivateKeyString()
+
+      expect(result).toBeFalsy()
+    })
+  })
+
+  describe('isValidTypescriptFileName', () => {
+    test('should handle valid typescript filename correctly', () => {
+      const result1 = isValidTypescriptFileName('file.ts')
+      const result2 = isValidTypescriptFileName('test.script.ts')
+      const result3 = isValidTypescriptFileName('test-123.ts')
+
+      expect(result1).toBeTruthy()
+      expect(result2).toBeTruthy()
+      expect(result3).toBeTruthy()
+    })
+
+    test('should handle invalid typescript filename correctly', () => {
+      const result1 = isValidTypescriptFileName('file.js')
+      const result2 = isValidTypescriptFileName('file')
+      const result3 = isValidTypescriptFileName('.ts')
+
+      expect(result1).toBeFalsy()
+      expect(result2).toBeFalsy()
+      expect(result3).toBeFalsy()
+    })
+
+    test('should handle undefined correctly', () => {
+      const result = isValidTypescriptFileName()
 
       expect(result).toBeFalsy()
     })
