@@ -26,8 +26,7 @@ vi.mock('@utils/verifyContract', () => ({
 }))
 vi.mock('@constants/chalk', () => ({
   chalkInfo: (str: string) => str,
-  chalkError: (str: string) => str,
-  chalkSuccess: (str: string) => str,
+  chalkDim: (str: string) => str,
 }))
 vi.mock('@constants/protocol-module')
 vi.mock('./index.prompt')
@@ -53,10 +52,12 @@ describe('handleVerifyContract', () => {
   })
   const mockPublicClient = vi.fn() as unknown as PublicClient
   let setProjectConfigBlockExplorerSpy: MockInstance<Config['setProjectConfigBlockExplorer']>
+  let consoleLogSpy: MockInstance
 
   beforeAll(() => {
     vi.mocked(protocolModules)['aave-v3'].Verifier = mockVerifier
     vi.mocked(createPublicClient).mockReturnValue(mockPublicClient)
+    consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined)
 
     setProjectConfigBlockExplorerSpy = vi.spyOn(config, 'setProjectConfigBlockExplorer').mockImplementation(vi.fn())
   })
@@ -76,6 +77,14 @@ describe('handleVerifyContract', () => {
     expect(explorerApiKeyPrompt).not.toHaveBeenCalled()
     expect(explorerUrlPrompt).not.toHaveBeenCalled()
     expect(setProjectConfigBlockExplorerSpy).not.toHaveBeenCalled()
+
+    expect(consoleLogSpy).toHaveBeenCalledTimes(4)
+    expect(consoleLogSpy).toHaveBeenCalledWith(`ℹ︎ Configuration:`)
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      `Block Explorer: ${MOCK_PROJECT_CONFIG.chain_info.block_explorer?.name} (${MOCK_PROJECT_CONFIG.chain_info.block_explorer?.url})`,
+    )
+    expect(consoleLogSpy).toHaveBeenCalledWith(`Block Explorer API URL:`, MOCK_PROJECT_CONFIG.chain_info.block_explorer?.api_url)
+    expect(consoleLogSpy).toHaveBeenCalledWith(`Block Explorer API Key:`, 'FAK******KEY')
 
     expect(mockVerifier).toHaveBeenCalledTimes(1)
     expect(mockVerifier).toHaveBeenCalledWith(mockPublicClient, {
