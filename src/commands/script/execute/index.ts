@@ -22,7 +22,6 @@ import { AccountNotFoundError } from '@errors/account'
 import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
 import { FileNotFoundError } from '@errors/fs'
 import { INFINITLibraryError } from '@errors/lib'
-import { customErrorLog } from '@errors/log'
 import { ValidateInputValueError } from '@errors/validate'
 import { confirm } from '@inquirer/prompts'
 import type { InfinitConfigSchema } from '@schemas/generated'
@@ -324,10 +323,9 @@ export const handleExecuteScript = async (_fileName?: string, option: HandleExec
     spinner.succeed(`Successfully execute ${chalkInfo(fileName)}, go to ${chalkInfo(`infinit.registry.json`)} to see the contract addesses.`)
 
     spinner.stop()
-    process.exit(0)
   } catch (error) {
     spinner.stop()
-    console.error(customErrorLog(error as Error))
-    process.exit(1)
+
+    throw error
   }
 }
