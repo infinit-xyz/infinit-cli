@@ -265,6 +265,11 @@ export const handleExecuteScript = async (_fileName?: string, option: HandleExec
           symbol: '✅',
           text: `Cache found.`,
         })
+      } else {
+        spinner.stopAndPersist({
+          symbol: 'ℹ️',
+          text: `Cache not found.`,
+        })
       }
     }
 
