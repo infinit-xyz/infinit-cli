@@ -3,7 +3,7 @@ import { watch } from 'fs'
 
 const runBuild = async () => {
   try {
-    const output = await $`bun run typecheck && bun run clean:bin && NODE_ENV=production bun run build:script`.text()
+    const output = await $`bun run clean:bin && NODE_ENV=production bun run build:script`.text()
     console.log(output)
 
     await $`bun link`.quiet()
