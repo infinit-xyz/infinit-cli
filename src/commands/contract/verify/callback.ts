@@ -24,13 +24,9 @@ export const verifyContractCallbackHandler = (spinner: Ora, blockExplorerUrl: st
         spinner.start(
           `(${verifiedContracts + 1}/${totalContracts}) Verifying ${chalk.bold(chalkInfo(parsedValue.contractName))} ${chalk.dim(`(${parsedValue.address})`)}`,
         )
-        spinner.start(`Total contracts: ${totalContracts}`)
       })
       .with('contractVerificationSubmitted', () => {
-        const parsedValue = value as CallbackParams['contractVerificationSubmitted']
-        spinner.start(
-          `(${verifiedContracts + 1}/${totalContracts}) Verifying ${chalk.bold(chalkInfo(parsedValue.contractName))} ${chalk.dim(`(${parsedValue.address})`)}`,
-        )
+        // will not show anything when submitted.
       })
       .with('contractVerificationFinished', () => {
         const parsedValue = value as CallbackParams['contractVerificationFinished']

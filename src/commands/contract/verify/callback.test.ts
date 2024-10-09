@@ -1,44 +1,71 @@
 import ora from 'ora'
-import { describe, expect, test, vi } from 'vitest'
+import { type MockInstance, beforeAll, describe, expect, test, vi } from 'vitest'
 
 import { BufferedStream } from '@classes/BufferedStream/BufferedStream'
 import { completelyRemoveAnsi } from '@utils/ansi'
+import type { Address } from 'viem'
 import { verifyContractCallbackHandler } from './callback'
 
 const rm = completelyRemoveAnsi
 
 describe('callback.ts', () => {
   describe('verifyContractCallbackHandler', () => {
-    test('should handle callback correctly', () => {
-      const customStream = new BufferedStream()
+    const FAKE_BLOCK_EXPLORER_URL = 'FAKE_BLOCK_EXPLORER_URL'
+    const MOCK_CONTRACT_DATA: {
+      contractName: string
+      address: Address
+    }[] = [
+      {
+        contractName: 'contractName1',
+        address: '0x001',
+      },
+      {
+        contractName: 'contractName2',
+        address: '0x002',
+      },
+      {
+        contractName: 'contractName3',
+        address: '0x003',
+      },
+    ]
 
-      const spinner = ora({ spinner: 'dots', stream: customStream })
-      const callback = verifyContractCallbackHandler(spinner, 'blockExplorerUrl')
-      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined)
+    const customStream = new BufferedStream()
 
-      callback('contractVerificationInfo', { totalContracts: 3 })
-      expect(consoleLogSpy).toHaveBeenCalledWith('📝 Total contracts: 3')
+    const spinner = ora({ spinner: 'dots', stream: customStream })
+    const callback = verifyContractCallbackHandler(spinner, FAKE_BLOCK_EXPLORER_URL)
+    let consoleLogSpy: MockInstance<Console['log']>
 
-      callback('contractVerificationStarted', { contractName: 'contractName', address: '0x001' })
-      expect(rm(customStream.getLastChunk({ raw: true }))).toBe(`- (1/3) 🔍 Verifying... contractName (0x001)\n`)
+    beforeAll(() => {
+      consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined)
+    })
 
-      callback('contractVerificationSubmitted', { contractName: 'contractName', address: '0x001' })
-      expect(rm(customStream.getLastChunk({ raw: true }))).toBe(`- (1/3) 🚀 Submitted contractName (0x001)\n`)
+    test('should handle contractVerificationInfo correctly', () => {
+      callback('contractVerificationInfo', { totalContracts: MOCK_CONTRACT_DATA.length })
+      expect(consoleLogSpy).toHaveBeenCalledWith(`📝 Verifying ${MOCK_CONTRACT_DATA.length} contracts in total.`)
+    })
 
-      callback('contractVerificationFinished', { contractName: 'contractName', address: '0x001' })
-      expect(rm(customStream.getLastChunk({ raw: true }))).toBe(`✔ (1/3) Verified contractName (0x001)\n`)
+    test('should handle contractVerificationStarted, contractVerificationSubmitted, contractVerificationFinished correctly', () => {
+      for (let i = 0; i < MOCK_CONTRACT_DATA.length; ++i) {
+        const contractName = MOCK_CONTRACT_DATA[i].contractName
+        const address: Address = MOCK_CONTRACT_DATA[i].address
 
-      callback('contractVerificationStarted', { contractName: 'contractName2', address: '0x002' })
-      expect(rm(customStream.getLastChunk({ raw: true }))).toBe(`- (2/3) 🔍 Verifying... contractName2 (0x002)\n`)
+        callback('contractVerificationStarted', { contractName: contractName, address: address })
+        expect(rm(customStream.getLastChunk({ raw: true }))).toBe(`- (${i + 1}/${MOCK_CONTRACT_DATA.length}) Verifying ${contractName} (${address})\n`)
 
-      callback('contractVerificationFinished', { contractName: 'contractName2', address: '0x002' })
-      expect(rm(customStream.getLastChunk({ raw: true }))).toBe(`✔ (2/3) Verified contractName2 (0x002)\n`)
+        callback('contractVerificationSubmitted', { contractName: contractName, address: address })
+        // we are currently not doing anything when submitted so the log should be from previous action
+        expect(rm(customStream.getLastChunk({ raw: true }))).toBe(`- (${i + 1}/${MOCK_CONTRACT_DATA.length}) Verifying ${contractName} (${address})\n`)
 
-      callback('contractVerificationStarted', { contractName: 'contractName3', address: '0x003' })
-      expect(rm(customStream.getLastChunk({ raw: true }))).toBe(`- (3/3) 🔍 Verifying... contractName3 (0x003)\n`)
-
-      callback('contractVerificationFinished', { contractName: 'contractName3', address: '0x003' })
-      expect(rm(customStream.getLastChunk({ raw: true }))).toBe(`🎉 All 3 contracts have been verified!\n`)
+        callback('contractVerificationFinished', { contractName: contractName, address: address })
+        if (i === MOCK_CONTRACT_DATA.length - 1) {
+          // last one
+          expect(rm(customStream.getLastChunk({ raw: true }))).toBe(
+            `🎉 Contract verification completed. Visit ${FAKE_BLOCK_EXPLORER_URL} to view the result.\n`,
+          )
+        } else {
+          expect(rm(customStream.getLastChunk({ raw: true }))).toBe(`✔ (${i + 1}/${MOCK_CONTRACT_DATA.length}) Verified ${contractName} (${address})\n`)
+        }
+      }
     })
   })
 })
