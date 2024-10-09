@@ -77,7 +77,7 @@
               "type": "string"
             }
           },
-          "required": ["url", "api_url", "api_key"]
+          "required": ["name", "url", "api_url", "api_key"]
         },
         "rpc_url": {
           "$ref": "#/definitions/Url"

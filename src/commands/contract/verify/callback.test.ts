@@ -13,7 +13,7 @@ describe('callback.ts', () => {
       const customStream = new BufferedStream()
 
       const spinner = ora({ spinner: 'dots', stream: customStream })
-      const callback = verifyContractCallbackHandler(spinner)
+      const callback = verifyContractCallbackHandler(spinner, 'blockExplorerUrl')
       const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined)
 
       callback('contractVerificationInfo', { totalContracts: 3 })

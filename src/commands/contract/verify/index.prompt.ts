@@ -1,5 +1,5 @@
 import { ValidatePrompt } from '@commons/prompt-wrapper'
-import { input, password } from '@inquirer/prompts'
+import { confirm, input, password } from '@inquirer/prompts'
 import { validate } from '@utils/validations'
 
 export const explorerNamePrompt = async (): Promise<string> => {
@@ -46,4 +46,11 @@ export const explorerUrlPrompt = async (): Promise<string> => {
     validate.required,
     validate.url,
   ))!
+}
+
+export const confirmPrompt = async (): Promise<boolean> => {
+  return await confirm({
+    message: 'Confirm?',
+    default: true,
+  })
 }

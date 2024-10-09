@@ -1,20 +1,28 @@
+import chalk from 'chalk'
 import ora from 'ora'
 import { createPublicClient, http } from 'viem'
 
 import { config } from '@classes'
+import { chalkInfo } from '@constants/chalk'
 import { protocolModules } from '@constants/protocol-module'
 import type { PROTOCOL_MODULE } from '@enums/module'
 import { getProjectChainInfo, getProjectRpc } from '@utils/config'
 import { readProjectRegistry } from '@utils/files'
 
 import { verifyContractCallbackHandler } from './callback'
-import { explorerApiKeyPrompt, explorerApiUrlPrompt, explorerUrlPrompt } from './index.prompt'
+import { confirmPrompt, explorerApiKeyPrompt, explorerApiUrlPrompt, explorerNamePrompt, explorerUrlPrompt } from './index.prompt'
 
 export const handleVerifyContract = async () => {
   const projectConfig = config.getProjectConfig()
   const { registry } = readProjectRegistry()
 
   let isExplorerInfoUpdated = false
+
+  let explorerName: string | undefined = projectConfig.chain_info.block_explorer?.name?.trim()
+  if (explorerName === '' || !explorerName) {
+    explorerName = await explorerNamePrompt()
+    isExplorerInfoUpdated = true
+  }
 
   let explorerApiUrl: string | undefined = projectConfig.chain_info.block_explorer?.api_url?.trim()
   if (explorerApiUrl === '') {
@@ -34,12 +42,28 @@ export const handleVerifyContract = async () => {
     isExplorerInfoUpdated = true
   }
 
-  if (!explorerApiUrl || !apiKey || !explorerUrl) {
-    throw new Error('Block explorer configuration is required')
+  if (!explorerName || !explorerApiUrl || !apiKey || !explorerUrl) {
+    throw new Error('Invalid Config, please recheck the config with the documentation.\n' + 'https://dev.infinit.tech/guides/configuration')
+  }
+
+  const SHOW_API_LENGTH = 6
+  const maskedApiKey = apiKey.slice(0, SHOW_API_LENGTH / 2) + '*'.repeat(apiKey.length - SHOW_API_LENGTH) + apiKey.slice(-SHOW_API_LENGTH / 2)
+
+  console.log(`ℹ︎ Configuration:`)
+  console.log(`Block Explorer: ${chalkInfo(explorerName)} ${chalk.dim(`(${explorerUrl})`)}`)
+  console.log('Block Explorer API URL:', chalkInfo(explorerApiUrl))
+  console.log('Block Explorer API Key:', chalkInfo(maskedApiKey))
+
+  const isConfirm = await confirmPrompt()
+
+  if (!isConfirm) {
+    console.log('User denied the confirmation to verify the contract.')
+    process.exit(0)
   }
 
   if (isExplorerInfoUpdated) {
     config.setProjectConfigBlockExplorer({
+      name: explorerName,
       api_url: explorerApiUrl,
       api_key: apiKey,
       url: explorerUrl,
@@ -59,5 +83,5 @@ export const handleVerifyContract = async () => {
   const spinner = ora({ spinner: 'dots' })
 
   // Verify
-  verifier.verify(registry, verifyContractCallbackHandler(spinner))
+  verifier.verify(registry, verifyContractCallbackHandler(spinner, explorerUrl))
 }
