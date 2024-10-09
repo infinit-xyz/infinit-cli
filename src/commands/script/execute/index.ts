@@ -21,7 +21,7 @@ import type { PROTOCOL_MODULE } from '@enums/module'
 import { AccountNotFoundError } from '@errors/account'
 import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
 import { FileNotFoundError } from '@errors/fs'
-import { ProtocolModuleLibError } from '@errors/lib'
+import { INFINITLibraryError } from '@errors/lib'
 import { customErrorLog } from '@errors/log'
 import { ValidateInputValueError } from '@errors/validate'
 import { confirm } from '@inquirer/prompts'
@@ -292,20 +292,24 @@ export const handleExecuteScript = async (_fileName?: string, option: HandleExec
       return
     }
 
+    let newRegistry: object
+
     try {
       // setup the real action with real signer
       const action = new Action({ params, signer: signerWalletRecord }) as BaseAction
-      const newRegistry = await action.run(registry, actionCache, executeActionCallbackHandler(spinner, fileName, projectConfig, signerAddresses))
-
-      // write new registry
-      fs.writeFileSync(registryPath, JSON.stringify(newRegistry, null, 2))
+      newRegistry = await action.run(registry, actionCache, executeActionCallbackHandler(spinner, fileName, projectConfig, signerAddresses))
     } catch (error) {
-      if (error instanceof Error) {
-        const customError = new ProtocolModuleLibError(projectConfig.protocol_module as PROTOCOL_MODULE, error.message)
+      let customError = error
 
-        console.error(customErrorLog(customError))
+      if (error instanceof Error) {
+        customError = new INFINITLibraryError(projectConfig.protocol_module as PROTOCOL_MODULE, error.message)
       }
+
+      throw customError
     }
+
+    // write new registry
+    fs.writeFileSync(registryPath, JSON.stringify(newRegistry, null, 2))
 
     // clear cache if all sub actions are finished
     cache.deleteTxActionCache(fileName)
