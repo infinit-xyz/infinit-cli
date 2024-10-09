@@ -7,3 +7,7 @@ export const chalkInfo = chalk.cyan
 export const chalkSuccess = chalk.green
 
 export const chalkWarning = chalk.yellow
+
+export const chalkDim = chalk.dim
+
+export const chalkBold = chalk.bold

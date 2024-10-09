@@ -1,9 +1,8 @@
-import chalk from 'chalk'
 import ora from 'ora'
 import { createPublicClient, http } from 'viem'
 
 import { config } from '@classes'
-import { chalkInfo } from '@constants/chalk'
+import { chalkDim, chalkInfo } from '@constants/chalk'
 import { protocolModules } from '@constants/protocol-module'
 import type { PROTOCOL_MODULE } from '@enums/module'
 import { getProjectChainInfo, getProjectRpc } from '@utils/config'
@@ -50,7 +49,7 @@ export const handleVerifyContract = async () => {
   const maskedApiKey = apiKey.slice(0, SHOW_API_LENGTH / 2) + '*'.repeat(apiKey.length - SHOW_API_LENGTH) + apiKey.slice(-SHOW_API_LENGTH / 2)
 
   console.log(`ℹ︎ Configuration:`)
-  console.log(`Block Explorer: ${chalkInfo(explorerName)} ${chalk.dim(`(${explorerUrl})`)}`)
+  console.log(`Block Explorer: ${chalkInfo(explorerName)} ${chalkDim(`(${explorerUrl})`)}`)
   console.log('Block Explorer API URL:', chalkInfo(explorerApiUrl))
   console.log('Block Explorer API Key:', chalkInfo(maskedApiKey))
 

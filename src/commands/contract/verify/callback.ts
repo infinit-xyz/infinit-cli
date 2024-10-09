@@ -1,6 +1,5 @@
-import { chalkInfo } from '@constants/chalk'
+import { chalkBold, chalkDim, chalkInfo } from '@constants/chalk'
 import type { ContractVerifierCallbackParams } from '@infinit-xyz/core/internal'
-import chalk from 'chalk'
 import { type Ora } from 'ora'
 import { match } from 'ts-pattern'
 
@@ -22,7 +21,7 @@ export const verifyContractCallbackHandler = (spinner: Ora, blockExplorerUrl: st
       .with('contractVerificationStarted', () => {
         const parsedValue = value as CallbackParams['contractVerificationStarted']
         spinner.start(
-          `(${verifiedContracts + 1}/${totalContracts}) Verifying ${chalk.bold(chalkInfo(parsedValue.contractName))} ${chalk.dim(`(${parsedValue.address})`)}`,
+          `(${verifiedContracts + 1}/${totalContracts}) Verifying ${chalkBold(chalkInfo(parsedValue.contractName))} ${chalkDim(`(${parsedValue.address})`)}`,
         )
       })
       .with('contractVerificationSubmitted', () => {
@@ -31,7 +30,7 @@ export const verifyContractCallbackHandler = (spinner: Ora, blockExplorerUrl: st
       .with('contractVerificationFinished', () => {
         const parsedValue = value as CallbackParams['contractVerificationFinished']
         spinner.succeed(
-          `(${verifiedContracts + 1}/${totalContracts}) Verified ${chalk.bold(chalkInfo(parsedValue.contractName))} ${chalk.dim(`(${parsedValue.address})`)}`,
+          `(${verifiedContracts + 1}/${totalContracts}) Verified ${chalkBold(chalkInfo(parsedValue.contractName))} ${chalkDim(`(${parsedValue.address})`)}`,
         )
         verifiedContracts++
 

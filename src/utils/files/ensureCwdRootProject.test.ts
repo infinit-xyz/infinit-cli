@@ -1,7 +1,6 @@
 import { FILE_NAMES } from '@constants'
-import { chalkError } from '@constants/chalk'
+import { chalkBold, chalkError } from '@constants/chalk'
 import { isCwdRootProject } from '@utils/files/isCwdRootProject'
-import chalk from 'chalk'
 import { describe, expect, test, vi } from 'vitest'
 import { ensureCwdRootProject } from './ensureCwdRootProject'
 
@@ -32,7 +31,7 @@ describe('ensureCwdRootProject', () => {
 
     expect(() => ensureCwdRootProject()).toThrow('process.exit() was called')
     expect(mockExit).toHaveBeenCalledWith(1)
-    expect(mockConsoleError).toHaveBeenCalledWith(chalkError(`Can't find ${chalk.bold(FILE_NAMES.CONFIG)}`))
+    expect(mockConsoleError).toHaveBeenCalledWith(chalkError(`Can't find ${chalkBold(FILE_NAMES.CONFIG)}`))
     expect(mockConsoleError).toHaveBeenCalledWith('Current path: /current/project/path')
   })
 })
