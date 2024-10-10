@@ -4,9 +4,9 @@ import { getScriptFileDirectory } from '@commands/script/generate/utils'
 import { getFilesCurrentDir } from '@utils/files'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 
-vi.mock('@classes/Cache/Cache')
 vi.mock('@utils/files')
 vi.mock('@commands/script/generate/utils')
+vi.mock('./callback')
 
 describe('execute', () => {
   beforeEach(async () => {
