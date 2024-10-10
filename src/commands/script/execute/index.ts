@@ -152,6 +152,11 @@ export const handleExecuteScript = async (_fileName?: string, option: HandleExec
 
     for (const [signerKey, accountId] of Object.entries(signer)) {
       const privateKeyAccount = accounts.accounts[accountId]
+
+      if (!privateKeyAccount) {
+        throw new AccountNotFoundError(ERROR_MESSAGE_RECORD.ACCOUNT_NOT_FOUND(accountId))
+      }
+
       const signerAddress = privateKeyAccount.address
 
       signerWalletRecord[signerKey] = new InfinitWallet(chainInfo.viemChain.instance, getProjectRpc(), privateKeyAccount)
