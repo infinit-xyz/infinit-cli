@@ -1,5 +1,21 @@
 # @infinit-xyz/cli
 
+## 0.0.0-alpha.12
+
+### Minor Changes
+
+- [#64](https://github.com/infinit-xyz/infinit-cli/pull/64) [`04f1f0a`](https://github.com/infinit-xyz/infinit-cli/commit/04f1f0ac339f323b8d34aa4b49a6567691d693f8) Thanks [@Pitchanai](https://github.com/Pitchanai)! - Add `infinit contract verify`
+
+### Patch Changes
+
+- [#63](https://github.com/infinit-xyz/infinit-cli/pull/63) [`10b6b2d`](https://github.com/infinit-xyz/infinit-cli/commit/10b6b2ddc8e100773a156b8acb628698427e06e0) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - add `--ignore-cache` option on execute
+
+- [#67](https://github.com/infinit-xyz/infinit-cli/pull/67) [`398ea4a`](https://github.com/infinit-xyz/infinit-cli/commit/398ea4a3309238428c122f0771e79a02b0481874) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - show message when cache not found
+
+- [#68](https://github.com/infinit-xyz/infinit-cli/pull/68) [`c4e65b2`](https://github.com/infinit-xyz/infinit-cli/commit/c4e65b2e845edb606b8b922a9da5a3d4cd2b73f9) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - update error handling when execute
+
+- [#69](https://github.com/infinit-xyz/infinit-cli/pull/69) [`92658c9`](https://github.com/infinit-xyz/infinit-cli/commit/92658c96e6480723aeeb59c72d5280b1ee49c322) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - deprecate `infinit project compile` command
+
 ## 0.0.0-alpha.11
 
 ### Patch Changes
