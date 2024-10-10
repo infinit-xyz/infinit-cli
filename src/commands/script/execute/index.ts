@@ -1,19 +1,15 @@
 import { type Action as BaseAction, type InfinitCache, InfinitWallet } from '@infinit-xyz/core'
-import type { CallbackKeys, CallbackParams } from '@infinit-xyz/core/types/callback'
 
 import fs from 'fs'
 import fsExtra from 'fs-extra'
 import _ from 'lodash' // [TODO/INVESTIGATE] later on importing from lodash
-import ora, { type Ora } from 'ora'
+import ora from 'ora'
 import path from 'path'
-import { match } from 'ts-pattern'
 import * as tsx from 'tsx/cjs/api'
 import { type Address } from 'viem'
 
 import { accounts, config } from '@classes'
 import { cache } from '@classes/Cache/Cache'
-import { TX_STATUS } from '@classes/Cache/Cache.enum'
-import { FORK_CHAIN_URL, simulateExecute } from '@commands/script/execute/simulate'
 import { getScriptFileDirectory, getScriptHistoryFileDirectory } from '@commands/script/generate/utils'
 import { loadAccountFromPrompt } from '@commons/prompts/accounts'
 import { chalkError, chalkInfo } from '@constants/chalk'
@@ -24,13 +20,13 @@ import { FileNotFoundError } from '@errors/fs'
 import { INFINITLibraryError } from '@errors/lib'
 import { ValidateInputValueError } from '@errors/validate'
 import { confirm } from '@inquirer/prompts'
-import type { InfinitConfigSchema } from '@schemas/generated'
 import { checkIsAccountFound } from '@utils/account'
-import { sendOnChainEvent } from '@utils/analytics'
 import { getProjectChainInfo, getProjectRpc } from '@utils/config'
 import { ensureCwdRootProject, getFilesCurrentDir, readProjectRegistry } from '@utils/files'
 import { isValidTypescriptFileName } from '@utils/string'
+import { executeActionCallbackHandler } from './callback'
 import { scriptFileNamePrompt } from './index.prompt'
+import { FORK_CHAIN_URL, simulateExecute } from './simulate'
 
 type HandleExecuteScriptOption = {
   ignoreCache?: boolean
@@ -40,89 +36,6 @@ type HandleExecuteScriptOption = {
 // biome-ignore lint/suspicious/noExplicitAny: must assign any from reading the file
 const isSigner = (signer: any): signer is Record<string, string> => {
   return signer && typeof signer === 'object' && Object.keys(signer).length > 0 && Object.values(signer).every((value) => typeof value === 'string' && value)
-}
-
-export const executeActionCallbackHandler = (spinner: Ora, filename: string, projectConfig: InfinitConfigSchema, signerAddresses: string[]) => {
-  let currentSubActionCount = 0
-  let currentSubActionStartIndex = 0
-  let currentSubActionName = ''
-
-  let totalSubActions = 0
-  let transactionCount = 0
-  let actionName = ''
-  return async (key: CallbackKeys, value: CallbackParams[CallbackKeys]) => {
-    match(key)
-      .with('actionInfo', () => {
-        const parsedValue = value as CallbackParams['actionInfo']
-
-        totalSubActions = parsedValue.totalSubActions
-        actionName = parsedValue.name
-
-        spinner.start(
-          `Executing ${chalkInfo(actionName)} - ${chalkInfo(currentSubActionName)} (${chalkInfo(`${currentSubActionCount + 1}/${totalSubActions}`)} sub-actions, ${chalkInfo(transactionCount)} transactions).`,
-        )
-
-        cache.addTxActionCache(filename, actionName)
-      })
-      .with('subActionFinished', () => {
-        currentSubActionCount += 1
-        spinner.text = `Executing ${chalkInfo(actionName)} - ${chalkInfo(currentSubActionName)} (${chalkInfo(`${currentSubActionCount + 1}/${totalSubActions}`)} sub-actions, ${chalkInfo(transactionCount)} transactions).`
-      })
-      .with('txSubmitted', () => {
-        const parsedValue = value as CallbackParams['txSubmitted']
-
-        cache.addTxCache(filename, { txHash: parsedValue.txHash, status: TX_STATUS.PENDING, txBuilderName: parsedValue.name })
-      })
-      .with('txConfirmed', () => {
-        const parsedValue = value as CallbackParams['txConfirmed']
-
-        transactionCount += 1
-
-        spinner.text = `Executing ${chalkInfo(actionName)} - ${chalkInfo(currentSubActionName)} (${chalkInfo(`${currentSubActionCount + 1}/${totalSubActions}`)} sub-actions, ${chalkInfo(transactionCount)} transactions).`
-
-        if (projectConfig.allow_analytics) {
-          sendOnChainEvent({
-            // [TODO]: Add multiple signer
-            address: signerAddresses[0],
-            module: projectConfig.protocol_module,
-            action: actionName,
-            txHash: parsedValue.txHash,
-            chainId: projectConfig.chain_info.network_id,
-          })
-        }
-
-        cache.updateTxCache(filename, parsedValue.txHash, { status: TX_STATUS.CONFIRMED })
-      })
-      .with('txChecked', () => {
-        const parsedValue = value as CallbackParams['txChecked']
-
-        match(parsedValue.status)
-          .with('CONFIRMED', () => {
-            cache.updateTxCache(filename, parsedValue.txHash, { status: TX_STATUS.CONFIRMED })
-          })
-          .with('PENDING', () => {
-            cache.updateTxCache(filename, parsedValue.txHash, { status: TX_STATUS.PENDING })
-          })
-          .with('REVERTED', 'NOT_FOUND', () => {
-            cache.deleteTxCache(filename, parsedValue.txHash)
-          })
-          .exhaustive()
-      })
-      .with('subActionStarted', () => {
-        const parsedValue = value as CallbackParams['subActionStarted']
-
-        const cacheObject = cache.getCache().txs[filename]
-        if (cacheObject.subActions[currentSubActionStartIndex] && cacheObject.subActions[currentSubActionStartIndex].subActionName === parsedValue.name) {
-          return
-        }
-
-        currentSubActionStartIndex++
-        currentSubActionName = parsedValue.name
-
-        cache.addTxSubActionCache(filename, parsedValue.name)
-      })
-      .otherwise(() => {})
-  }
 }
 
 /**
