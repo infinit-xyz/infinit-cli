@@ -31,10 +31,6 @@ export const executeActionCallbackHandler = (spinner: Ora, filename: string, pro
 
         cache.addTxActionCache(filename, actionName)
       })
-      .with('subActionFinished', () => {
-        currentSubActionCount += 1
-        spinner.text = `Executing ${chalkInfo(actionName)} - ${chalkInfo(currentSubActionName)} (${chalkInfo(`${currentSubActionCount + 1}/${totalSubActions}`)} sub-actions, ${chalkInfo(transactionCount)} transactions).`
-      })
       .with('txSubmitted', () => {
         const parsedValue = value as CallbackParams['txSubmitted']
 
@@ -87,6 +83,15 @@ export const executeActionCallbackHandler = (spinner: Ora, filename: string, pro
         currentSubActionName = parsedValue.name
 
         cache.addTxSubActionCache(filename, parsedValue.name)
+      })
+      .with('subActionFinished', () => {
+        currentSubActionCount += 1
+
+        if (currentSubActionCount >= totalSubActions) {
+          return
+        }
+
+        spinner.text = `Executing ${chalkInfo(actionName)} - ${chalkInfo(currentSubActionName)} (${chalkInfo(`${currentSubActionCount + 1}/${totalSubActions}`)} sub-actions, ${chalkInfo(transactionCount)} transactions).`
       })
       .otherwise(() => {})
   }
