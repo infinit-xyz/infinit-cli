@@ -188,6 +188,12 @@ export const mockProjectConfig: InfinitConfigSchema = {
       symbol: 'ETH',
       decimals: 18,
     },
+    block_explorer: {
+      name: '',
+      url: '',
+      api_url: '',
+      api_key: '',
+    },
   },
   allow_analytics: false,
 }

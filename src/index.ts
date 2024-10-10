@@ -2,13 +2,14 @@ import { Option, program } from 'commander'
 
 import { handleDeleteAccount, handleExportAccount, handleGenerateAccount, handleImportAccount, handleListAccounts } from '@commands/account'
 import { handleListAction } from '@commands/action'
+import { handleCompileProject } from '@commands/contract/compile'
+import { handleVerifyContract } from '@commands/contract/verify'
 import { handleInitializeCli } from '@commands/init'
-import { handleCompileProject } from '@commands/project'
 import { handleExecuteScript, handleGenerateScript } from '@commands/script'
+import { EXPECTED_NODE_VERSION } from '@constants'
 import { chalkError } from '@constants/chalk'
 import { isRunOnLocalOnly } from '@utils/invoke-cli'
 
-import { EXPECTED_NODE_VERSION } from '@constants'
 import { version } from '../package.json'
 
 // Function to validate Node.js version
@@ -46,7 +47,7 @@ program
     await handleInitializeCli(input)
   })
 
-const projectCommands = program.command('project').description('Manage an INFINIT project')
+// const projectCommands = program.command('project').description('Manage an INFINIT project')
 // projectCommands
 //   .command('create')
 //   .description('Initialize a new INFINIT project')
@@ -70,12 +71,12 @@ const projectCommands = program.command('project').description('Manage an INFINI
 //     await handleProjectCreate(input)
 //   })
 
-projectCommands
-  .command('compile')
-  .description('Compile project smart contract code')
-  .action(async () => {
-    await handleCompileProject()
-  })
+// projectCommands
+//   .command('compile')
+//   .description('Compile project smart contract code')
+//   .action(async () => {
+//     await handleCompileProject()
+//   })
 
 /**
  * Account scope commands
@@ -159,6 +160,26 @@ scriptCommands
   .action(async (fileName, option) => {
     isRunOnLocalOnly()
     await handleExecuteScript(fileName, option)
+  })
+
+/**
+ * Contract scope commands
+ */
+const contractCommands = program.command('contract').description('Manage INFINIT contracts')
+
+contractCommands
+  .command('verify')
+  .description('Verify contracts on the blockchain explorer')
+  .action(async () => {
+    isRunOnLocalOnly()
+    await handleVerifyContract()
+  })
+
+contractCommands
+  .command('compile')
+  .description('Compile project smart contract code')
+  .action(async () => {
+    await handleCompileProject()
   })
 
 program.showSuggestionAfterError(true)

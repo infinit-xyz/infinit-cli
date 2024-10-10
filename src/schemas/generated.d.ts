@@ -26,6 +26,12 @@ export interface InfinitConfigSchema {
       symbol: string
       decimals: number
     }
+    block_explorer?: {
+      name: string
+      url: Url
+      api_url: Url
+      api_key: string
+    }
     rpc_url: Url
   }
   allow_analytics?: boolean

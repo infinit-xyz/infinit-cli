@@ -13,6 +13,12 @@ const mockedChainInfo: InfinitConfigSchema['chain_info'] = {
     decimals: 18,
   },
   rpc_url: 'https://fakerpc.io/rpc',
+  block_explorer: {
+    name: 'Etherscan',
+    url: 'https://etherscan.io',
+    api_url: 'https://api.etherscan.io',
+    api_key: 'apikey',
+  },
 }
 
 vi.mock('@classes/Config/Config', () => ({

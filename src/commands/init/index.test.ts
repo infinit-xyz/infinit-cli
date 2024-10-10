@@ -359,7 +359,7 @@ describe('handleInitializeCli', () => {
       await expect(handleInitializeCli(cmdInput)).resolves.toBeUndefined()
 
       expect(consoleWarnSpy).toHaveBeenLastCalledWith(
-        '⚠️ Failed to compile the project. Please run `bunx infinit project compile` to compile the project after initializing.',
+        '⚠️ Failed to compile the project. Please run `bunx infinit contract compile` to compile the project after initializing.',
       )
       expect(consoleLogSpy).toHaveBeenLastCalledWith('🔥 Successfully initialized a project, go to src/scripts/action1.script.ts to start building.')
       expect(consoleErrorSpy).not.toHaveBeenCalled()

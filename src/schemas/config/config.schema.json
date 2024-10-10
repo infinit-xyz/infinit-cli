@@ -60,6 +60,25 @@
           },
           "required": ["name", "symbol", "decimals"]
         },
+        "block_explorer": {
+          "additionalProperties": false,
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "url": {
+              "$ref": "#/definitions/Url"
+            },
+            "api_url": {
+              "$ref": "#/definitions/Url"
+            },
+            "api_key": {
+              "type": "string"
+            }
+          },
+          "required": ["name", "url", "api_url", "api_key"]
+        },
         "rpc_url": {
           "$ref": "#/definitions/Url"
         }
