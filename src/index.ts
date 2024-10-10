@@ -163,6 +163,18 @@ scriptCommands
   })
 
 /**
+ * Project scope commands
+ */
+const projectCommands = program.command('project').description('[Deprecated] Manage an INFINIT project')
+
+projectCommands
+  .command('compile')
+  .description('[Deprecated] Please use `infinit contract compile` instead')
+  .action(() => {
+    console.error(chalkError('This command is deprecated. Please use `infinit contract compile` instead.'))
+  })
+
+/**
  * Contract scope commands
  */
 const contractCommands = program.command('contract').description('Manage INFINIT contracts')
