@@ -61,7 +61,9 @@ export const checkIsAccountFound = (accountId: string): boolean => {
   }
 
   const files = getFilesCurrentDir(accountsFolderPath)
-  return files.includes(getAccountFileNameFromAccountId(accountId))
+  const accountFileName = getAccountFileNameFromAccountId(accountId)
+
+  return files.includes(accountFileName)
 }
 
 /**
