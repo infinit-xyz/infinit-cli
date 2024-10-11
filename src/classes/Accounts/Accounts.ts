@@ -1,14 +1,15 @@
-import type { KeystoreV3 } from '@classes/Accounts/Accounts.type'
-import { DATA_FOLDER } from '@classes/Config/Config'
-import { AccountValidateError } from '@errors/account'
-import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
-import { Wallet } from '@ethereumjs/wallet'
-import { createDataFolder } from '@utils/config'
-import { ensureAccessibilityAtPath } from '@utils/files'
 import fs from 'fs'
 import path from 'path'
 import { type Hex, type PrivateKeyAccount, hexToBytes } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
+
+import type { KeystoreV3 } from '@classes/Accounts/Accounts.type'
+import { AccountValidateError } from '@errors/account'
+import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
+import { Wallet } from '@ethereumjs/wallet'
+import { getAccountsFolderPath } from '@utils/account'
+import { createDataFolder } from '@utils/config'
+import { ensureAccessibilityAtPath } from '@utils/files'
 
 // Account will holds all available `PrivateKeyAccount` objects.
 export class Accounts {
@@ -31,7 +32,8 @@ export class Accounts {
   public async save(id: string, privateKey: Hex, password: string): Promise<{ filePath: string; keystore: KeystoreV3 }> {
     // check is home directory accessible
     // call with `sudo`
-    ensureAccessibilityAtPath(path.join(DATA_FOLDER, 'accounts'), fs.constants.W_OK)
+    const accountsFolderPath = getAccountsFolderPath()
+    ensureAccessibilityAtPath(accountsFolderPath, fs.constants.W_OK)
 
     createDataFolder()
 
@@ -86,7 +88,9 @@ export class Accounts {
   }
 
   public getAccountFilePath(fileName: string) {
-    return path.join(DATA_FOLDER, 'accounts', `${fileName}.json`)
+    const accountsFolderPath = getAccountsFolderPath()
+
+    return path.join(accountsFolderPath, `${fileName}.json`)
   }
 }
 

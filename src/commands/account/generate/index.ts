@@ -1,19 +1,15 @@
 import { Wallet } from '@ethereumjs/wallet'
 import fs from 'fs'
-import path from 'path'
 import type { Hex } from 'viem'
 
 import { accounts, config } from '@classes'
-import { DATA_FOLDER } from '@classes/Config/Config'
+import { notDuplicatedAccountIdPrompt, passwordWithConfirmPrompt } from '@commands/account/prompt'
 import { chalkInfo } from '@constants/chalk'
-
-import { notDuplicatedAccountIdPrompt } from '@commands/account/prompt'
-import { ensureAccessibilityAtPath } from '@utils/files'
-
-import { passwordWithConfirmPrompt } from '@commands/account/prompt'
 import { customErrorLog } from '@errors/log'
+import { getAccountsFolderPath } from '@utils/account'
 import { sendOffChainEvent } from '@utils/analytics'
 import { getProjectChainInfo } from '@utils/config'
+import { ensureAccessibilityAtPath } from '@utils/files'
 
 export const handleGenerateAccount = async (accountId?: string) => {
   try {
@@ -23,8 +19,8 @@ export const handleGenerateAccount = async (accountId?: string) => {
     const validAccountId = await notDuplicatedAccountIdPrompt(accountId)
 
     // 2. ensure account file is writable
-    const accountFilePath = path.join(DATA_FOLDER, 'accounts')
-    ensureAccessibilityAtPath(accountFilePath, fs.constants.W_OK)
+    const accountsFolderPath = getAccountsFolderPath()
+    ensureAccessibilityAtPath(accountsFolderPath, fs.constants.W_OK)
 
     // 3. prompt password
     const password = await passwordWithConfirmPrompt()

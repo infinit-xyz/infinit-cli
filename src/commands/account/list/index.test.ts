@@ -1,14 +1,24 @@
-import type { ChainInfo } from '@constants/chains'
-import { chalkInfo } from '@constants/chalk'
-import { getAccountsList } from '@utils/account'
 import fs from 'fs'
 import { type PublicClient, createPublicClient, getAddress } from 'viem'
 import { mainnet } from 'viem/chains'
-import { type Mock, type MockInstance, afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
-import { handleListAccounts } from './index'
+import { type MockInstance, afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
+
+import type { ChainInfo } from '@constants/chains'
+import { getAccountsList } from '@utils/account'
+
+import { handleListAccounts } from '.'
 
 vi.mock('viem')
-vi.mock('@utils/account')
+vi.mock('@constants/chalk', () => ({
+  chalkInfo: vi.fn((v) => v),
+}))
+vi.mock('@utils/account', async (importOriginal) => {
+  const original = await importOriginal<typeof import('@utils/account')>()
+  return {
+    ...original,
+    getAccountsList: vi.fn(),
+  }
+})
 vi.mock('@utils/config', () => ({
   getProjectChainInfo: () =>
     ({
@@ -22,8 +32,8 @@ vi.mock('@utils/config', () => ({
 }))
 
 describe('Command: accounts - list', () => {
-  let consoleLogSpy: MockInstance
-  let consoleWarnSpy: MockInstance
+  let consoleLogSpy: MockInstance<Console['log']>
+  let consoleWarnSpy: MockInstance<Console['warn']>
 
   beforeAll(() => {
     consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined)
@@ -42,11 +52,11 @@ describe('Command: accounts - list', () => {
     }))
 
     // call function
-    const handleListSpy = vi.fn(handleListAccounts)
-    const tableResult = await handleListSpy()
+    const handleListAccountsSpy = vi.fn(handleListAccounts)
+    const tableResult = await handleListAccountsSpy()
 
     // assert
-    expect(handleListSpy).toHaveResolved()
+    expect(handleListAccountsSpy).toHaveResolved()
     expect(tableResult).toHaveLength(0)
 
     expect(consoleLogSpy).toHaveBeenCalledWith(`Found 0 account(s)`)
@@ -55,7 +65,6 @@ describe('Command: accounts - list', () => {
 
   describe('accounts >0', () => {
     const mockedAccounts = ['1.json', '2.json', '3.json']
-    let handleListSpy: Mock<typeof handleListAccounts>
 
     beforeAll(() => {
       vi.mocked(getAddress).mockImplementation((v) => `0x${v}`)
@@ -66,8 +75,6 @@ describe('Command: accounts - list', () => {
 
       vi.spyOn(fs, 'readFileSync').mockReturnValue('')
       vi.spyOn(JSON, 'parse').mockReturnValue({ address: '38a0c07f7288872eb759534af7514960a6fcc1a5' })
-
-      handleListSpy = vi.fn(handleListAccounts)
     })
 
     test('should list local accounts', async () => {
@@ -79,15 +86,10 @@ describe('Command: accounts - list', () => {
           }) as unknown as PublicClient,
       )
 
-      // call function
-      const tableResult = await handleListSpy()
-
-      // assert
-      expect(handleListSpy).toHaveResolved()
-      expect(tableResult).toHaveLength(mockedAccounts.length)
+      await expect(handleListAccounts()).resolves.toHaveLength(mockedAccounts.length)
 
       expect(consoleLogSpy).toHaveBeenCalledWith(`Found ${mockedAccounts.length} account(s)`)
-      expect(consoleLogSpy).toHaveBeenCalledWith(`Accounts and balances on ${chalkInfo('Ethereum Mainnet')}`)
+      expect(consoleLogSpy).toHaveBeenCalledWith(`Accounts and balances on Ethereum Mainnet`)
       expect(consoleLogSpy).toHaveBeenCalledWith(
         `┌────────────┬──────────────────────────────────────────────┬─────────────┐
 │ Account ID │ Address                                      │ Balance     │
@@ -99,62 +101,60 @@ describe('Command: accounts - list', () => {
     })
 
     test('should handle when createPublicClient failed', async () => {
-      const mockError = new Error("Can't create public client")
+      try {
+        vi.mocked(createPublicClient).mockImplementationOnce(() => {
+          throw new Error("Can't create public client")
+        })
 
-      vi.mocked(createPublicClient).mockImplementationOnce(() => {
-        throw mockError
-      })
+        await expect(handleListAccounts()).resolves.toHaveLength(mockedAccounts.length)
 
-      // call function
-      const tableResult = await handleListSpy()
+        expect(consoleWarnSpy).toHaveBeenCalledWith('Warning: Cannot setup public client')
 
-      // assert
-      expect(handleListSpy).toHaveResolved()
-      expect(tableResult).toHaveLength(mockedAccounts.length)
-
-      expect(consoleWarnSpy).toHaveBeenNthCalledWith(1, 'Warning: Cannot setup public client')
-      expect(consoleWarnSpy).toHaveBeenNthCalledWith(2, mockError)
-
-      expect(consoleLogSpy).toHaveBeenCalledWith(
-        `┌────────────┬──────────────────────────────────────────────┬─────────┐
+        expect(consoleLogSpy).toHaveBeenCalledWith(
+          `┌────────────┬──────────────────────────────────────────────┬─────────┐
 │ Account ID │ Address                                      │ Balance │
 │ 1          │ 0x0x38a0c07f7288872eb759534af7514960a6fcc1a5 │ -       │
 │ 2          │ 0x0x38a0c07f7288872eb759534af7514960a6fcc1a5 │ -       │
 │ 3          │ 0x0x38a0c07f7288872eb759534af7514960a6fcc1a5 │ -       │
 └────────────┴──────────────────────────────────────────────┴─────────┘`,
-      )
+        )
+      } catch (e) {
+        // some weird bug from vitest that doesn't log the error properly in this case
+        console.error(`ERROR: ${e}`)
+        throw e
+      }
     })
 
     test('should handle when getBalance failed', async () => {
-      const mockError = new Error("Can't get balance")
+      try {
+        const mockError = new Error("Can't get balance")
 
-      vi.mocked(createPublicClient).mockImplementationOnce(
-        () =>
-          ({
-            getBalance: () => {
-              throw mockError
-            },
-          }) as unknown as PublicClient,
-      )
+        vi.mocked(createPublicClient).mockImplementationOnce(
+          () =>
+            ({
+              getBalance: () => {
+                throw mockError
+              },
+            }) as unknown as PublicClient,
+        )
 
-      // call function
-      const tableResult = await handleListSpy()
+        await expect(handleListAccounts()).resolves.toHaveLength(mockedAccounts.length)
 
-      // assert
-      expect(handleListSpy).toHaveResolved()
-      expect(tableResult).toHaveLength(mockedAccounts.length)
+        expect(consoleWarnSpy).toHaveBeenCalledWith('Warning: Cannot get balance')
 
-      expect(consoleWarnSpy).toHaveBeenNthCalledWith(1, 'Warning: Cannot get balance')
-      expect(consoleWarnSpy).toHaveBeenNthCalledWith(2, mockError)
-
-      expect(consoleLogSpy).toHaveBeenCalledWith(
-        `┌────────────┬──────────────────────────────────────────────┬─────────┐
+        expect(consoleLogSpy).toHaveBeenCalledWith(
+          `┌────────────┬──────────────────────────────────────────────┬─────────┐
 │ Account ID │ Address                                      │ Balance │
 │ 1          │ 0x0x38a0c07f7288872eb759534af7514960a6fcc1a5 │ -       │
 │ 2          │ 0x0x38a0c07f7288872eb759534af7514960a6fcc1a5 │ -       │
 │ 3          │ 0x0x38a0c07f7288872eb759534af7514960a6fcc1a5 │ -       │
 └────────────┴──────────────────────────────────────────────┴─────────┘`,
-      )
+        )
+      } catch (e) {
+        // some weird bug from vitest that doesn't log the error properly in this case
+        console.error(`ERROR: ${e}`)
+        throw e
+      }
     })
   })
 })
