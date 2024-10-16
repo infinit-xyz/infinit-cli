@@ -100,7 +100,7 @@ describe('execute', () => {
       await expect(handleExecuteScript('file1.ts')).rejects.toThrowError(new ValidateInputValueError('Invalid script file'))
     })
 
-    test.only('should throw error when account not found', async () => {
+    test('should throw error when account not found', async () => {
       vi.spyOn(accounts, 'getAccoundById').mockReturnValue(undefined)
 
       await expect(handleExecuteScript('file1.ts')).rejects.toThrow(AccountNotFoundError)
