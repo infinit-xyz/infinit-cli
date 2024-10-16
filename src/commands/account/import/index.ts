@@ -1,13 +1,14 @@
-import { DATA_FOLDER, accounts, config } from '@classes'
+import fs from 'fs'
+import type { Hex } from 'viem'
+
+import { accounts, config } from '@classes'
 import { notDuplicatedAccountIdPrompt, passwordWithConfirmPrompt, privateKeyInputPrompt } from '@commands/account/prompt'
 import { chalkInfo } from '@constants/chalk'
 import { customErrorLog } from '@errors/log'
+import { getAccountsFolderPath } from '@utils/account'
 import { sendOffChainEvent } from '@utils/analytics'
 import { getProjectChainInfo } from '@utils/config'
 import { ensureAccessibilityAtPath } from '@utils/files'
-import fs from 'fs'
-import path from 'path'
-import type { Hex } from 'viem'
 
 /**
  * Handle import account from private key
@@ -21,8 +22,8 @@ export const handleImportAccount = async (accountId?: string) => {
     const validAccountId = await notDuplicatedAccountIdPrompt(accountId)
 
     // 2. ensure account file is writable
-    const accountFilePath = path.join(DATA_FOLDER, 'accounts')
-    ensureAccessibilityAtPath(accountFilePath, fs.constants.W_OK)
+    const accountsFolderPath = getAccountsFolderPath()
+    ensureAccessibilityAtPath(accountsFolderPath, fs.constants.W_OK)
 
     // 3. prompt private key
     const privateKey = (await privateKeyInputPrompt()) as Hex

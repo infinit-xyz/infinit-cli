@@ -1,13 +1,14 @@
-import { type ChainInfo } from '@constants/chains'
-import { chalkInfo } from '@constants/chalk'
-import { AccountNotFoundError } from '@errors/account'
-import { customErrorLog } from '@errors/log'
-import { getAccountsList } from '@utils/account'
-import { getProjectChainInfo, getProjectRpc } from '@utils/config'
 import CliTable3 from 'cli-table3'
 import fs from 'fs'
 import path from 'path'
 import { createPublicClient, getAddress, http, type PublicClient } from 'viem'
+
+import { type ChainInfo } from '@constants/chains'
+import { chalkInfo } from '@constants/chalk'
+import { AccountNotFoundError } from '@errors/account'
+import { customErrorLog } from '@errors/log'
+import { getAccountIdFromAccountFileName, getAccountsList } from '@utils/account'
+import { getProjectChainInfo, getProjectRpc } from '@utils/config'
 
 export const handleListAccounts = async (): Promise<CliTable3.Table> => {
   const { accountFiles, accountsFolderPath } = getAccountsList()
@@ -41,13 +42,12 @@ export const handleListAccounts = async (): Promise<CliTable3.Table> => {
   console.log(`Accounts and balances${chainInfo ? ` on ${chalkInfo(chainInfo?.name)}` : ''}`)
 
   // read accounts from data folder in (~/.infinit/accounts.json)
-  for (const file of accountFiles) {
-    // file name will be the <accountId>.json
-    const accountId = file.split('.')[0]
+  for (const accountFileName of accountFiles) {
+    const accountId = getAccountIdFromAccountFileName(accountFileName)
 
     try {
       // read the keystore file
-      const keystore = JSON.parse(fs.readFileSync(path.join(accountsFolderPath, file), 'utf-8'))
+      const keystore = JSON.parse(fs.readFileSync(path.join(accountsFolderPath, accountFileName), 'utf-8'))
 
       const walletAddress = getAddress(`0x${keystore.address}`)
 
@@ -68,7 +68,7 @@ export const handleListAccounts = async (): Promise<CliTable3.Table> => {
 
       // push the account to table
       table.push([accountId, walletAddress, walletBalanceDisplayText])
-    } catch (_error) {
+    } catch (_) {
       // should not happen
       const customError = new AccountNotFoundError(`Something went wrong while reading the account file for account ID: ${accountId}`)
       console.error(customErrorLog(customError))
