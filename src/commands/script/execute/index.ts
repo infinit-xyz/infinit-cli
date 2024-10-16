@@ -127,12 +127,6 @@ export const handleExecuteScript = async (_fileName?: string, option: HandleExec
 
     // load user by prompting user to enter password
     for (const accountId of accountIds) {
-      const isAccountFound = checkIsAccountFound(accountId)
-
-      if (!isAccountFound) {
-        throw new AccountNotFoundError(ERROR_MESSAGE_RECORD.ACCOUNT_NOT_FOUND(accountId))
-      }
-
       await loadAccountFromPrompt(accountId)
 
       // new line
@@ -151,7 +145,7 @@ export const handleExecuteScript = async (_fileName?: string, option: HandleExec
     const signerAddresses: Address[] = []
 
     for (const [signerKey, accountId] of Object.entries(signer)) {
-      const privateKeyAccount = accounts.accounts[accountId]
+      const privateKeyAccount = accounts.getAccoundById(accountId)
 
       if (!privateKeyAccount) {
         throw new AccountNotFoundError(ERROR_MESSAGE_RECORD.ACCOUNT_NOT_FOUND(accountId))
