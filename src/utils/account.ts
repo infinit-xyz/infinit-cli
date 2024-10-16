@@ -6,6 +6,7 @@ import { createDataFolder } from '@utils/config'
 import { getFilesCurrentDir } from '@utils/files'
 
 const ACCOUNT_FILE_EXTENSION = '.json'
+const ACCOUNT_FILE_REGEX = /^[\w\-. ]+\.json$/
 
 /**
  * Checks if the provided string is a valid account file name.
@@ -14,7 +15,7 @@ const ACCOUNT_FILE_EXTENSION = '.json'
  * @param str - The string to check.
  * @returns True if the string is a valid account file name, false otherwise.
  */
-export const isValidAccountFileName = (str?: string) => !!str && /^[\w\-. ]+\.json$/.test(str)
+export const isValidAccountFileName = (str?: string) => !!str && ACCOUNT_FILE_REGEX.test(str)
 
 /**
  * Extracts the account ID from the account file name.
