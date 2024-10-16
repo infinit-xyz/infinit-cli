@@ -29,8 +29,8 @@ vi.mock('tsx/cjs/api')
 
 describe('execute', () => {
   beforeEach(() => {
-    vi.spyOn(console, 'log') //.mockImplementation(() => undefined)
-    vi.spyOn(console, 'error') //.mockImplementation(() => undefined)
+    vi.spyOn(console, 'log').mockImplementation(() => undefined)
+    vi.spyOn(console, 'error').mockImplementation(() => undefined)
 
     vi.spyOn(config, 'getProjectConfig').mockReturnValue({
       protocol_module: 'aave-v3',
@@ -94,7 +94,11 @@ describe('execute', () => {
 
     test('should throw error when script file is invalid', async () => {
       vi.spyOn(tsx, 'require').mockReturnValue({
-        default: {},
+        default: {
+          signer: {
+            deployer: 'account1',
+          },
+        },
       })
 
       await expect(handleExecuteScript('file1.ts')).rejects.toThrowError(new ValidateInputValueError('Invalid script file'))
