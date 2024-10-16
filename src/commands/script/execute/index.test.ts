@@ -1,6 +1,6 @@
 import fs from 'fs'
 import * as tsx from 'tsx/cjs/api'
-import { beforeEach, describe, expect, test, vi } from 'vitest'
+import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { accounts, config } from '@classes'
 import { handleExecuteScript } from '@commands/script/execute'
@@ -28,10 +28,12 @@ vi.mock('./index.prompt')
 vi.mock('tsx/cjs/api')
 
 describe('execute', () => {
-  beforeEach(() => {
+  beforeAll(() => {
     vi.spyOn(console, 'log').mockImplementation(() => undefined)
     vi.spyOn(console, 'error').mockImplementation(() => undefined)
+  })
 
+  beforeEach(() => {
     vi.spyOn(config, 'getProjectConfig').mockReturnValue({
       protocol_module: 'aave-v3',
     } as unknown as InfinitConfigSchema)
