@@ -34,6 +34,7 @@ describe('account.ts', () => {
 
     test('should return false for invalid account file name', () => {
       expect(isValidAccountFileName('account1.txt')).toBe(false)
+      expect(isValidAccountFileName('account1.json.txt')).toBe(false)
       expect(isValidAccountFileName('account1')).toBe(false)
       expect(isValidAccountFileName('.json')).toBe(false)
     })
