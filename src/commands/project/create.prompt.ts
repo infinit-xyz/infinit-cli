@@ -8,7 +8,7 @@ import { CHAIN_ID } from '@enums/chain'
 import type { PROTOCOL_MODULE } from '@enums/module'
 import { PACKAGE_MANAGER } from '@enums/package-managers'
 import { Separator, input, select } from '@inquirer/prompts'
-import { getAccountsList } from '@utils/account'
+import { getAccountIdFromAccountFileName, getAccountsList } from '@utils/account'
 import { capitalize } from '@utils/string'
 import { validate } from '@utils/validations'
 import fs from 'fs'
@@ -65,13 +65,13 @@ export const packageMangerSelectionPrompt = (): Promise<PACKAGE_MANAGER> => {
 export const selectDeployerPrompt = () => {
   const { accountFiles, accountsFolderPath } = getAccountsList()
   const longestAccountId = accountFiles.reduce((acc, file) => {
-    const accountId = file.split('.')[0]
+    const accountId = getAccountIdFromAccountFileName(file)
     return accountId.length > acc ? accountId.length : acc
   }, 0)
 
   const choices = accountFiles.map((file) => {
     const keystore = JSON.parse(fs.readFileSync(path.join(accountsFolderPath, file), 'utf-8'))
-    const accountId = file.split('.')[0]
+    const accountId = getAccountIdFromAccountFileName(file)
 
     return { name: `${accountId.padEnd(longestAccountId, ' ')} (0x${keystore.address})`, value: accountId }
   })

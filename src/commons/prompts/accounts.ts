@@ -18,6 +18,7 @@ export const loadAccountFromPrompt = async (accountId: string, currentAttempt: n
   if (!password) return
 
   const newAttempt = currentAttempt + 1
+
   try {
     // if invalid password, accounts.load will throw error
     return await accounts.load(accountId, password)
