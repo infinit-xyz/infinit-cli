@@ -34,8 +34,9 @@ export const handleListAccounts = async (): Promise<CliTable3.Table> => {
     // Setup public client
     chainInfo = getProjectChainInfo()
     publicClient = createPublicClient({ chain: chainInfo.viemChain.instance, transport: http(getProjectRpc()) })
-  } catch (_) {
+  } catch (error) {
     console.warn('Warning: Cannot setup public client')
+    console.warn(error)
   }
 
   console.log(`Accounts and balances${chainInfo ? ` on ${chalkInfo(chainInfo?.name)}` : ''}`)
@@ -60,8 +61,9 @@ export const handleListAccounts = async (): Promise<CliTable3.Table> => {
 
           walletBalanceDisplayText = `${walletBalanceDisplay.toLocaleString(undefined, { maximumFractionDigits: 8 })} ${chainInfo.nativeCurrency.symbol}`
         }
-      } catch (_) {
+      } catch (error) {
         console.warn('Warning: Cannot get balance')
+        console.warn(error)
       }
 
       // push the account to table
