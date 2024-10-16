@@ -88,6 +88,22 @@ describe('executeActionCallbackHandler', () => {
     expect(mockSpinner.text).toBe(`Executing actionName -  (${currentSubActionStartIndex + 2}/2 sub-actions, 1 transactions).`)
   })
 
+  test('should handle when all subaction has finished', () => {
+    callback('actionInfo', { name: 'actionName', totalSubActions: 3 })
+    expect(mockSpinner.text).toBe(`Executing actionName -  (1/3 sub-actions, 0 transactions).`)
+
+    callback('subActionFinished', { name: 'subActionName1' })
+    expect(mockSpinner.text).toBe(`Executing actionName -  (2/3 sub-actions, 0 transactions).`)
+
+    callback('subActionFinished', { name: 'subActionName2' })
+    expect(mockSpinner.text).toBe(`Executing actionName -  (3/3 sub-actions, 0 transactions).`)
+
+    callback('subActionFinished', { name: 'subActionName3' })
+
+    // the last one shouldn't change the text
+    expect(mockSpinner.text).toBe(`Executing actionName -  (3/3 sub-actions, 0 transactions).`)
+  })
+
   describe('txChecked', () => {
     beforeEach(() => {
       vi.mocked(cache.updateTxCache).mockClear()
