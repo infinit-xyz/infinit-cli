@@ -123,7 +123,7 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
   [CHAIN_ID.Unichain_Sepolia]: {
     chainId: CHAIN_ID.Unichain_Sepolia,
     name: '[Testnet] Unichain Sepolia',
-    shortName: 'Berachain bArtio',
+    shortName: 'Unichain Sepolia',
     rpcList: ['	https://sepolia.unichain.org'],
     nativeCurrency: {
       name: 'Ethereum',
