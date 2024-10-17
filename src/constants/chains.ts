@@ -120,6 +120,20 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
       instance: viemChains.berachainTestnetbArtio,
     },
   },
+  [CHAIN_ID.Unichain_Sepolia]: {
+    chainId: CHAIN_ID.Unichain_Sepolia,
+    name: '[Testnet] Unichain Sepolia',
+    shortName: 'Berachain bArtio',
+    rpcList: ['	https://sepolia.unichain.org'],
+    nativeCurrency: {
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    viemChain: {
+      instance: viemChains.unichainSepolia,
+    },
+  },
   // [CHAIN_ID.Arbitrum]: {
   //   chainId: CHAIN_ID.Arbitrum,
   //   name: 'Arbitrum One',
