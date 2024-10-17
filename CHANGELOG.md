@@ -1,5 +1,15 @@
 # @infinit-xyz/cli
 
+## 0.0.0-alpha.13
+
+### Patch Changes
+
+- [#70](https://github.com/infinit-xyz/infinit-cli/pull/70) [`58df6b5`](https://github.com/infinit-xyz/infinit-cli/commit/58df6b55cfb9f3211b01db84a101b041d1887cb9) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - handle when account not found on execute
+
+- [#71](https://github.com/infinit-xyz/infinit-cli/pull/71) [`6a25ff7`](https://github.com/infinit-xyz/infinit-cli/commit/6a25ff74e19db765dc95cb95249a667fe0363988) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - fix: handle accountId with dot
+
+- [#73](https://github.com/infinit-xyz/infinit-cli/pull/73) [`a5bb0d4`](https://github.com/infinit-xyz/infinit-cli/commit/a5bb0d4b4e34fddcc86095c0d03599f33afcce65) Thanks [@Pitchanai](https://github.com/Pitchanai)! - Remove error when chainInfo is not found to support custom chain
+
 ## 0.0.0-alpha.12
 
 ### Minor Changes
