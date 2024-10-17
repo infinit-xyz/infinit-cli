@@ -1,15 +1,16 @@
-import { executeActionCallbackHandler } from '@commands/script/execute'
-import { FILE_NAMES } from '@constants'
-import { checkFilesExist, writeFileSync } from '@utils/files'
-import { jsonSafeParse, parseDateReviver } from '@utils/json'
 import fs from 'fs'
 import ora from 'ora'
 import path from 'path'
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
+
+import { executeActionCallbackHandler } from '@commands/script/execute/callback'
+import { FILE_NAMES } from '@constants'
+import { checkFilesExist, writeFileSync } from '@utils/files'
+import { jsonSafeParse, parseDateReviver } from '@utils/json'
+
 import { Cache, cache } from './Cache'
 import { TX_STATUS } from './Cache.enum'
 import { type InfinitCliCache, InfinitCliCacheZod } from './Cache.type'
-
 import { example1, example1Parsed, mockProjectConfig } from './__mocks__/constants'
 
 /**

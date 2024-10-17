@@ -19,7 +19,7 @@ export class Accounts {
     this.accounts = {}
   }
 
-  public getAccoundById(id: string): PrivateKeyAccount {
+  public getAccoundById(id: string): PrivateKeyAccount | undefined {
     return this.accounts[id]
   }
 
