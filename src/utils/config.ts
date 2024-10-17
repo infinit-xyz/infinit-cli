@@ -38,10 +38,6 @@ export const getProjectChainInfo = (): ChainInfo => {
 
   const chainInfo = CHAINS[_config.chain_info.network_id.toString() as CHAIN_ID]
 
-  if (!chainInfo) {
-    throw new ValidateInputValueError(`Chain ${_config.chain_info.network_id} is not supported`)
-  }
-
   if (!_config.chain_info.block_explorer) {
     throw new ValidateInputValueError(`Block explorer info not found`)
   }
