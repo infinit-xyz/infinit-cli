@@ -10,6 +10,8 @@ import { EXPECTED_NODE_VERSION } from '@constants'
 import { chalkError } from '@constants/chalk'
 import { isRunOnLocalOnly } from '@utils/invoke-cli'
 
+import { customErrorLog } from '@errors/log'
+import { checkIsFoundryInstalled } from '@utils/foundry'
 import { version } from '../package.json'
 
 // Function to validate Node.js version
@@ -157,6 +159,14 @@ scriptCommands
   .description('Execute a specified script in the scripts/ folder')
   .argument('[file]', 'Script file name') // optional
   .option('--ignore-cache', 'Execute without using saved cache (if any)')
+  .hook('preAction', async () => {
+    try {
+      await checkIsFoundryInstalled()
+    } catch (error) {
+      console.error(customErrorLog(error as Error))
+      process.exit(1)
+    }
+  })
   .action(async (fileName, option) => {
     isRunOnLocalOnly()
     await handleExecuteScript(fileName, option)
