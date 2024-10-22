@@ -70,6 +70,7 @@ export const getProjectChainInfo = (): ChainInfo => {
     viemChain: {
       instance: viemInstance,
     },
+    isTestnet: true,
   }
 }
 

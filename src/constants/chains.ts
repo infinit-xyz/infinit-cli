@@ -15,6 +15,7 @@ export type ChainInfo = {
   description?: string
   nativeCurrency: TokenDetail
   rpcList: string[]
+  isTestnet: boolean
   viemChain: {
     instance: Chain
   }
@@ -41,6 +42,7 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     viemChain: {
       instance: viemChains.mainnet,
     },
+    isTestnet: false,
   },
   [CHAIN_ID.Mantle]: {
     chainId: CHAIN_ID.Mantle,
@@ -55,6 +57,7 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     viemChain: {
       instance: viemChains.mantle,
     },
+    isTestnet: false,
   },
   [CHAIN_ID.BNB_Chain]: {
     chainId: CHAIN_ID.BNB_Chain,
@@ -77,6 +80,7 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     viemChain: {
       instance: viemChains.bsc,
     },
+    isTestnet: false,
   },
   [CHAIN_ID.Sepolia]: {
     chainId: CHAIN_ID.Sepolia,
@@ -91,6 +95,7 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     viemChain: {
       instance: viemChains.sepolia,
     },
+    isTestnet: true,
   },
   [CHAIN_ID.Holesky]: {
     chainId: CHAIN_ID.Holesky,
@@ -105,6 +110,7 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     viemChain: {
       instance: viemChains.holesky,
     },
+    isTestnet: true,
   },
   [CHAIN_ID.Berachain_bArtio]: {
     chainId: CHAIN_ID.Berachain_bArtio,
@@ -119,6 +125,7 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     viemChain: {
       instance: viemChains.berachainTestnetbArtio,
     },
+    isTestnet: true,
   },
   [CHAIN_ID.Unichain_Sepolia]: {
     chainId: CHAIN_ID.Unichain_Sepolia,
