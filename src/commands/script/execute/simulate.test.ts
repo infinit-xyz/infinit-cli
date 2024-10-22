@@ -140,7 +140,18 @@ describe('simulateExecute', () => {
   })
 
   test('should simulate the action and log results', async () => {
-    await simulateExecute(action, registry, chainInfo, signerAddresses, spinner, actionInfinitCache)
+    const { totalTransactions, estimatedCost, walletTxCountMapping } = await simulateExecute(
+      action,
+      registry,
+      chainInfo,
+      signerAddresses,
+      spinner,
+      actionInfinitCache,
+    )
+
+    expect(totalTransactions).toBe(0)
+    expect(estimatedCost).toBe(0)
+    expect(walletTxCountMapping).toEqual({})
 
     expect(mockTestClient.impersonateAccount).toHaveBeenCalledTimes(2)
     expect(mockTestClient.impersonateAccount).toHaveBeenCalledWith({ address: '0x123' })

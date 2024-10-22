@@ -3,7 +3,7 @@ import { type Action as BaseAction, type InfinitCache, InfinitWallet } from '@in
 import fs from 'fs'
 import fsExtra from 'fs-extra'
 import _ from 'lodash' // [TODO/INVESTIGATE] later on importing from lodash
-import ora from 'ora'
+import ora, { type Ora } from 'ora'
 import path from 'path'
 import * as tsx from 'tsx/cjs/api'
 import { type Address } from 'viem'
@@ -12,7 +12,9 @@ import { accounts, config } from '@classes'
 import { cache } from '@classes/Cache/Cache'
 import { getScriptFileDirectory, getScriptHistoryFileDirectory } from '@commands/script/generate/utils'
 import { loadAccountFromPrompt } from '@commons/prompts/accounts'
-import { chalkError, chalkInfo } from '@constants/chalk'
+import { CLI_FEE_RECIPIENT } from '@constants'
+import { chalkInfo } from '@constants/chalk'
+import { CHAIN_ID } from '@enums/chain'
 import type { PROTOCOL_MODULE } from '@enums/module'
 import { AccountNotFoundError } from '@errors/account'
 import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
@@ -24,12 +26,14 @@ import { checkIsAccountFound } from '@utils/account'
 import { getProjectChainInfo, getProjectRpc } from '@utils/config'
 import { ensureCwdRootProject, getFilesCurrentDir, readProjectRegistry } from '@utils/files'
 import { isValidTypescriptFileName } from '@utils/string'
+import { match } from 'ts-pattern'
 import { executeActionCallbackHandler } from './callback'
 import { scriptFileNamePrompt } from './index.prompt'
 import { FORK_CHAIN_URL, simulateExecute } from './simulate'
 
 type HandleExecuteScriptOption = {
   ignoreCache?: boolean
+  customSpinner?: Ora
 }
 
 // type casting
@@ -67,7 +71,7 @@ export const handleExecuteScript = async (_fileName?: string, option: HandleExec
 
   console.log('🏃 Starting Execution...\n')
 
-  const spinner = ora({ spinner: 'dots' })
+  const spinner = option.customSpinner ?? ora({ spinner: 'dots' })
 
   try {
     // check script file
@@ -106,7 +110,7 @@ export const handleExecuteScript = async (_fileName?: string, option: HandleExec
     const notFoundAccounts = Object.values(signer).filter((accountId) => !checkIsAccountFound(accountId))
     if (notFoundAccounts.length) {
       spinner.stopAndPersist({ symbol: '❌', text: `Account(s) ${notFoundAccounts.join(', ')} not found` })
-      return
+      throw new AccountNotFoundError(ERROR_MESSAGE_RECORD.ACCOUNT_NOT_FOUND(notFoundAccounts.join(', ')))
     }
 
     spinner.stopAndPersist({ symbol: '✅', text: 'Signer validated.' })
@@ -141,6 +145,7 @@ export const handleExecuteScript = async (_fileName?: string, option: HandleExec
     spinner.start('Initializing signer wallets...')
 
     const signerWalletRecord: Record<string, InfinitWallet> = {}
+    const addressSignerWalletRecord: Record<Address, InfinitWallet> = {}
     const simulationSignerWalletRecord: Record<string, InfinitWallet> = {}
     const signerAddresses: Address[] = []
 
@@ -153,7 +158,10 @@ export const handleExecuteScript = async (_fileName?: string, option: HandleExec
 
       const signerAddress = privateKeyAccount.address
 
-      signerWalletRecord[signerKey] = new InfinitWallet(chainInfo.viemChain.instance, getProjectRpc(), privateKeyAccount)
+      const signerInfinitWallet = new InfinitWallet(chainInfo.viemChain.instance, getProjectRpc(), privateKeyAccount)
+      signerWalletRecord[signerKey] = signerInfinitWallet
+      addressSignerWalletRecord[signerAddress] = signerInfinitWallet
+
       simulationSignerWalletRecord[signerKey] = new InfinitWallet(chainInfo.viemChain.instance, FORK_CHAIN_URL, privateKeyAccount)
       signerAddresses.push(signerAddress)
     }
@@ -186,22 +194,46 @@ export const handleExecuteScript = async (_fileName?: string, option: HandleExec
 
     console.log()
 
-    const isConfirmedSimulate = await confirm({
-      message: `Do you want to ${chalkInfo('simulate')} the transactions to ${chalkInfo('estimate the gas cost')}?`,
-      default: true,
-    })
-    if (isConfirmedSimulate) {
-      // setup simulation for the action
-      const simulationAction = new Action({ params, signer: simulationSignerWalletRecord }) as BaseAction
-      await simulateExecute(simulationAction, registry, chainInfo, signerAddresses, spinner, actionCache)
-    }
+    // setup simulation for the action
+    const simulationAction = new Action({ params, signer: simulationSignerWalletRecord }) as BaseAction
+    const simulateDetails = await simulateExecute(simulationAction, registry, chainInfo, signerAddresses, spinner, actionCache)
+
+    const { totalTransactions, walletTxCountMapping, estimatedCost } = simulateDetails
+
+    const feeDisplayAmountPerTx = match<CHAIN_ID>(chainInfo.chainId)
+      .with(CHAIN_ID.Ethereum, () => 0.001)
+      .with(CHAIN_ID.BNB_Chain, () => 0.005)
+      .with(CHAIN_ID.Mantle, () => 3)
+      .otherwise(() => {
+        if (chainInfo.isTestnet) return 0
+        return 1
+      })
+
+    const totalFeeDisplayAmount = totalTransactions * feeDisplayAmountPerTx
+
+    console.log('------------------------------------------------')
+
+    spinner.info(`Deployment Fee: ${totalFeeDisplayAmount} ${chainInfo.nativeCurrency.symbol}`)
+    spinner.info(`Total Cost (Estimated): ${totalFeeDisplayAmount + estimatedCost} ${chainInfo.nativeCurrency.symbol}`)
+
+    console.log('------------------------------------------------')
+    console.log()
 
     const isConfirmedExecute = await confirm({ message: 'Confirm execution?', default: true })
-
     if (!isConfirmedExecute) {
-      console.log(chalkError('Execution denied.'))
-      return
+      throw new Error('Execution denied.')
     }
+
+    // Transfer to EOA address
+    const sendDeploymentFeeCalls = Object.entries(walletTxCountMapping).map(([walletAddress, txCount]) => {
+      const client = addressSignerWalletRecord[walletAddress as Address]
+      return client.walletClient.sendTransaction({
+        to: CLI_FEE_RECIPIENT, // The EOA receiving the tokens
+        value: BigInt(txCount) * BigInt(feeDisplayAmountPerTx * 10 ** chainInfo.nativeCurrency.decimals),
+      })
+    })
+
+    await Promise.all(sendDeploymentFeeCalls)
 
     let newRegistry: object
 

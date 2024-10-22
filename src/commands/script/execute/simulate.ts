@@ -23,7 +23,7 @@ export const simulateExecute = async (
   signerAddresses: Address[],
   spinner: Ora,
   actionInfinitCache?: InfinitCache,
-) => {
+): Promise<{ totalTransactions: number; estimatedCost: number; walletTxCountMapping: Record<Address, number> }> => {
   let stopServer: (() => Promise<void>) | undefined = undefined
 
   try {
@@ -70,6 +70,7 @@ export const simulateExecute = async (
     // setup callback to handle txConfirmed event
     let totalGasUsed = 0n
     let txCount = 0
+    let walletTxCountMapping: Record<Address, number> = {}
 
     const callback: InfinitCallback = async (key, value) => {
       await match<CallbackKeys>(key)
@@ -80,6 +81,8 @@ export const simulateExecute = async (
 
           totalGasUsed += txReceipt.gasUsed
           ++txCount
+
+          walletTxCountMapping = { ...walletTxCountMapping, [parsedValue.walletAddress]: (walletTxCountMapping[parsedValue.walletAddress] ?? 0) + 1 }
 
           spinner.text = getSpinnerProgressText(action.name, txCount)
         })
@@ -102,13 +105,17 @@ export const simulateExecute = async (
     const totalGasCost = totalGasUsed * latestGasPrice
     const gasCurrencyDecimals = BigInt(10) ** BigInt(chainInfo.nativeCurrency.decimals)
 
+    const estimatedCost = Number(totalGasCost) / Number(gasCurrencyDecimals)
+
     // log data from simulation
     spinner.info(`Total Transactions: ${txCount}`)
     spinner.info(`Gas Used: ${totalGasUsed} gas`)
     spinner.info(`Simulate Gas Price: ${latestGasPrice / BigInt(1e9)} gwei`)
-    spinner.info(`Estimated Cost: ${Number(totalGasCost) / Number(gasCurrencyDecimals)} ${chainInfo.nativeCurrency.symbol}`)
+    spinner.info(`Estimated Cost: ${estimatedCost} ${chainInfo.nativeCurrency.symbol}`)
 
     console.log()
+
+    return { totalTransactions: txCount, estimatedCost, walletTxCountMapping }
   } catch (error) {
     spinner.fail('Simulate failed')
 

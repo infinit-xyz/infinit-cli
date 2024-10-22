@@ -14,3 +14,6 @@ export const FILE_NAMES = {
 export const DEFAULT_ACTION_KEY = 'init'
 
 export const EXPECTED_NODE_VERSION = '22.0.0'
+
+// test generate (local account)
+export const CLI_FEE_RECIPIENT = '0x2f3c274ed21266b371359d905fa082c83af922f3'
