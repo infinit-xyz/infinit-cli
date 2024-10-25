@@ -111,28 +111,28 @@ describe('executeActionCallbackHandler', () => {
     })
 
     test('should handle CONFIRMED', () => {
-      callback('txChecked', { txHash: '0x1234', status: 'CONFIRMED' })
+      callback('txChecked', { txHash: '0x1234', status: 'CONFIRMED', walletAddress: '0x' })
 
       expect(cache.updateTxCache).toHaveBeenCalledTimes(1)
       expect(cache.updateTxCache).toHaveBeenCalledWith(filename, '0x1234', { status: 'CONFIRMED' })
     })
 
     test('should handle PENDING', () => {
-      callback('txChecked', { txHash: '0x1234', status: 'PENDING' })
+      callback('txChecked', { txHash: '0x1234', status: 'PENDING', walletAddress: '0x' })
 
       expect(cache.updateTxCache).toHaveBeenCalledTimes(1)
       expect(cache.updateTxCache).toHaveBeenCalledWith(filename, '0x1234', { status: 'PENDING' })
     })
 
     test('should handle REVERTED', () => {
-      callback('txChecked', { txHash: '0x1234', status: 'REVERTED' })
+      callback('txChecked', { txHash: '0x1234', status: 'REVERTED', walletAddress: '0x' })
 
       expect(cache.deleteTxCache).toHaveBeenCalledTimes(1)
       expect(cache.deleteTxCache).toHaveBeenCalledWith(filename, '0x1234')
     })
 
     test('should handle NOT_FOUND', () => {
-      callback('txChecked', { txHash: '0x1234', status: 'NOT_FOUND' })
+      callback('txChecked', { txHash: '0x1234', status: 'NOT_FOUND', walletAddress: '0x' })
 
       expect(cache.deleteTxCache).toHaveBeenCalledTimes(1)
       expect(cache.deleteTxCache).toHaveBeenCalledWith(filename, '0x1234')
