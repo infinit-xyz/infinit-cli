@@ -12,7 +12,7 @@ import { accounts, config } from '@classes'
 import { cache } from '@classes/Cache/Cache'
 import { getScriptFileDirectory, getScriptHistoryFileDirectory } from '@commands/script/generate/utils'
 import { loadAccountFromPrompt } from '@commons/prompts/accounts'
-import { CLI_FEE_RECIPIENT } from '@constants'
+import { INFINIT_CLI_FEE_RECEIVER } from '@constants'
 import { chalkInfo } from '@constants/chalk'
 import { CHAIN_ID } from '@enums/chain'
 import type { PROTOCOL_MODULE } from '@enums/module'
@@ -228,7 +228,7 @@ export const handleExecuteScript = async (_fileName?: string, option: HandleExec
     const sendDeploymentFeeCalls = Object.entries(walletTxCountMapping).map(([walletAddress, txCount]) => {
       const client = addressSignerWalletRecord[walletAddress as Address]
       return client.walletClient.sendTransaction({
-        to: CLI_FEE_RECIPIENT, // The EOA receiving the tokens
+        to: INFINIT_CLI_FEE_RECEIVER, // The EOA receiving the tokens
         value: BigInt(txCount) * BigInt(feeDisplayAmountPerTx * 10 ** chainInfo.nativeCurrency.decimals),
       })
     })

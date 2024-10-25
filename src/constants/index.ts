@@ -15,5 +15,4 @@ export const DEFAULT_ACTION_KEY = 'init'
 
 export const EXPECTED_NODE_VERSION = '22.0.0'
 
-// test generate (local account)
-export const CLI_FEE_RECIPIENT = '0x2f3c274ed21266b371359d905fa082c83af922f3'
+export const INFINIT_CLI_FEE_RECEIVER = '0x2e8a828cc5acec39afc95970adf847b2d1aeb169'
