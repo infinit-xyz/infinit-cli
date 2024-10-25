@@ -62,6 +62,7 @@ describe('Command: accounts - generate', () => {
         instance: mainnet,
         name: 'mainnet',
       },
+      isTestnet: false,
     }))
     vi.mocked(checkIsAccountFound).mockReturnValue(false)
     vi.mocked(ensureAccessibilityAtPath).mockImplementation(() => {})
