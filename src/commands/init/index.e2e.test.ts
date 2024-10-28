@@ -48,7 +48,7 @@ describe('Command: init', () => {
         .setCwd(cwdPath)
         .invoke(['init', '--directory', newProjectPath, '--chain', 'Ethereum', '--module', 'aave-v3', '--ignore-deployer', '--ignore-analytics'])
 
-      logs.should.contain('Successfully initialized a project')
+      logs.should.contain('🚀 Initialize a project from aave-v3 module')
 
       expect(exitCode).toBe(0)
     })
