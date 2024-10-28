@@ -19,10 +19,6 @@ runs:
     - name: Install Foundry
       uses: foundry-rs/foundry-toolchain@v1
 
-    - name: Run tests
+    - name: Verify Foundry Installation
       shell: bash
-      run: forge test -vvv
-
-    - name: Run snapshot
-      shell: bash
-      run: forge snapshot
+      run: forge --version
