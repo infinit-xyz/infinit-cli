@@ -1,5 +1,18 @@
 # @infinit-xyz/cli
 
+## 0.0.0-alpha.14
+
+### Patch Changes
+
+- [#74](https://github.com/infinit-xyz/infinit-cli/pull/74) [`444760a`](https://github.com/infinit-xyz/infinit-cli/commit/444760a244ffb31525416534b5191b358ffbdf70) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - bump library version
+
+  - @infinit-xyz/aave-v3@0.0.0-alpha.20
+  - @infinit-xyz/core@0.1.0-alpha.5
+  - @infinit-xyz/token@0.0.0-alpha.17
+  - @infinit-xyz/uniswap-v3@0.0.0-alpha.18
+
+- [#74](https://github.com/infinit-xyz/infinit-cli/pull/74) [`444760a`](https://github.com/infinit-xyz/infinit-cli/commit/444760a244ffb31525416534b5191b358ffbdf70) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - add Unichain Sepolia
+
 ## 0.0.0-alpha.13
 
 ### Patch Changes
