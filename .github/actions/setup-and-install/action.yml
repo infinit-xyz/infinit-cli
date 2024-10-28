@@ -19,10 +19,4 @@ runs:
     - name: Install Foundry
       uses: foundry-rs/foundry-toolchain@v1
 
-    - name: Verify Foundry Installation
-      shell: bash
-      run: forge --version
 
-    - name: Test foundry installation
-      shell: bash
-      run: which foundryup anvil forge
