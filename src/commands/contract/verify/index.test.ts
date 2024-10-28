@@ -37,7 +37,18 @@ const MOCK_PROJECT_CONFIG = {
       name: 'FAKE_NAME',
       api_url: 'FAKE_API_URL',
       api_key: 'FAKE_API_KEY',
-      url: 'FALE_URL',
+      url: 'FAKE_URL',
+    },
+  },
+  protocol_module: PROTOCOL_MODULE.aave_v3,
+} as InfinitConfigSchema
+
+const MOCK_PROJECT_WITH_BLOCKSCOUT_CONFIG = {
+  chain_info: {
+    block_explorer: {
+      name: 'FAKE_NAME',
+      api_url: 'https://eth-holesky.blockscout.com/api',
+      url: 'FAKE_URL',
     },
   },
   protocol_module: PROTOCOL_MODULE.aave_v3,
@@ -95,6 +106,65 @@ describe('handleVerifyContract', () => {
 
     expect(mockVerifyContract).toHaveBeenCalledTimes(1)
     expect(mockVerifyContract).toHaveBeenCalledWith({}, expect.any(Function))
+  })
+
+  test('should handle explorer info and call verify contract correctly with Blockscout', async () => {
+    vi.spyOn(config, 'getProjectConfig').mockReturnValue(MOCK_PROJECT_WITH_BLOCKSCOUT_CONFIG)
+    vi.mocked(confirmPrompt).mockResolvedValue(true)
+
+    await handleVerifyContract()
+
+    expect(explorerNamePrompt).not.toHaveBeenCalled()
+    expect(explorerApiUrlPrompt).not.toHaveBeenCalled()
+    expect(explorerApiKeyPrompt).not.toHaveBeenCalled()
+    expect(explorerUrlPrompt).not.toHaveBeenCalled()
+    expect(setProjectConfigBlockExplorerSpy).not.toHaveBeenCalled()
+
+    expect(consoleLogSpy).toHaveBeenCalledTimes(3)
+    expect(consoleLogSpy).toHaveBeenCalledWith(`ℹ︎ Configuration:`)
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      `Block Explorer: ${MOCK_PROJECT_WITH_BLOCKSCOUT_CONFIG.chain_info.block_explorer?.name} (${MOCK_PROJECT_WITH_BLOCKSCOUT_CONFIG.chain_info.block_explorer?.url})`,
+    )
+    expect(consoleLogSpy).toHaveBeenCalledWith(`Block Explorer API URL:`, MOCK_PROJECT_WITH_BLOCKSCOUT_CONFIG.chain_info.block_explorer?.api_url)
+
+    expect(mockVerifier).toHaveBeenCalledTimes(1)
+    expect(mockVerifier).toHaveBeenCalledWith(mockPublicClient, {
+      apiKey: MOCK_PROJECT_WITH_BLOCKSCOUT_CONFIG.chain_info.block_explorer?.api_key,
+      apiUrl: MOCK_PROJECT_WITH_BLOCKSCOUT_CONFIG.chain_info.block_explorer?.api_url,
+      url: MOCK_PROJECT_WITH_BLOCKSCOUT_CONFIG.chain_info.block_explorer?.url,
+    })
+
+    expect(mockVerifyContract).toHaveBeenCalledTimes(1)
+    expect(mockVerifyContract).toHaveBeenCalledWith({}, expect.any(Function))
+  })
+
+  test('should throw error if block explorer is not blockscout but no api key', async () => {
+    const MOCK_PROJECT_WITHOUT_API_KEY = {
+      chain_info: {
+        block_explorer: {
+          name: 'FAKE_NAME',
+          api_url: 'https://api-sepolia.arbiscan.io/api',
+          url: 'FAKE_URL',
+        },
+      },
+      protocol_module: PROTOCOL_MODULE.aave_v3,
+    } as InfinitConfigSchema
+
+    vi.spyOn(config, 'getProjectConfig').mockReturnValue(MOCK_PROJECT_WITHOUT_API_KEY)
+    vi.mocked(explorerApiKeyPrompt).mockResolvedValue('FAKE_API_KEY')
+    vi.mocked(confirmPrompt).mockResolvedValue(true)
+
+    await handleVerifyContract()
+
+    expect(explorerApiKeyPrompt).toHaveBeenCalledTimes(1)
+
+    expect(consoleLogSpy).toHaveBeenCalledTimes(4)
+    expect(consoleLogSpy).toHaveBeenCalledWith(`ℹ︎ Configuration:`)
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      `Block Explorer: ${MOCK_PROJECT_WITHOUT_API_KEY.chain_info.block_explorer?.name} (${MOCK_PROJECT_WITHOUT_API_KEY.chain_info.block_explorer?.url})`,
+    )
+    expect(consoleLogSpy).toHaveBeenCalledWith(`Block Explorer API URL:`, MOCK_PROJECT_WITHOUT_API_KEY.chain_info.block_explorer?.api_url)
+    expect(consoleLogSpy).toHaveBeenCalledWith(`Block Explorer API Key:`, 'FAK******KEY')
   })
 
   describe('no block explorer info from config', () => {
