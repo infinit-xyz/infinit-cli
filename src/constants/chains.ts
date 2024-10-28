@@ -140,6 +140,7 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     viemChain: {
       instance: viemChains.unichainSepolia,
     },
+    isTestnet: true,
   },
   // [CHAIN_ID.Arbitrum]: {
   //   chainId: CHAIN_ID.Arbitrum,
