@@ -18,3 +18,11 @@ runs:
 
     - name: Install Foundry
       uses: foundry-rs/foundry-toolchain@v1
+
+    - name: Run tests
+      shell: bash
+      run: forge test -vvv
+
+    - name: Run snapshot
+      shell: bash
+      run: forge snapshot
