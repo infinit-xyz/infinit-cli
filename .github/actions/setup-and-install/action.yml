@@ -22,3 +22,7 @@ runs:
     - name: Verify Foundry Installation
       shell: bash
       run: forge --version
+
+    - name: Test foundry installation
+      shell: bash
+      run: which foundryup anvil forge
