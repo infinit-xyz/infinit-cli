@@ -37,7 +37,7 @@ const MOCK_PROJECT_CONFIG = {
       name: 'FAKE_NAME',
       api_url: 'FAKE_API_URL',
       api_key: 'FAKE_API_KEY',
-      url: 'FALE_URL',
+      url: 'FAKE_URL',
     },
   },
   protocol_module: PROTOCOL_MODULE.aave_v3,
@@ -48,7 +48,7 @@ const MOCK_PROJECT_WITH_BLOCKSCOUT_CONFIG = {
     block_explorer: {
       name: 'FAKE_NAME',
       api_url: 'https://eth-holesky.blockscout.com/api',
-      url: 'FALE_URL',
+      url: 'FAKE_URL',
     },
   },
   protocol_module: PROTOCOL_MODULE.aave_v3,
@@ -144,7 +144,7 @@ describe('handleVerifyContract', () => {
         block_explorer: {
           name: 'FAKE_NAME',
           api_url: 'https://api-sepolia.arbiscan.io/api',
-          url: 'FALE_URL',
+          url: 'FAKE_URL',
         },
       },
       protocol_module: PROTOCOL_MODULE.aave_v3,
