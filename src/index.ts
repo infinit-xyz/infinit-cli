@@ -10,7 +10,7 @@ import { EXPECTED_NODE_VERSION } from '@constants'
 import { chalkError } from '@constants/chalk'
 import { isRunOnLocalOnly } from '@utils/invoke-cli'
 
-import { customErrorLog } from '@errors/log'
+import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
 import { checkIsFoundryInstalled } from '@utils/foundry'
 import { version } from '../package.json'
 
@@ -160,10 +160,9 @@ scriptCommands
   .argument('[file]', 'Script file name') // optional
   .option('--ignore-cache', 'Execute without using saved cache (if any)')
   .hook('preAction', async () => {
-    try {
-      await checkIsFoundryInstalled()
-    } catch (error) {
-      console.error(customErrorLog(error as Error))
+    const isFoundryInstalled = await checkIsFoundryInstalled()
+    if (!isFoundryInstalled) {
+      console.error(chalkError(ERROR_MESSAGE_RECORD.FOUNDRY_NOT_INSTALLED))
       process.exit(1)
     }
   })

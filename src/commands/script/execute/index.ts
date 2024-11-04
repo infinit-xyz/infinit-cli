@@ -12,9 +12,7 @@ import { accounts, config } from '@classes'
 import { cache } from '@classes/Cache/Cache'
 import { getScriptFileDirectory, getScriptHistoryFileDirectory } from '@commands/script/generate/utils'
 import { loadAccountFromPrompt } from '@commons/prompts/accounts'
-import { INFINIT_CLI_FEE_RECEIVER } from '@constants'
 import { chalkInfo } from '@constants/chalk'
-import { CHAIN_ID } from '@enums/chain'
 import type { PROTOCOL_MODULE } from '@enums/module'
 import { AccountNotFoundError } from '@errors/account'
 import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
@@ -26,7 +24,7 @@ import { checkIsAccountFound } from '@utils/account'
 import { getProjectChainInfo, getProjectRpc } from '@utils/config'
 import { ensureCwdRootProject, getFilesCurrentDir, readProjectRegistry } from '@utils/files'
 import { isValidTypescriptFileName } from '@utils/string'
-import { match } from 'ts-pattern'
+import { sendCliFeeTxs } from '@utils/transactions/sendCliFeeTxs'
 import { executeActionCallbackHandler } from './callback'
 import { scriptFileNamePrompt } from './index.prompt'
 import { FORK_CHAIN_URL, simulateExecute } from './simulate'
@@ -200,16 +198,7 @@ export const handleExecuteScript = async (_fileName?: string, option: HandleExec
 
     const { totalTransactions, walletTxCountMapping, estimatedCost } = simulateDetails
 
-    const feeDisplayAmountPerTx = match<CHAIN_ID>(chainInfo.chainId)
-      .with(CHAIN_ID.Ethereum, () => 0.001)
-      .with(CHAIN_ID.BNB_Chain, () => 0.005)
-      .with(CHAIN_ID.Mantle, () => 3)
-      .otherwise(() => {
-        if (chainInfo.isTestnet) return 0
-        return 1
-      })
-
-    const totalFeeDisplayAmount = totalTransactions * feeDisplayAmountPerTx
+    const totalFeeDisplayAmount = totalTransactions * chainInfo.feeDisplayAmountPerTx
 
     console.log('------------------------------------------------')
 
@@ -224,16 +213,8 @@ export const handleExecuteScript = async (_fileName?: string, option: HandleExec
       throw new Error('Execution denied.')
     }
 
-    // Transfer to EOA address
-    const sendDeploymentFeeCalls = Object.entries(walletTxCountMapping).map(([walletAddress, txCount]) => {
-      const client = addressSignerWalletRecord[walletAddress as Address]
-      return client.walletClient.sendTransaction({
-        to: INFINIT_CLI_FEE_RECEIVER, // The EOA receiving the tokens
-        value: BigInt(txCount) * BigInt(feeDisplayAmountPerTx * 10 ** chainInfo.nativeCurrency.decimals),
-      })
-    })
-
-    await Promise.all(sendDeploymentFeeCalls)
+    // Transfer to EOA address `INFINIT_CLI_FEE_RECEIVER`
+    await sendCliFeeTxs(walletTxCountMapping, addressSignerWalletRecord, chainInfo)
 
     let newRegistry: object
 

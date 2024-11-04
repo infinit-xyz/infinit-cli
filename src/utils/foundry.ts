@@ -2,9 +2,9 @@ import { spawnChild } from '@utils/childprocess'
 
 export const checkIsFoundryInstalled = async () => {
   try {
-    await spawnChild('which', ['anvil', 'forge'])
+    await Promise.all([spawnChild('anvil', ['--version']), spawnChild('forge', ['--version'])])
     return true
   } catch (_error) {
-    throw new Error('Foundry is not installed')
+    return false
   }
 }
