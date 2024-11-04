@@ -8,6 +8,8 @@ import type { PROTOCOL_MODULE } from '@enums/module'
 import { getProjectChainInfo, getProjectRpc } from '@utils/config'
 import { readProjectRegistry } from '@utils/files'
 
+import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
+import { isBlockscout } from '@infinit-xyz/core/internal'
 import { verifyContractCallbackHandler } from './callback'
 import { confirmPrompt, explorerApiKeyPrompt, explorerApiUrlPrompt, explorerNamePrompt, explorerUrlPrompt } from './index.prompt'
 
@@ -29,10 +31,20 @@ export const handleVerifyContract = async () => {
     isExplorerInfoUpdated = true
   }
 
+  let isBlockscoutExplorerApi: boolean
+  try {
+    isBlockscoutExplorerApi = await isBlockscout(explorerApiUrl!)
+  } catch (_error) {
+    isBlockscoutExplorerApi = false
+  }
+
   let apiKey: string | undefined = projectConfig.chain_info.block_explorer?.api_key?.trim()
-  if (apiKey === '') {
-    apiKey = await explorerApiKeyPrompt()
-    isExplorerInfoUpdated = true
+  if (!apiKey) {
+    if (!isBlockscoutExplorerApi) {
+      // no need api key for Blockscout API
+      apiKey = await explorerApiKeyPrompt()
+      isExplorerInfoUpdated = true
+    }
   }
 
   let explorerUrl: string | undefined = projectConfig.chain_info.block_explorer?.url?.trim()
@@ -41,17 +53,21 @@ export const handleVerifyContract = async () => {
     isExplorerInfoUpdated = true
   }
 
-  if (!explorerName || !explorerApiUrl || !apiKey || !explorerUrl) {
-    throw new Error('Invalid Config, please recheck the config with the documentation.\n' + 'https://dev.infinit.tech/guides/configuration')
+  if (!explorerName || !explorerApiUrl || (!isBlockscoutExplorerApi && !apiKey) || !explorerUrl) {
+    throw new Error(ERROR_MESSAGE_RECORD.INVALID_CONFIG)
   }
 
   const SHOW_API_LENGTH = 6
-  const maskedApiKey = apiKey.slice(0, SHOW_API_LENGTH / 2) + '*'.repeat(apiKey.length - SHOW_API_LENGTH) + apiKey.slice(-SHOW_API_LENGTH / 2)
+  const maskedApiKey = apiKey
+    ? apiKey.slice(0, SHOW_API_LENGTH / 2) + '*'.repeat(apiKey.length - SHOW_API_LENGTH) + apiKey.slice(-SHOW_API_LENGTH / 2)
+    : undefined
 
   console.log(`ℹ︎ Configuration:`)
   console.log(`Block Explorer: ${chalkInfo(explorerName)} ${chalkDim(`(${explorerUrl})`)}`)
   console.log('Block Explorer API URL:', chalkInfo(explorerApiUrl))
-  console.log('Block Explorer API Key:', chalkInfo(maskedApiKey))
+  if (maskedApiKey) {
+    console.log('Block Explorer API Key:', chalkInfo(maskedApiKey))
+  }
 
   const isConfirm = await confirmPrompt()
 
@@ -64,7 +80,7 @@ export const handleVerifyContract = async () => {
     config.setProjectConfigBlockExplorer({
       name: explorerName,
       api_url: explorerApiUrl,
-      api_key: apiKey,
+      api_key: apiKey ?? '',
       url: explorerUrl,
     })
   }

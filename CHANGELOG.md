@@ -1,5 +1,11 @@
 # @infinit-xyz/cli
 
+## 0.0.0-alpha.15
+
+### Patch Changes
+
+- [#76](https://github.com/infinit-xyz/infinit-cli/pull/76) [`1821cf8`](https://github.com/infinit-xyz/infinit-cli/commit/1821cf87279d304c0fb98631292cc2229118215d) Thanks [@mintcnn](https://github.com/mintcnn)! - Handle verify contract for blockscout api to not require api key
+
 ## 0.0.0-alpha.14
 
 ### Patch Changes
