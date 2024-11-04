@@ -9,13 +9,13 @@ import { beforeAll, describe, expect, test, vi } from 'vitest'
 import { accounts, config } from '@classes'
 import type { KeystoreV3 } from '@classes/Accounts/Accounts.type'
 import { mockProjectConfig } from '@classes/Cache/__mocks__/constants'
+import { CHAINS } from '@constants/chains'
 import { CHAIN_ID } from '@enums/chain'
 import { PermissionNotFoundError } from '@errors/fs'
 import { customErrorLog } from '@errors/log'
 import { Wallet } from '@ethereumjs/wallet'
 import { getProjectChainInfo } from '@utils/config'
 import { hexToBytes } from 'viem'
-import { mainnet } from 'viem/chains'
 
 vi.mock('@utils/account')
 vi.mock('@utils/files')
@@ -48,22 +48,8 @@ describe('Command: accounts - generate', () => {
     // mock
     const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined)
 
-    vi.mocked(getProjectChainInfo).mockImplementation(() => ({
-      chainId: CHAIN_ID.Ethereum,
-      name: 'Ethereum Mainnet',
-      shortName: 'Ethereum',
-      rpcList: [],
-      nativeCurrency: {
-        name: 'Ethereum',
-        symbol: 'ETH',
-        decimals: 18,
-      },
-      viemChain: {
-        instance: mainnet,
-        name: 'mainnet',
-      },
-      isTestnet: false,
-    }))
+    const mockChain = CHAINS[CHAIN_ID.Ethereum]
+    vi.mocked(getProjectChainInfo).mockImplementation(() => mockChain)
     vi.mocked(checkIsAccountFound).mockReturnValue(false)
     vi.mocked(ensureAccessibilityAtPath).mockImplementation(() => {})
 
