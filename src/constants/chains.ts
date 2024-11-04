@@ -15,6 +15,7 @@ export type ChainInfo = {
   description?: string
   nativeCurrency: TokenDetail
   rpcList: string[]
+  feeDisplayAmountPerTx: number
   viemChain: {
     instance: Chain
   }
@@ -41,6 +42,7 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     viemChain: {
       instance: viemChains.mainnet,
     },
+    feeDisplayAmountPerTx: 0.001, // 0.001 ETH
   },
   [CHAIN_ID.Mantle]: {
     chainId: CHAIN_ID.Mantle,
@@ -55,6 +57,7 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     viemChain: {
       instance: viemChains.mantle,
     },
+    feeDisplayAmountPerTx: 3, // 3 MNT
   },
   [CHAIN_ID.BNB_Chain]: {
     chainId: CHAIN_ID.BNB_Chain,
@@ -77,6 +80,7 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     viemChain: {
       instance: viemChains.bsc,
     },
+    feeDisplayAmountPerTx: 0.005, // 0.005 BNB
   },
   [CHAIN_ID.Sepolia]: {
     chainId: CHAIN_ID.Sepolia,
@@ -91,6 +95,7 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     viemChain: {
       instance: viemChains.sepolia,
     },
+    feeDisplayAmountPerTx: 0, // 0 ETH
   },
   [CHAIN_ID.Holesky]: {
     chainId: CHAIN_ID.Holesky,
@@ -105,6 +110,7 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     viemChain: {
       instance: viemChains.holesky,
     },
+    feeDisplayAmountPerTx: 0, // 0 ETH
   },
   [CHAIN_ID.Berachain_bArtio]: {
     chainId: CHAIN_ID.Berachain_bArtio,
@@ -119,6 +125,7 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     viemChain: {
       instance: viemChains.berachainTestnetbArtio,
     },
+    feeDisplayAmountPerTx: 0, // 0 BERA
   },
   [CHAIN_ID.Unichain_Sepolia]: {
     chainId: CHAIN_ID.Unichain_Sepolia,
@@ -133,6 +140,7 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     viemChain: {
       instance: viemChains.unichainSepolia,
     },
+    feeDisplayAmountPerTx: 0, // 0 ETH
   },
   // [CHAIN_ID.Arbitrum]: {
   //   chainId: CHAIN_ID.Arbitrum,

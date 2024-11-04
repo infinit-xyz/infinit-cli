@@ -9,5 +9,6 @@ export const ERROR_MESSAGE_RECORD = {
   NODE_VERSION_NOT_SUPPORTED: (expectedNodeVersion: string, currentVersion: string) =>
     `Node.js version must be ${expectedNodeVersion} or higher. You are using ${currentVersion}.`,
 
+  FOUNDRY_NOT_INSTALLED: 'Foundry is not installed',
   INVALID_CONFIG: 'Invalid Config, please recheck the config with the documentation.\nhttps://dev.infinit.tech/guides/configuration',
 }

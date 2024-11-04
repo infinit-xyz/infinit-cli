@@ -88,7 +88,8 @@ export const handleVerifyContract = async () => {
   const chainInfo = getProjectChainInfo()
   const publicClient = createPublicClient({ chain: chainInfo.viemChain.instance, transport: http(getProjectRpc()) })
 
-  const verifier = new protocolModules[projectConfig.protocol_module as PROTOCOL_MODULE].Verifier(publicClient, {
+  const Verifier = protocolModules[projectConfig.protocol_module as PROTOCOL_MODULE].Verifier
+  const verifier = new Verifier(publicClient, {
     apiKey,
     apiUrl: explorerApiUrl,
     url: explorerUrl,

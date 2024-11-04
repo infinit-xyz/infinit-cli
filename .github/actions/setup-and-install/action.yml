@@ -15,3 +15,8 @@ runs:
     - name: Install dependencies
       shell: bash
       run: bun install --ignore-scripts
+
+    - name: Install Foundry
+      uses: foundry-rs/foundry-toolchain@v1
+
+

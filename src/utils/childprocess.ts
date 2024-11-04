@@ -16,8 +16,6 @@ export const spawnChild = (cmd: string, args: string[], env?: NodeJS.ProcessEnv)
       resolve('')
     })
     child.on('error', (err) => {
-      console.error('Failed to start subprocess.')
-      console.error(JSON.stringify(err, undefined, 2))
       reject(err)
       resolve('')
     })

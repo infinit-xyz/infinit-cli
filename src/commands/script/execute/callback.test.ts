@@ -1,4 +1,4 @@
-import type { CallbackKeys, CallbackParams } from '@infinit-xyz/core/types/callback'
+import type { ActionCallbackKeys, ActionCallbackParams } from '@infinit-xyz/core/types/callback'
 
 import type { Ora } from 'ora'
 import ora from 'ora'
@@ -41,7 +41,7 @@ describe('executeActionCallbackHandler', () => {
   const currentSubActionStartIndex = 0
 
   let mockSpinner: Ora
-  let callback: (key: CallbackKeys, value: CallbackParams[CallbackKeys]) => void
+  let callback: (key: ActionCallbackKeys, value: ActionCallbackParams[ActionCallbackKeys]) => void
 
   beforeAll(() => {
     const customStream = new BufferedStream()
@@ -111,28 +111,28 @@ describe('executeActionCallbackHandler', () => {
     })
 
     test('should handle CONFIRMED', () => {
-      callback('txChecked', { txHash: '0x1234', status: 'CONFIRMED' })
+      callback('txChecked', { txHash: '0x1234', status: 'CONFIRMED', walletAddress: '0x' })
 
       expect(cache.updateTxCache).toHaveBeenCalledTimes(1)
       expect(cache.updateTxCache).toHaveBeenCalledWith(filename, '0x1234', { status: 'CONFIRMED' })
     })
 
     test('should handle PENDING', () => {
-      callback('txChecked', { txHash: '0x1234', status: 'PENDING' })
+      callback('txChecked', { txHash: '0x1234', status: 'PENDING', walletAddress: '0x' })
 
       expect(cache.updateTxCache).toHaveBeenCalledTimes(1)
       expect(cache.updateTxCache).toHaveBeenCalledWith(filename, '0x1234', { status: 'PENDING' })
     })
 
     test('should handle REVERTED', () => {
-      callback('txChecked', { txHash: '0x1234', status: 'REVERTED' })
+      callback('txChecked', { txHash: '0x1234', status: 'REVERTED', walletAddress: '0x' })
 
       expect(cache.deleteTxCache).toHaveBeenCalledTimes(1)
       expect(cache.deleteTxCache).toHaveBeenCalledWith(filename, '0x1234')
     })
 
     test('should handle NOT_FOUND', () => {
-      callback('txChecked', { txHash: '0x1234', status: 'NOT_FOUND' })
+      callback('txChecked', { txHash: '0x1234', status: 'NOT_FOUND', walletAddress: '0x' })
 
       expect(cache.deleteTxCache).toHaveBeenCalledTimes(1)
       expect(cache.deleteTxCache).toHaveBeenCalledWith(filename, '0x1234')
