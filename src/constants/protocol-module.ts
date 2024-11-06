@@ -1,7 +1,10 @@
 import { actions as aaveV3Actions } from '@infinit-xyz/aave-v3/actions'
 import { AaveV3ContractVerifier } from '@infinit-xyz/aave-v3/utils'
+
 import { actions as tokenActions } from '@infinit-xyz/token/actions'
+import { offChainActions as tokenOffChainActions } from '@infinit-xyz/token/offChainActions'
 import { TokenContractVerifier } from '@infinit-xyz/token/utils'
+
 import { actions as uniswapV3Actions } from '@infinit-xyz/uniswap-v3/actions'
 import { UniswapV3ContractVerifier } from '@infinit-xyz/uniswap-v3/utils'
 
@@ -14,6 +17,7 @@ export const protocolModules = {
     name: 'Token',
     description: 'Token',
     actions: tokenActions,
+    offChainActions: tokenOffChainActions,
     libPath: '@infinit-xyz/token',
     Verifier: TokenContractVerifier,
   },
@@ -22,6 +26,7 @@ export const protocolModules = {
     name: 'Aave V3',
     description: 'Aave V3',
     actions: aaveV3Actions,
+    offChainActions: {},
     libPath: '@infinit-xyz/aave-v3',
     Verifier: AaveV3ContractVerifier,
   },
@@ -30,6 +35,7 @@ export const protocolModules = {
     name: 'Uniswap V3',
     description: 'Uniswap V3',
     actions: uniswapV3Actions,
+    offChainActions: {},
     libPath: '@infinit-xyz/uniswap-v3',
     Verifier: UniswapV3ContractVerifier,
   },

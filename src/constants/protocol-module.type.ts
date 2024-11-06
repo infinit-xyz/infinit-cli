@@ -1,5 +1,5 @@
 import type { PROTOCOL_MODULE } from '@enums/module'
-import type { InfinitActionRecord } from '@infinit-xyz/core'
+import type { InfinitActionRecord, InfinitOffChainActionRecord } from '@infinit-xyz/core'
 import type { BaseContractVerifier } from '@infinit-xyz/core/internal'
 import type { dependencies } from 'package.json'
 
@@ -8,6 +8,7 @@ export type ModuleAction = {
   name: string
   description: string
   actions: InfinitActionRecord
+  offChainActions: InfinitOffChainActionRecord
   libPath: keyof typeof dependencies
   Verifier: typeof BaseContractVerifier
 }
