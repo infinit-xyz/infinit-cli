@@ -126,7 +126,7 @@ export const initializeCliProject = async (
   fs.writeFileSync(path.join(projectDirectory, 'src', FILE_NAMES.CONFIG), `# yaml-language-server: $schema=${CONFIG_SCHEMA}\n\n` + yaml.dump(config) + os.EOL)
 
   // Write default action file
-  const actions = protocolModuleInfo.actions
+  const actions = protocolModuleInfo.onChainActions
   const initAction = actions[DEFAULT_ACTION_KEY]
 
   if (!initAction) {

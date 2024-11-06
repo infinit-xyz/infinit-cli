@@ -16,7 +16,7 @@ export const handleListAction = () => {
   }
 
   // On-chain actions
-  const onChainActions: InfinitActionRecord = protocolModule.actions
+  const onChainActions: InfinitActionRecord = protocolModule.onChainActions
   const onChainActionKeys = Object.keys(onChainActions)
 
   const onChainActiontable = new Table({

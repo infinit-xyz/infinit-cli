@@ -34,7 +34,7 @@ describe('Action: list', () => {
     }))
 
     const protocolDetails = protocolModules[mockedProtocol]
-    const actions = protocolDetails.actions
+    const actions = protocolDetails.onChainActions
     const offChainActions = protocolDetails.offChainActions
 
     // call function

@@ -92,7 +92,7 @@ export const handleProjectCreate = async (cmdInput: CreateInput) => {
      * Deployer Account
      */
     const { accountFiles } = getAccountsList()
-    const isSignerIncludeDeployer = (protocolModules[protocolModule].actions.init.signers as string[]).includes('deployer')
+    const isSignerIncludeDeployer = (protocolModules[protocolModule].onChainActions.init.signers as string[]).includes('deployer')
 
     let deployerId: string | undefined
 

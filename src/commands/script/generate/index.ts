@@ -12,7 +12,7 @@ import { ensureCwdRootProject } from '@utils/files'
 import type { ProtocolModuleActionKey } from './index.type'
 import { getScriptFileDirectory, getUniqueScriptFileName, handleGenerateScriptFile } from './utils'
 
-export const handleGenerateScript = async (actionId?: string) => {
+export const handleGenerateScript = async (actionIdFromInput?: string) => {
   ensureCwdRootProject()
 
   const projectConfig = config.getProjectConfig()
@@ -25,16 +25,16 @@ export const handleGenerateScript = async (actionId?: string) => {
 
   let actionKey: ProtocolModuleActionKey | undefined = undefined
 
-  if (actionId) {
-    if (actionId in protocolModule.actions) actionKey = actionId as ProtocolModuleActionKey
-    else console.error(chalkError(`Action ${actionId} not found. Please select your desired action.`))
+  if (actionIdFromInput) {
+    if (actionIdFromInput in protocolModule.onChainActions) actionKey = actionIdFromInput as ProtocolModuleActionKey
+    else console.error(chalkError(`Action ${actionIdFromInput} not found. Please select your desired action.`))
   }
 
   // Prompts
   if (!actionKey) {
     actionKey = await select<ProtocolModuleActionKey>({
       message: 'Select an action to generate',
-      choices: Object.entries(protocolModule.actions).map(([key, { name }]) => ({ name: name, value: key as ProtocolModuleActionKey })),
+      choices: Object.entries(protocolModule.onChainActions).map(([key, { name }]) => ({ name: name, value: key as ProtocolModuleActionKey })),
     })
   }
 
@@ -43,7 +43,7 @@ export const handleGenerateScript = async (actionId?: string) => {
   }
 
   const isConfirm = await confirm({
-    message: `Do you want to generate script with action ${chalkInfo(protocolModule.actions[actionKey].name)}?`,
+    message: `Do you want to generate script with action ${chalkInfo(protocolModule.onChainActions[actionKey].name)}?`,
     default: true,
   })
 
@@ -53,7 +53,7 @@ export const handleGenerateScript = async (actionId?: string) => {
   }
 
   const folderPath = getScriptFileDirectory()
-  const selectedAction: InfinitAction = protocolModule.actions[actionKey] as InfinitAction
+  const selectedAction: InfinitAction = protocolModule.onChainActions[actionKey] as InfinitAction
 
   // File name
   const scriptFileName = getUniqueScriptFileName(selectedAction.actionClassName, folderPath)

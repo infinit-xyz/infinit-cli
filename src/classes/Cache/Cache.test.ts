@@ -486,7 +486,7 @@ describe('Cache', () => {
       const updatedAt = date01
 
       vi.setSystemTime(updatedAt)
-      actionCb01Callback('txConfirmed', { txHash: txHash01, status: 'CONFIRMED' })
+      actionCb01Callback('txConfirmed', { txHash: txHash01, status: 'CONFIRMED', walletAddress: '0x0' })
 
       const expectedCacheObject: InfinitCliCache = {
         txs: {
@@ -538,8 +538,8 @@ describe('Cache', () => {
       actionCb01Callback('txSubmitted', { txHash: txHash03, name: 'tx-builder-name-03' })
 
       vi.setSystemTime(updatedAt)
-      actionCb01Callback('txChecked', { txHash: txHash02, status: 'CONFIRMED' })
-      actionCb01Callback('txChecked', { txHash: txHash03, status: 'PENDING' })
+      actionCb01Callback('txChecked', { txHash: txHash02, status: 'CONFIRMED', walletAddress: '0x0' })
+      actionCb01Callback('txChecked', { txHash: txHash03, status: 'PENDING', walletAddress: '0x0' })
 
       const expectedCacheObject: InfinitCliCache = {
         txs: {
@@ -607,7 +607,7 @@ describe('Cache', () => {
     })
 
     test('txChecked, REVERTED', () => {
-      actionCb01Callback('txChecked', { txHash: txHash02, status: 'REVERTED' })
+      actionCb01Callback('txChecked', { txHash: txHash02, status: 'REVERTED', walletAddress: '0x0' })
 
       const expectedCacheObject: InfinitCliCache = {
         txs: {
@@ -652,7 +652,7 @@ describe('Cache', () => {
     })
 
     test('txChecked, NOT_FOUND', () => {
-      actionCb01Callback('txChecked', { txHash: txHash03, status: 'NOT_FOUND' })
+      actionCb01Callback('txChecked', { txHash: txHash03, status: 'NOT_FOUND', walletAddress: '0x0' })
 
       const expectedCacheObject: InfinitCliCache = {
         txs: {

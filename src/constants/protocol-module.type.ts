@@ -7,7 +7,7 @@ export type ModuleAction = {
   key: PROTOCOL_MODULE
   name: string
   description: string
-  actions: InfinitActionRecord
+  onChainActions: InfinitActionRecord
   offChainActions: InfinitOffChainActionRecord
   libPath: keyof typeof dependencies
   Verifier: typeof BaseContractVerifier

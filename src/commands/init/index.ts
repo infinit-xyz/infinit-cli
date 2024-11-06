@@ -73,7 +73,7 @@ export const handleInitializeCli = async (cmdInput: InitProjectInput) => {
 
     if (!cmdInput.ignoreDeployer) {
       const { accountFiles } = getAccountsList()
-      const isSignerIncludeDeployer = (protocolModules[protocolModule].actions.init.signers as string[]).includes('deployer')
+      const isSignerIncludeDeployer = (protocolModules[protocolModule].onChainActions.init.signers as string[]).includes('deployer')
 
       if (cmdInput.deployer) {
         if (accountFiles.includes(`${cmdInput.deployer}.json`)) {

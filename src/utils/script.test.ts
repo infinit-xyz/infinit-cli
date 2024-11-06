@@ -6,7 +6,7 @@ import { describe, expect, test } from 'vitest'
 import type { AnyZodObject } from 'zod'
 
 describe('generateScriptText', () => {
-  const initialAction = protocolModules[PROTOCOL_MODULE.aave_v3].actions.init
+  const initialAction = protocolModules[PROTOCOL_MODULE.aave_v3].onChainActions.init
   const libPath = protocolModules[PROTOCOL_MODULE.aave_v3].libPath
   const paramsSchema = initialAction.paramsSchema as AnyZodObject
   const generatedText = generateScriptText(initialAction, libPath, 'init')

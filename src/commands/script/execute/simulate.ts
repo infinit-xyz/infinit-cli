@@ -1,14 +1,14 @@
-import type { ChainInfo } from '@constants/chains'
-import type { Action, InfinitCache } from '@infinit-xyz/core'
-import type { CallbackKeys, CallbackParams, InfinitCallback } from '@infinit-xyz/core/types/callback'
-import { getProjectRpc } from '@utils/config'
 import axios from 'axios'
 import type { Ora } from 'ora'
-
 import { createServer } from 'prool'
 import { anvil } from 'prool/instances'
 import { match } from 'ts-pattern'
 import { createPublicClient, createTestClient, http, type Address } from 'viem'
+
+import type { ChainInfo } from '@constants/chains'
+import type { Action, InfinitCache } from '@infinit-xyz/core'
+import type { ActionCallback, ActionCallbackKeys, ActionCallbackParams } from '@infinit-xyz/core/types/callback'
+import { getProjectRpc } from '@utils/config'
 
 const FORK_CHAIN_HOST = 'http://127.0.0.1'
 const FORK_CHAIN_PORT = 8545
@@ -71,10 +71,10 @@ export const simulateExecute = async (
     let totalGasUsed = 0n
     let txCount = 0
 
-    const callback: InfinitCallback = async (key, value) => {
-      await match<CallbackKeys>(key)
+    const callback: ActionCallback = async (key, value) => {
+      await match<ActionCallbackKeys>(key)
         .with('txConfirmed', async () => {
-          const parsedValue = value as CallbackParams['txConfirmed']
+          const parsedValue = value as ActionCallbackParams['txConfirmed']
 
           const txReceipt = await forkClient.getTransactionReceipt({ hash: parsedValue.txHash })
 
