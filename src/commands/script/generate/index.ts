@@ -2,6 +2,7 @@ import type { InfinitAction } from '@infinit-xyz/core'
 import { confirm, select } from '@inquirer/prompts'
 
 import { config } from '@classes'
+import { PromptWrapper } from '@commons/prompt-wrapper'
 import { chalkError, chalkInfo } from '@constants/chalk'
 import { protocolModules } from '@constants/protocol-module'
 import type { PROTOCOL_MODULE } from '@enums/module'
@@ -32,7 +33,7 @@ export const handleGenerateScript = async (actionIdFromInput?: string) => {
 
   // Prompts
   if (!actionKey) {
-    actionKey = await select<ProtocolModuleActionKey>({
+    actionKey = await PromptWrapper(select, {
       message: 'Select an action to generate',
       choices: Object.entries(protocolModule.onChainActions).map(([key, { name }]) => ({ name: name, value: key as ProtocolModuleActionKey })),
     })
