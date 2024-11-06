@@ -9,7 +9,7 @@ describe('Action: list', () => {
     // mock
     vi.spyOn(console, 'log').mockImplementation(() => undefined)
 
-    const mockedProtocol = PROTOCOL_MODULE.aave_v3
+    const mockedProtocol = PROTOCOL_MODULE.token
     const projectConfigSpy = vi.spyOn(config, 'getProjectConfig').mockImplementation(() => ({
       project_name: 'test',
       protocol_module: mockedProtocol,
@@ -35,13 +35,18 @@ describe('Action: list', () => {
 
     const protocolDetails = protocolModules[mockedProtocol]
     const actions = protocolDetails.actions
+    const offChainActions = protocolDetails.offChainActions
 
     // call function
-    const table = handleListAction()
+    const { onChainActiontable, offChainActiontable } = handleListAction()
 
     // assert
-    expect(table).toBeDefined()
-    expect(table.length).toBe(Object.keys(actions).length)
+    expect(onChainActiontable).toBeDefined()
+    expect(onChainActiontable.length).toBe(Object.keys(actions).length)
+
+    expect(offChainActiontable).toBeDefined()
+    expect(offChainActiontable.length).toBe(Object.keys(offChainActions).length)
+
     expect(projectConfigSpy).toHaveBeenCalled()
   })
 
