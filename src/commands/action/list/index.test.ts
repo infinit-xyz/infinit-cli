@@ -34,18 +34,20 @@ describe('Action: list', () => {
     }))
 
     const protocolDetails = protocolModules[mockedProtocol]
-    const actions = protocolDetails.onChainActions
-    const offChainActions = protocolDetails.offChainActions
+    const actionRecord = protocolDetails.actions
+
+    const onChainActionList = Object.entries(actionRecord).filter(([_, action]) => action.type === 'on-chain')
+    const offChainActionList = Object.entries(actionRecord).filter(([_, action]) => action.type === 'off-chain')
 
     // call function
     const { onChainActiontable, offChainActiontable } = handleListAction()
 
     // assert
     expect(onChainActiontable).toBeDefined()
-    expect(onChainActiontable.length).toBe(Object.keys(actions).length)
+    expect(onChainActiontable.length).toBe(Object.keys(onChainActionList).length)
 
     expect(offChainActiontable).toBeDefined()
-    expect(offChainActiontable.length).toBe(Object.keys(offChainActions).length)
+    expect(offChainActiontable.length).toBe(Object.keys(offChainActionList).length)
 
     expect(projectConfigSpy).toHaveBeenCalled()
   })

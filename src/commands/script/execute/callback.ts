@@ -1,4 +1,4 @@
-import type { ActionCallbackKeys, ActionCallbackParams } from '@infinit-xyz/core/types/callback'
+import type { OnChainActionCallback, OnChainActionCallbackKeys, OnChainActionCallbackParams } from '@infinit-xyz/core/types/callback'
 
 import { type Ora } from 'ora'
 import { match } from 'ts-pattern'
@@ -9,7 +9,12 @@ import { chalkInfo } from '@constants/chalk'
 import type { InfinitConfigSchema } from '@schemas/generated'
 import { sendOnChainEvent } from '@utils/analytics'
 
-export const executeActionCallbackHandler = (spinner: Ora, filename: string, projectConfig: InfinitConfigSchema, signerAddresses: string[]) => {
+export const executeActionCallbackHandler = (
+  spinner: Ora,
+  filename: string,
+  projectConfig: InfinitConfigSchema,
+  signerAddresses: string[],
+): OnChainActionCallback => {
   let currentSubActionCount = 0
   let currentSubActionStartIndex = 0
   let currentSubActionName = ''
@@ -17,10 +22,10 @@ export const executeActionCallbackHandler = (spinner: Ora, filename: string, pro
   let totalSubActions = 0
   let transactionCount = 0
   let actionName = ''
-  return async (key: ActionCallbackKeys, value: ActionCallbackParams[ActionCallbackKeys]) => {
+  const callback: OnChainActionCallback = async (key: OnChainActionCallbackKeys, value) => {
     match(key)
       .with('actionInfo', () => {
-        const parsedValue = value as ActionCallbackParams['actionInfo']
+        const parsedValue = value as OnChainActionCallbackParams['actionInfo']
 
         totalSubActions = parsedValue.totalSubActions
         actionName = parsedValue.name
@@ -32,12 +37,12 @@ export const executeActionCallbackHandler = (spinner: Ora, filename: string, pro
         cache.addTxActionCache(filename, actionName)
       })
       .with('txSubmitted', () => {
-        const parsedValue = value as ActionCallbackParams['txSubmitted']
+        const parsedValue = value as OnChainActionCallbackParams['txSubmitted']
 
         cache.addTxCache(filename, { txHash: parsedValue.txHash, status: TX_STATUS.PENDING, txBuilderName: parsedValue.name })
       })
       .with('txConfirmed', () => {
-        const parsedValue = value as ActionCallbackParams['txConfirmed']
+        const parsedValue = value as OnChainActionCallbackParams['txConfirmed']
 
         transactionCount += 1
 
@@ -57,7 +62,7 @@ export const executeActionCallbackHandler = (spinner: Ora, filename: string, pro
         cache.updateTxCache(filename, parsedValue.txHash, { status: TX_STATUS.CONFIRMED })
       })
       .with('txChecked', () => {
-        const parsedValue = value as ActionCallbackParams['txChecked']
+        const parsedValue = value as OnChainActionCallbackParams['txChecked']
 
         match(parsedValue.status)
           .with('CONFIRMED', () => {
@@ -72,7 +77,7 @@ export const executeActionCallbackHandler = (spinner: Ora, filename: string, pro
           .exhaustive()
       })
       .with('subActionStarted', () => {
-        const parsedValue = value as ActionCallbackParams['subActionStarted']
+        const parsedValue = value as OnChainActionCallbackParams['subActionStarted']
 
         const cacheObject = cache.getCache().txs[filename]
         if (cacheObject.subActions[currentSubActionStartIndex] && cacheObject.subActions[currentSubActionStartIndex].subActionName === parsedValue.name) {
@@ -95,4 +100,6 @@ export const executeActionCallbackHandler = (spinner: Ora, filename: string, pro
       })
       .otherwise(() => {})
   }
+
+  return callback
 }

@@ -82,7 +82,7 @@ describe('generate/utils.ts', () => {
   describe('handleGenerateScriptFile', () => {
     test('should generate a script file with correct name and content', async () => {
       const protocolModule = protocolModules[PROTOCOL_MODULE.aave_v3]
-      const infinitAction = protocolModule.onChainActions.setLiquidationBonusAction
+      const infinitAction = protocolModule.actions.setLiquidationBonusAction
 
       const generatedFilePath = await handleGenerateScriptFile(infinitAction, 'setLiquidationBonusAction', protocolModule.libPath, 'test-generate', folderPath)
 

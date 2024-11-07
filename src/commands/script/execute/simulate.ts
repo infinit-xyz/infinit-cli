@@ -7,7 +7,7 @@ import { createPublicClient, createTestClient, http, type Address } from 'viem'
 
 import type { ChainInfo } from '@constants/chains'
 import type { Action, InfinitCache } from '@infinit-xyz/core'
-import type { ActionCallback, ActionCallbackKeys, ActionCallbackParams } from '@infinit-xyz/core/types/callback'
+import type { OnChainActionCallback, OnChainActionCallbackKeys, OnChainActionCallbackParams } from '@infinit-xyz/core/types/callback'
 import { getProjectRpc } from '@utils/config'
 
 const FORK_CHAIN_HOST = 'http://127.0.0.1'
@@ -71,10 +71,10 @@ export const simulateExecute = async (
     let totalGasUsed = 0n
     let txCount = 0
 
-    const callback: ActionCallback = async (key, value) => {
-      await match<ActionCallbackKeys>(key)
+    const callback: OnChainActionCallback = async (key, value) => {
+      await match<OnChainActionCallbackKeys>(key)
         .with('txConfirmed', async () => {
-          const parsedValue = value as ActionCallbackParams['txConfirmed']
+          const parsedValue = value as OnChainActionCallbackParams['txConfirmed']
 
           const txReceipt = await forkClient.getTransactionReceipt({ hash: parsedValue.txHash })
 

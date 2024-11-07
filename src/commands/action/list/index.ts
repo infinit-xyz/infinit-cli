@@ -1,10 +1,10 @@
 import Table from 'cli-table3'
 
 import { config } from '@classes'
+import type { ProtocolModuleActionKey } from '@commands/script/generate/index.type'
 import { protocolModules } from '@constants/protocol-module'
 import type { PROTOCOL_MODULE } from '@enums/module'
 import { ValidateInputValueError } from '@errors/validate'
-import type { InfinitActionRecord, InfinitOffChainActionRecord } from '@infinit-xyz/core'
 import { sendOffChainEvent } from '@utils/analytics'
 
 export const handleListAction = () => {
@@ -15,10 +15,16 @@ export const handleListAction = () => {
     throw new ValidateInputValueError('Protocol module not supported')
   }
 
-  // On-chain actions
-  const onChainActions: InfinitActionRecord = protocolModule.onChainActions
-  const onChainActionKeys = Object.keys(onChainActions)
+  const actionDetailRecord = protocolModule.actions
 
+  const onChainActionKeys = Object.entries(actionDetailRecord)
+    .filter(([_, action]) => action.type === 'on-chain')
+    .map(([key, _]) => key) as ProtocolModuleActionKey[]
+  const offChainActionKeys = Object.entries(actionDetailRecord)
+    .filter(([_, action]) => action.type === 'off-chain')
+    .map(([key, _]) => key) as ProtocolModuleActionKey[]
+
+  // On-chain actions
   const onChainActiontable = new Table({
     head: ['Action ID', 'Action Name', 'Signer(s)'],
     style: { head: ['cyan'] },
@@ -27,7 +33,7 @@ export const handleListAction = () => {
 
   if (onChainActionKeys.length > 0) {
     for (const actionKey of onChainActionKeys) {
-      const action = onChainActions[actionKey]
+      const action = actionDetailRecord[actionKey]
       onChainActiontable.push([actionKey, action.name, action.signers.join(', ')])
     }
 
@@ -37,8 +43,6 @@ export const handleListAction = () => {
   }
 
   // Off-chain actions
-  const offChainActions: InfinitOffChainActionRecord = protocolModule.offChainActions
-  const offChainActionKeys = Object.keys(offChainActions)
 
   const offChainActiontable = new Table({
     head: ['Action ID', 'Action Name'],
@@ -48,7 +52,7 @@ export const handleListAction = () => {
 
   if (offChainActionKeys.length > 0) {
     for (const actionKey of offChainActionKeys) {
-      const action = offChainActions[actionKey]
+      const action = actionDetailRecord[actionKey]
       offChainActiontable.push([actionKey, action.name])
     }
 

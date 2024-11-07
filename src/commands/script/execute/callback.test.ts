@@ -1,4 +1,4 @@
-import type { ActionCallback } from '@infinit-xyz/core/types/callback'
+import type { OnChainActionCallback } from '@infinit-xyz/core/types/callback'
 
 import type { Ora } from 'ora'
 import ora from 'ora'
@@ -41,7 +41,7 @@ describe('executeActionCallbackHandler', () => {
   const currentSubActionStartIndex = 0
 
   let mockSpinner: Ora
-  let callback: ActionCallback
+  let callback: OnChainActionCallback
 
   beforeAll(() => {
     const customStream = new BufferedStream()
