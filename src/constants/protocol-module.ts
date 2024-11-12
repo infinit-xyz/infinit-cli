@@ -1,8 +1,12 @@
 import { actions as aaveV3Actions } from '@infinit-xyz/aave-v3/actions'
 import { AaveV3ContractVerifier } from '@infinit-xyz/aave-v3/utils'
+
 import { actions as initCapitalActions } from '@infinit-xyz/init-capital/actions'
+import { InitCapitalContractVerifier } from '@infinit-xyz/init-capital/utils'
+
 import { actions as tokenActions } from '@infinit-xyz/token/actions'
 import { TokenContractVerifier } from '@infinit-xyz/token/utils'
+
 import { actions as uniswapV3Actions } from '@infinit-xyz/uniswap-v3/actions'
 import { UniswapV3ContractVerifier } from '@infinit-xyz/uniswap-v3/utils'
 
@@ -40,6 +44,6 @@ export const protocolModules = {
     description: 'INIT Capital',
     actions: initCapitalActions,
     libPath: '@infinit-xyz/init-capital',
-    Verifier: UniswapV3ContractVerifier, // TODO: Update this one
+    Verifier: InitCapitalContractVerifier,
   },
 } satisfies Record<PROTOCOL_MODULE, ModuleAction>
