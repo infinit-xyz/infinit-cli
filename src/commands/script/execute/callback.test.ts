@@ -1,4 +1,4 @@
-import type { CallbackKeys, CallbackParams } from '@infinit-xyz/core/types/callback'
+import type { OnChainActionCallback } from '@infinit-xyz/core/types/callback'
 
 import type { Ora } from 'ora'
 import ora from 'ora'
@@ -41,7 +41,7 @@ describe('executeActionCallbackHandler', () => {
   const currentSubActionStartIndex = 0
 
   let mockSpinner: Ora
-  let callback: (key: CallbackKeys, value: CallbackParams[CallbackKeys]) => void
+  let callback: OnChainActionCallback
 
   beforeAll(() => {
     const customStream = new BufferedStream()
@@ -72,12 +72,12 @@ describe('executeActionCallbackHandler', () => {
 
     expect(cache.addTxSubActionCache).toHaveBeenCalledTimes(0)
 
-    callback('txSubmitted', { txHash: '0x1234', name: 'txName' })
+    callback('txSubmitted', { txHash: '0x1234', name: 'txName', walletAddress: '0x0' })
 
     expect(cache.addTxCache).toHaveBeenCalledTimes(1)
     expect(cache.addTxCache).toHaveBeenCalledWith(filename, { txHash: '0x1234', status: 'PENDING', txBuilderName: 'txName' })
 
-    callback('txConfirmed', { txHash: '0x1234', name: 'txName' })
+    callback('txConfirmed', { txHash: '0x1234', name: 'txName', walletAddress: '0x0' })
 
     expect(mockSpinner.text).toBe(`Executing actionName -  (${currentSubActionStartIndex + 1}/2 sub-actions, 1 transactions).`)
 
@@ -111,28 +111,28 @@ describe('executeActionCallbackHandler', () => {
     })
 
     test('should handle CONFIRMED', () => {
-      callback('txChecked', { txHash: '0x1234', status: 'CONFIRMED' })
+      callback('txChecked', { txHash: '0x1234', status: 'CONFIRMED', walletAddress: '0x0' })
 
       expect(cache.updateTxCache).toHaveBeenCalledTimes(1)
       expect(cache.updateTxCache).toHaveBeenCalledWith(filename, '0x1234', { status: 'CONFIRMED' })
     })
 
     test('should handle PENDING', () => {
-      callback('txChecked', { txHash: '0x1234', status: 'PENDING' })
+      callback('txChecked', { txHash: '0x1234', status: 'PENDING', walletAddress: '0x0' })
 
       expect(cache.updateTxCache).toHaveBeenCalledTimes(1)
       expect(cache.updateTxCache).toHaveBeenCalledWith(filename, '0x1234', { status: 'PENDING' })
     })
 
     test('should handle REVERTED', () => {
-      callback('txChecked', { txHash: '0x1234', status: 'REVERTED' })
+      callback('txChecked', { txHash: '0x1234', status: 'REVERTED', walletAddress: '0x0' })
 
       expect(cache.deleteTxCache).toHaveBeenCalledTimes(1)
       expect(cache.deleteTxCache).toHaveBeenCalledWith(filename, '0x1234')
     })
 
     test('should handle NOT_FOUND', () => {
-      callback('txChecked', { txHash: '0x1234', status: 'NOT_FOUND' })
+      callback('txChecked', { txHash: '0x1234', status: 'NOT_FOUND', walletAddress: '0x0' })
 
       expect(cache.deleteTxCache).toHaveBeenCalledTimes(1)
       expect(cache.deleteTxCache).toHaveBeenCalledWith(filename, '0x1234')

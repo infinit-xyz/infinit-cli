@@ -1,6 +1,6 @@
 import type { ChainInfo } from '@constants/chains'
 import type { Action, InfinitCache } from '@infinit-xyz/core'
-import type { CallbackKeys, CallbackParams, InfinitCallback } from '@infinit-xyz/core/types/callback'
+import type { OnChainActionCallback, OnChainActionCallbackKeys, OnChainActionCallbackParams } from '@infinit-xyz/core/types/callback'
 import { getProjectRpc } from '@utils/config'
 import axios from 'axios'
 import type { Ora } from 'ora'
@@ -71,10 +71,10 @@ export const simulateExecute = async (
     let totalGasUsed = 0n
     let txCount = 0
 
-    const callback: InfinitCallback = async (key, value) => {
-      await match<CallbackKeys>(key)
+    const callback: OnChainActionCallback = async (key, value) => {
+      await match<OnChainActionCallbackKeys>(key)
         .with('txConfirmed', async () => {
-          const parsedValue = value as CallbackParams['txConfirmed']
+          const parsedValue = value as OnChainActionCallbackParams['txConfirmed']
 
           const txReceipt = await forkClient.getTransactionReceipt({ hash: parsedValue.txHash })
 
