@@ -607,7 +607,7 @@ describe('Cache', () => {
     })
 
     test('txChecked, REVERTED', () => {
-      actionCb01Callback('txChecked', { txHash: txHash03, status: 'NOT_FOUND', walletAddress: '0x0' })
+      actionCb01Callback('txChecked', { txHash: txHash02, status: 'NOT_FOUND', walletAddress: '0x0' })
 
       const expectedCacheObject: InfinitCliCache = {
         txs: {
