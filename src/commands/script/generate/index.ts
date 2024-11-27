@@ -1,4 +1,3 @@
-import type { InfinitAction } from '@infinit-xyz/core'
 import { confirm, select } from '@inquirer/prompts'
 
 import { config } from '@classes'
@@ -9,6 +8,7 @@ import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
 import { ValidateInputValueError } from '@errors/validate'
 import { sendOffChainEvent } from '@utils/analytics'
 import { ensureCwdRootProject } from '@utils/files'
+import type { InfinitAction } from 'src/types'
 import type { ProtocolModuleActionKey } from './index.type'
 import { getScriptFileDirectory, getUniqueScriptFileName, handleGenerateScriptFile } from './utils'
 

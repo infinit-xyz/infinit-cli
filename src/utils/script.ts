@@ -1,14 +1,18 @@
-import type { InfinitAction } from '@infinit-xyz/core'
 import { pipeInto } from 'ts-functional-pipe'
 
 import { stringifyWithUndefined } from '@utils/json'
 import { zodGetDefaults } from '@utils/zod'
+import { isEmpty } from 'lodash'
+import type { InfinitAction } from 'src/types'
 
 export const generateScriptText = (infinitAction: InfinitAction, libPath: string, actionKey: string, deployerId?: string) => {
-  const signers = infinitAction.signers.reduce<Record<string, string>>((acc, signer) => {
-    acc[signer] = signer === 'deployer' ? (deployerId ?? '') : ''
-    return acc
-  }, {})
+  const signers: Record<string, string> =
+    infinitAction.type === 'on-chain'
+      ? infinitAction.signers.reduce<Record<string, string>>((acc, signer) => {
+          acc[signer] = signer === 'deployer' ? (deployerId ?? '') : ''
+          return acc
+        }, {})
+      : {}
 
   const generatedParamsText = pipeInto(infinitAction.paramsSchema, zodGetDefaults, stringifyWithUndefined)
   const splittedParamsText = generatedParamsText.split('\n')
@@ -32,9 +36,13 @@ type Param = z.infer<typeof actions['${actionKey}']['paramsSchema']>
 
 // TODO: Replace with actual params
 const params: Param = ${newSplistedParamsText.join('\n')}
-
-// TODO: Replace with actual signer id
-const signer = ${JSON.stringify(signers, undefined, 2)}
+${
+  isEmpty(signers)
+    ? `\n// TODO: Replace with actual signer id
+   const signer = ${JSON.stringify(signers, undefined, 2)}
+  `
+    : ''
+}
 
 export default { params, signer, Action: ${infinitAction.actionClassName} }
 

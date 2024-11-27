@@ -1,10 +1,10 @@
-import type { InfinitAction } from '@infinit-xyz/core'
 import { writeFileSync } from '@utils/files'
 import fs from 'fs'
 import path from 'path'
 
 import { generateScriptText } from '@utils/script'
 import _ from 'lodash' // [TODO/INVESTIGATE] later on importing from lodash
+import type { InfinitAction } from 'src/types'
 
 /**
  * Get the directory path for script files.
