@@ -2,7 +2,7 @@ import { config } from '@classes'
 import { protocolModules } from '@constants/protocol-module'
 import type { PROTOCOL_MODULE } from '@enums/module'
 import { ValidateInputValueError } from '@errors/validate'
-import type { InfinitActionRecord } from '@infinit-xyz/core'
+import type { ActionDetailRecord } from '@infinit-xyz/core'
 import { sendOffChainEvent } from '@utils/analytics'
 import Table from 'cli-table3'
 
@@ -14,7 +14,7 @@ export const handleListAction = () => {
     throw new ValidateInputValueError('Protocol module not supported')
   }
 
-  const actions = protocolModule.actions as InfinitActionRecord
+  const actions = protocolModule.actions as ActionDetailRecord
 
   const table = new Table({
     head: ['Action ID', 'Action Name', 'Signer(s)'],
@@ -24,7 +24,11 @@ export const handleListAction = () => {
 
   for (const actionKey of Object.keys(actions)) {
     const action = actions[actionKey]
-    table.push([actionKey, action.name, action.signers.join(', ')])
+    if (action.type === 'on-chain') {
+      table.push([actionKey, action.name, action.signers.join(', ')])
+    } else if (action.type === 'off-chain') {
+      table.push([actionKey, action.name])
+    }
   }
 
   console.log(table.toString())
