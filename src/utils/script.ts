@@ -2,7 +2,6 @@ import { pipeInto } from 'ts-functional-pipe'
 
 import { stringifyWithUndefined } from '@utils/json'
 import { zodGetDefaults } from '@utils/zod'
-import { isEmpty } from 'lodash'
 import type { InfinitAction } from 'src/types'
 
 export const generateScriptText = (infinitAction: InfinitAction, libPath: string, actionKey: string, deployerId?: string) => {
@@ -28,6 +27,7 @@ export const generateScriptText = (infinitAction: InfinitAction, libPath: string
     newSplistedParamsText.push(line)
   }
 
+  // TODO: Handle signer of off-chain actions in the off-chain actions PR
   const scriptText = `
 import { ${infinitAction.actionClassName}, type actions } from '${libPath}/actions'
 import type { z } from 'zod'
@@ -36,13 +36,9 @@ type Param = z.infer<typeof actions['${actionKey}']['paramsSchema']>
 
 // TODO: Replace with actual params
 const params: Param = ${newSplistedParamsText.join('\n')}
-${
-  isEmpty(signers)
-    ? `\n// TODO: Replace with actual signer id
-   const signer = ${JSON.stringify(signers, undefined, 2)}
-  `
-    : ''
-}
+
+// TODO: Replace with actual signer id
+const signer = ${JSON.stringify(signers, undefined, 2)}
 
 export default { params, signer, Action: ${infinitAction.actionClassName} }
 
