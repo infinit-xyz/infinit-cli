@@ -1,4 +1,11 @@
-import type { OnChainActionCallback, OnChainActionCallbackKeys, OnChainActionCallbackParams } from '@infinit-xyz/core/types/callback'
+import type {
+  OffChainActionCallback,
+  OffChainActionCallbackKeys,
+  OffChainActionCallbackParams,
+  OnChainActionCallback,
+  OnChainActionCallbackKeys,
+  OnChainActionCallbackParams,
+} from '@infinit-xyz/core/types/callback'
 
 import { type Ora } from 'ora'
 import { match } from 'ts-pattern'
@@ -7,9 +14,9 @@ import { cache } from '@classes/Cache/Cache'
 import { TX_STATUS } from '@classes/Cache/Cache.enum'
 import { chalkInfo } from '@constants/chalk'
 import type { InfinitConfigSchema } from '@schemas/generated'
-import { sendOnChainEvent } from '@utils/analytics'
+import { sendOffChainEvent, sendOnChainEvent } from '@utils/analytics'
 
-export const executeActionCallbackHandler = (
+export const executeOnChainActionCallbackHandler = (
   spinner: Ora,
   filename: string,
   projectConfig: InfinitConfigSchema,
@@ -97,6 +104,32 @@ export const executeActionCallbackHandler = (
         }
 
         spinner.text = `Executing ${chalkInfo(actionName)} - ${chalkInfo(currentSubActionName)} (${chalkInfo(`${currentSubActionCount + 1}/${totalSubActions}`)} sub-actions, ${chalkInfo(transactionCount)} transactions).`
+      })
+      .otherwise(() => {})
+  }
+
+  return callback
+}
+
+export const executeOffChainActionCallbackHandler = (spinner: Ora, projectConfig: InfinitConfigSchema, actionName: string) => {
+  const callback: OffChainActionCallback = async (key: OffChainActionCallbackKeys, value) => {
+    match(key)
+      .with('start', () => {
+        const parsedValue = value as OffChainActionCallbackParams['start']
+        spinner.start(`Executing ${chalkInfo(parsedValue.message)}...`)
+      })
+      .with('progress', () => {
+        const { totalSteps, currentStep, message } = value as OffChainActionCallbackParams['progress']
+
+        spinner.text = `${chalkInfo(message)} (${chalkInfo(`${currentStep}/${totalSteps}`)} steps).`
+      })
+      .with('finish', () => {
+        if (projectConfig.allow_analytics) {
+          sendOffChainEvent({
+            action: actionName,
+            payload: {},
+          })
+        }
       })
       .otherwise(() => {})
   }
