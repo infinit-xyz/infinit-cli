@@ -6,7 +6,7 @@ import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { BufferedStream } from '@classes/BufferedStream/BufferedStream'
 import { cache } from '@classes/Cache/Cache'
-import { executeActionCallbackHandler } from '@commands/script/execute/callback'
+import { executeOnChainActionCallbackHandler } from '@commands/script/execute/callback'
 import { PROTOCOL_MODULE } from '@enums/module'
 import type { InfinitConfigSchema } from '@schemas/generated'
 
@@ -49,7 +49,7 @@ describe('executeActionCallbackHandler', () => {
   })
 
   beforeEach(() => {
-    callback = executeActionCallbackHandler(mockSpinner, filename, MOCK_PROJECT_CONFIG, [])
+    callback = executeOnChainActionCallbackHandler(mockSpinner, filename, MOCK_PROJECT_CONFIG, [])
   })
 
   test('should handle callback in sequence', () => {

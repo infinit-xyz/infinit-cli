@@ -87,15 +87,15 @@ export const handleExecuteScript = async (_fileName?: string, option: HandleExec
 
     const { signer, params, Action } = script
 
+    // validate script file -> params, action
+    if (!params || !Action) {
+      throw new ValidateInputValueError('Invalid script file')
+    }
+
     const protocolModule = protocolModules[projectConfig.protocol_module as PROTOCOL_MODULE]
 
     const actionDetails = Object.values(protocolModule.actions).find((action) => action.actionClassName === Action.name)
     const actionType: 'on-chain' | 'off-chain' = actionDetails.type
-
-    // validate script file -> params, action, signer (if on-chain)
-    if (!params || !Action || (actionType === 'on-chain' && !signer)) {
-      throw new ValidateInputValueError('Invalid script file')
-    }
 
     let newRegistry: object
     if (actionType === 'on-chain') {

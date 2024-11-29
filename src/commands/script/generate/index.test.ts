@@ -108,13 +108,19 @@ describe('generate/index.ts', () => {
       expect(consoleErrorSpy).not.toHaveBeenCalled()
 
       expect(promptSelectSpy).toHaveBeenCalledTimes(1)
-      expect(promptSelectSpy).toHaveBeenLastCalledWith({
-        message: 'Select an action to generate',
-        choices: [
-          { name: 'Action 1', value: 'action1' },
-          { name: 'Action 2', value: 'action2' },
-        ],
-      })
+      expect(promptSelectSpy).toHaveBeenLastCalledWith(
+        {
+          message: 'Select an action to generate',
+          choices: [
+            { name: 'Action 1', value: 'action1' },
+            { name: 'Action 2', value: 'action2' },
+          ],
+        },
+        {
+          input: undefined,
+          output: undefined,
+        },
+      )
       expect(handleGenerateScriptFileSpy).toHaveBeenCalledWith(
         {
           name: 'Action 2',
@@ -140,13 +146,19 @@ describe('generate/index.ts', () => {
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(chalkError('Action nonExistentAction not found. Please select your desired action.'))
       expect(promptSelectSpy).toHaveBeenCalledTimes(1)
-      expect(promptSelectSpy).toHaveBeenLastCalledWith({
-        message: 'Select an action to generate',
-        choices: [
-          { name: 'Action 1', value: 'action1' },
-          { name: 'Action 2', value: 'action2' },
-        ],
-      })
+      expect(promptSelectSpy).toHaveBeenLastCalledWith(
+        {
+          message: 'Select an action to generate',
+          choices: [
+            { name: 'Action 1', value: 'action1' },
+            { name: 'Action 2', value: 'action2' },
+          ],
+        },
+        {
+          input: undefined,
+          output: undefined,
+        },
+      )
     })
   })
 })

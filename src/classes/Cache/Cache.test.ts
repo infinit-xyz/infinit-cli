@@ -3,7 +3,7 @@ import ora from 'ora'
 import path from 'path'
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
-import { executeActionCallbackHandler } from '@commands/script/execute/callback'
+import { executeOnChainActionCallbackHandler } from '@commands/script/execute/callback'
 import { FILE_NAMES } from '@constants'
 import { checkFilesExist, writeFileSync } from '@utils/files'
 import { jsonSafeParse, parseDateReviver } from '@utils/json'
@@ -389,7 +389,7 @@ describe('Cache', () => {
   describe('Action Callback Cache', () => {
     const spinner = ora({ spinner: 'dots' })
 
-    const actionCb01Callback = executeActionCallbackHandler(spinner, 'action-cb-01', mockProjectConfig, ['0x123'])
+    const actionCb01Callback = executeOnChainActionCallbackHandler(spinner, 'action-cb-01', mockProjectConfig, ['0x123'])
 
     const txHash01 = '0x001'
     const txHash02 = '0x002'
