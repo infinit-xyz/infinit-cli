@@ -119,6 +119,7 @@ export const executeOffChainActionCallbackHandler = (spinner: Ora, projectConfig
       .with('start', () => {})
       .with('progress', () => {
         const { totalSteps: _totalSteps, currentStep, message } = value as OffChainActionCallbackParams['progress']
+        totalSteps = _totalSteps ?? 0
 
         // finish prev step
         if (currentStep && currentStep > 1) {
@@ -128,7 +129,6 @@ export const executeOffChainActionCallbackHandler = (spinner: Ora, projectConfig
         // start current step
         spinner.start(`${chalkInfo(message)} (${chalkInfo(`${currentStep}/${totalSteps}`)} steps).`)
         prevMesssage = message
-        totalSteps = _totalSteps ?? 0
       })
       .with('finish', () => {
         // finish last step
