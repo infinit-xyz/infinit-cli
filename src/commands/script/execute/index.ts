@@ -5,7 +5,6 @@ import path from 'path'
 import * as tsx from 'tsx/cjs/api'
 
 import { config } from '@classes'
-import { cache } from '@classes/Cache/Cache'
 import { executeOffChainAction, executeOnChainAction } from '@commands/script/execute/executeAction'
 import { getScriptFileDirectory, getScriptHistoryFileDirectory } from '@commands/script/generate/utils'
 import { chalkInfo } from '@constants/chalk'
@@ -22,12 +21,6 @@ export type HandleExecuteScriptOption = {
   ignoreCache?: boolean
 }
 
-// type casting
-// biome-ignore lint/suspicious/noExplicitAny: must assign any from reading the file
-const isSigner = (signer: any): signer is Record<string, string> => {
-  return signer && typeof signer === 'object' && Object.keys(signer).length > 0 && Object.values(signer).every((value) => typeof value === 'string' && value)
-}
-
 /**
  * Handlers
  */
@@ -36,6 +29,7 @@ export const handleExecuteScript = async (_fileName?: string, option: HandleExec
   ensureCwdRootProject()
 
   const scriptFileDirectory = getScriptFileDirectory()
+
   let fileName: string | undefined = _fileName
 
   if (!fileName) {
@@ -75,10 +69,7 @@ export const handleExecuteScript = async (_fileName?: string, option: HandleExec
     // read registry
     const { registryPath, registry } = readProjectRegistry()
 
-    spinner.stopAndPersist({
-      symbol: '✅',
-      text: 'Configuration and registry loaded.',
-    })
+    spinner.succeed('Configuration and registry loaded.\n')
 
     // import typescript file in CommonJS mode without adding TypeScript support to the entire runtime
     const module = tsx.require(target, target)
@@ -97,43 +88,38 @@ export const handleExecuteScript = async (_fileName?: string, option: HandleExec
     const actionDetails = Object.values(protocolModule.actions).find((action) => action.actionClassName === Action.name)
     const actionType: 'on-chain' | 'off-chain' = actionDetails.type
 
-    let newRegistry: object
     if (actionType === 'on-chain') {
-      // on chain action
-      spinner.start('Validating signer...')
-      if (!isSigner(signer)) {
-        throw new ValidateInputValueError('Invalid signer')
-      }
+      await executeOnChainAction(spinner, fileName, Action, params, signer, registry, projectConfig, chainInfo, registryPath, option)
 
-      const executeResponse = await executeOnChainAction(spinner, fileName, Action, params, signer, registry, projectConfig, chainInfo, option)
-      if (!executeResponse) return
+      // move file to archive
+      const scriptFileHistoryDirectory = getScriptHistoryFileDirectory()
+      await fsExtra.move(target, path.resolve(scriptFileHistoryDirectory, fileName), { overwrite: true })
 
-      newRegistry = executeResponse
+      // new line
+      console.log('')
+
+      spinner.stopAndPersist({
+        symbol: '🎉',
+        text: `Successfully execute ${chalkInfo(fileName)}, go to ${chalkInfo('infinit.registry.json')} to see the contract addesses.`,
+      })
     } else if (actionType === 'off-chain') {
-      // off chain action
-      newRegistry = await executeOffChainAction(spinner, Action, params, registry, projectConfig)
+      const outputFilePath = await executeOffChainAction(spinner, fileName, Action, params, registry, projectConfig, scriptFileDirectory)
+
+      // move file to archive
+      const scriptFileHistoryDirectory = getScriptHistoryFileDirectory()
+      await fsExtra.move(target, path.resolve(scriptFileHistoryDirectory, fileName), { overwrite: true })
+
+      // new line
+      console.log('')
+
+      spinner.stopAndPersist({ symbol: '🎉', text: `Successfully execute ${chalkInfo(fileName)}, go to ${chalkInfo(outputFilePath)} to see the result.` })
     } else {
       // unknown action type
       spinner.stop()
       return
     }
 
-    // write new registry
-    fs.writeFileSync(registryPath, JSON.stringify(newRegistry, null, 2))
-
-    // clear cache if all sub actions are finished
-    cache.deleteTxActionCache(fileName)
-
-    // move file to archive
-    const scriptFileHistoryDirectory = getScriptHistoryFileDirectory()
-    await fsExtra.move(target, path.resolve(scriptFileHistoryDirectory, fileName), { overwrite: true })
-
-    // new line
-    console.log()
-
-    spinner.succeed(`Successfully execute ${chalkInfo(fileName)}, go to ${chalkInfo(`infinit.registry.json`)} to see the contract addesses.`)
-
-    spinner.stop()
+    process.exit(0)
   } catch (error) {
     spinner.stop()
 

@@ -27,6 +27,17 @@ import { confirm } from '@inquirer/prompts'
 import { executeOnChainActionCallbackHandler } from './callback'
 import { simulateExecute } from './simulate'
 
+import { ValidateInputValueError } from '@errors/validate'
+import { writeFileSync } from '@utils/files'
+import fs from 'fs'
+import path from 'path'
+
+// type casting
+// biome-ignore lint/suspicious/noExplicitAny: must assign any from reading the file
+const isSigner = (signer: any): signer is Record<string, string> => {
+  return signer && typeof signer === 'object' && Object.keys(signer).length > 0 && Object.values(signer).every((value) => typeof value === 'string' && value)
+}
+
 export const executeOnChainAction = async (
   spinner: Ora,
   fileName: string,
@@ -38,9 +49,15 @@ export const executeOnChainAction = async (
   registry: Record<string, Address>,
   projectConfig: InfinitConfigSchema,
   chainInfo: ChainInfo,
+  registryPath: string,
   option: HandleExecuteScriptOption = {},
-) => {
+): Promise<void> => {
   // 1. Validate signer and initialize signer wallets
+  spinner.start('Validating signer...')
+  if (!isSigner(signer)) {
+    throw new ValidateInputValueError('Invalid signer')
+  }
+
   const accountIds = _.uniq(Object.values(signer))
   const notFoundAccounts = Object.values(signer).filter((accountId) => !checkIsAccountFound(accountId))
   if (notFoundAccounts.length) {
@@ -111,7 +128,7 @@ export const executeOnChainAction = async (
     } else {
       spinner.stopAndPersist({
         symbol: 'ℹ️',
-        text: `Cache not found.`,
+        text: ` Cache not found.`,
       })
     }
   }
@@ -138,8 +155,8 @@ export const executeOnChainAction = async (
 
   // 4. Execute the action
   let newRegistry: object
+
   try {
-    // setup the real action with real signer
     const action = new Action({ params, signer: signerWalletRecord }) as BaseAction
     newRegistry = await action.run(registry, actionCache, executeOnChainActionCallbackHandler(spinner, fileName, projectConfig, signerAddresses))
   } catch (error) {
@@ -152,24 +169,33 @@ export const executeOnChainAction = async (
     throw customError
   }
 
-  return newRegistry
+  // write new registry
+  fs.writeFileSync(registryPath, JSON.stringify(newRegistry, null, 2))
+
+  // clear cache if all sub actions are finished
+  cache.deleteTxActionCache(fileName)
 }
 
 export const executeOffChainAction = async (
   spinner: Ora,
+  fileName: string,
   // biome-ignore lint/suspicious/noExplicitAny: must assign any from reading the file
   Action: any,
   // biome-ignore lint/suspicious/noExplicitAny: must assign any from reading the file
   params: any,
   registry: Record<string, Address>,
   projectConfig: InfinitConfigSchema,
-) => {
-  let newRegistry: object
+  scriptFileDirectory: string,
+): Promise<string> => {
+  const OFF_CHAIN_ACTION_RESULT_FOLDER_NAME = 'output'
+  let data: object
 
   try {
-    // setup the real action with real signer
+    // 1. Execute the action
     const action = new Action() as BaseOffChainAction<object, object, object>
-    newRegistry = await action.run(registry, params, executeOffChainActionCallbackHandler(spinner, projectConfig, Action.name))
+    const response = await action.run(registry, params, executeOffChainActionCallbackHandler(spinner, projectConfig, Action.name))
+
+    data = response.data
   } catch (error) {
     let customError = error
 
@@ -180,5 +206,11 @@ export const executeOffChainAction = async (
     throw customError
   }
 
-  return newRegistry
+  // 2. write data to output file
+  const timestamp = new Date().getTime() // in ms
+  const outputFileName = `${fileName.split('.')[0]}-${timestamp}.json`
+  const executionResultFilePath = path.resolve(scriptFileDirectory, '..', OFF_CHAIN_ACTION_RESULT_FOLDER_NAME, outputFileName)
+  writeFileSync(executionResultFilePath, JSON.stringify(data, null, 2))
+
+  return `${OFF_CHAIN_ACTION_RESULT_FOLDER_NAME}/${outputFileName}`
 }

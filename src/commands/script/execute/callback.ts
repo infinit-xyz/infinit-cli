@@ -112,18 +112,29 @@ export const executeOnChainActionCallbackHandler = (
 }
 
 export const executeOffChainActionCallbackHandler = (spinner: Ora, projectConfig: InfinitConfigSchema, actionName: string) => {
+  let prevMesssage: string | undefined
+  let totalSteps: number = 0
   const callback: OffChainActionCallback = async (key: OffChainActionCallbackKeys, value) => {
     match(key)
-      .with('start', () => {
-        const parsedValue = value as OffChainActionCallbackParams['start']
-        spinner.start(`Executing ${chalkInfo(parsedValue.message)}...`)
-      })
+      .with('start', () => {})
       .with('progress', () => {
-        const { totalSteps, currentStep, message } = value as OffChainActionCallbackParams['progress']
+        const { totalSteps: _totalSteps, currentStep, message } = value as OffChainActionCallbackParams['progress']
 
-        spinner.text = `${chalkInfo(message)} (${chalkInfo(`${currentStep}/${totalSteps}`)} steps).`
+        // finish prev step
+        if (currentStep && currentStep > 1) {
+          spinner.succeed(`${chalkInfo(prevMesssage)} (${chalkInfo(`${currentStep - 1}/${totalSteps}`)} steps).`)
+        }
+
+        // start current step
+        spinner.start(`${chalkInfo(message)} (${chalkInfo(`${currentStep}/${totalSteps}`)} steps).`)
+        prevMesssage = message
+        totalSteps = _totalSteps ?? 0
       })
       .with('finish', () => {
+        // finish last step
+        spinner.succeed(`${chalkInfo(prevMesssage)} (${chalkInfo(`${totalSteps}/${totalSteps}`)} steps).`)
+
+        // send analytics (if allowed)
         if (projectConfig.allow_analytics) {
           sendOffChainEvent({
             action: actionName,
