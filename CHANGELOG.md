@@ -1,5 +1,25 @@
 # @infinit-xyz/cli
 
+## 0.0.0-alpha.16
+
+### Minor Changes
+
+- [#83](https://github.com/infinit-xyz/infinit-cli/pull/83) [`d8cc28a`](https://github.com/infinit-xyz/infinit-cli/commit/d8cc28a0b32792c575a72469831b2303ed2eb06d) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - bump INFINIT Library version
+  - @infinit-xyz/aave-v3@0.0.0-alpha.25
+  - @infinit-xyz/core@0.1.0-alpha.10
+  - @infinit-xyz/token@0.0.0-alpha.22
+  - @infinit-xyz/uniswap-v3@0.0.0-alpha.22
+
+### Patch Changes
+
+- [#83](https://github.com/infinit-xyz/infinit-cli/pull/83) [`d8cc28a`](https://github.com/infinit-xyz/infinit-cli/commit/d8cc28a0b32792c575a72469831b2303ed2eb06d) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - add support for INIT Capital Module
+
+- [#84](https://github.com/infinit-xyz/infinit-cli/pull/84) [`989bea6`](https://github.com/infinit-xyz/infinit-cli/commit/989bea68157641f5d9c0543a73a5dde3c9908cdf) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - bump INFINIT Library version
+  - @infinit-xyz/aave-v3@0.0.0-alpha.23
+  - @infinit-xyz/core@0.1.0-alpha.9
+  - @infinit-xyz/token@0.0.0-alpha.20
+  - @infinit-xyz/uniswap-v3@0.0.0-alpha.21
+
 ## 0.0.0-alpha.15
 
 ### Patch Changes
