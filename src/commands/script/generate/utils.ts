@@ -1,10 +1,10 @@
-import type { InfinitAction } from '@infinit-xyz/core'
-import { writeFileSync } from '@utils/files'
+import type { OffChainActionDetail, OnChainActionDetail } from '@infinit-xyz/core'
 import fs from 'fs'
+import _ from 'lodash'
 import path from 'path'
 
+import { writeFileSync } from '@utils/files'
 import { generateScriptText } from '@utils/script'
-import _ from 'lodash' // [TODO/INVESTIGATE] later on importing from lodash
 
 /**
  * Get the directory path for script files.
@@ -45,7 +45,7 @@ export const getUniqueScriptFileName = (actionClassName: string, folderPath: str
 /**
  * Handle the generation of a script file.
  *
- * @param {InfinitAction} infinitAction - The action to be converted into a script.
+ * @param {OnChainActionDetail | OffChainActionDetail} actionDetail - The action to be converted into a script.
  * @param {string} actionKey - The key associated with the action.
  * @param {string} libPath - The library path to be used in the script.
  * @param {string} filename - The name of the script file.
@@ -54,14 +54,14 @@ export const getUniqueScriptFileName = (actionClassName: string, folderPath: str
  * @returns {Promise<string>} The path to the generated script file.
  */
 export const handleGenerateScriptFile = async (
-  infinitAction: InfinitAction,
+  actionDetail: OnChainActionDetail | OffChainActionDetail,
   actionKey: string,
   libPath: string,
   filename: string,
   folderPath: string,
   deployerId?: string,
 ): Promise<string> => {
-  const scriptText = generateScriptText(infinitAction, libPath, actionKey, deployerId)
+  const scriptText = generateScriptText(actionDetail, libPath, actionKey, deployerId)
 
   const filePath = path.join(folderPath, `${filename}.script.ts`)
   writeFileSync(filePath, scriptText)
