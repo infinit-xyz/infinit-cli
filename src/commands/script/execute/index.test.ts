@@ -7,7 +7,9 @@ import { handleExecuteScript } from '@commands/script/execute'
 import { scriptFileNamePrompt } from '@commands/script/execute/index.prompt'
 import { getScriptFileDirectory } from '@commands/script/generate/utils'
 import { CHAINS } from '@constants/chains'
+import { protocolModules } from '@constants/protocol-module'
 import { CHAIN_ID } from '@enums/chain'
+import { PROTOCOL_MODULE } from '@enums/module'
 import { AccountNotFoundError } from '@errors/account'
 import { ValidateInputValueError } from '@errors/validate'
 import type { InfinitConfigSchema } from '@schemas/generated'
@@ -28,6 +30,12 @@ vi.mock('./index.prompt')
 vi.mock('tsx/cjs/api')
 
 describe('execute', () => {
+  const MOCK_PROTOCOL_MODULE = PROTOCOL_MODULE.aave_v3
+  const ACTION_DETAILS = protocolModules[MOCK_PROTOCOL_MODULE].actions.init
+  const MOCK_ONCHAIN_ACTION = {
+    name: ACTION_DETAILS.actionClassName,
+  }
+
   beforeAll(() => {
     vi.spyOn(console, 'log').mockImplementation(() => undefined)
     vi.spyOn(console, 'error').mockImplementation(() => undefined)
@@ -35,7 +43,7 @@ describe('execute', () => {
 
   beforeEach(() => {
     vi.spyOn(config, 'getProjectConfig').mockReturnValue({
-      protocol_module: 'aave-v3',
+      protocol_module: MOCK_PROTOCOL_MODULE,
     } as unknown as InfinitConfigSchema)
     vi.mocked(getProjectChainInfo).mockReturnValue(CHAINS[CHAIN_ID.Ethereum])
     vi.mocked(readProjectRegistry).mockReturnValue({ registryPath: '', registry: {} })
@@ -48,7 +56,7 @@ describe('execute', () => {
           deployer: 'account1',
         },
         params: {},
-        Action: 'action',
+        Action: MOCK_ONCHAIN_ACTION,
       },
     })
     vi.mocked(checkIsAccountFound).mockReturnValue(true)
@@ -82,19 +90,20 @@ describe('execute', () => {
       await expect(handleExecuteScript('file2.ts')).rejects.toThrowError()
     })
 
-    test('should throw error when signer is invalid', async () => {
+    test('should throw error when script file is invalid (params not found)', async () => {
       vi.spyOn(tsx, 'require').mockReturnValue({
         default: {
-          signer: {},
-          params: {},
-          Action: '',
+          signer: {
+            deployer: 'account1',
+          },
+          Action: MOCK_ONCHAIN_ACTION,
         },
       })
 
-      await expect(handleExecuteScript('file1.ts')).rejects.toThrow(new ValidateInputValueError('Invalid signer'))
+      await expect(handleExecuteScript('file1.ts')).rejects.toThrowError(new ValidateInputValueError('Invalid script file'))
     })
 
-    test('should throw error when script file is invalid', async () => {
+    test('should throw error when script file is invalid (Action not found)', async () => {
       vi.spyOn(tsx, 'require').mockReturnValue({
         default: {
           signer: {
@@ -106,10 +115,24 @@ describe('execute', () => {
       await expect(handleExecuteScript('file1.ts')).rejects.toThrowError(new ValidateInputValueError('Invalid script file'))
     })
 
-    test('should throw error when account not found', async () => {
+    test('should throw error when account not found for on-chain action', async () => {
       vi.spyOn(accounts, 'getAccoundById').mockReturnValue(undefined)
 
       await expect(handleExecuteScript('file1.ts')).rejects.toThrow(AccountNotFoundError)
+    })
+
+    test('should throw error when signer is invalid for on-chain action', async () => {
+      vi.spyOn(tsx, 'require').mockReturnValue({
+        default: {
+          signer: {},
+          params: {
+            param1: 'value1',
+          },
+          Action: MOCK_ONCHAIN_ACTION,
+        },
+      })
+
+      await expect(handleExecuteScript('file1.ts')).rejects.toThrow(new ValidateInputValueError('Invalid signer'))
     })
   })
 })

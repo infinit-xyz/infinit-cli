@@ -5,13 +5,14 @@ import { zodGetDefaults } from '@utils/zod'
 import type { InfinitAction } from 'src/types'
 
 export const generateScriptText = (infinitAction: InfinitAction, libPath: string, actionKey: string, deployerId?: string) => {
-  const signers: Record<string, string> =
-    infinitAction.type === 'on-chain'
-      ? infinitAction.signers.reduce<Record<string, string>>((acc, signer) => {
-          acc[signer] = signer === 'deployer' ? (deployerId ?? '') : ''
-          return acc
-        }, {})
-      : {}
+  let signers = {}
+
+  if (infinitAction.type === 'on-chain') {
+    signers = infinitAction.signers.reduce<Record<string, string>>((acc, signer) => {
+      acc[signer] = signer === 'deployer' ? (deployerId ?? '') : ''
+      return acc
+    }, {})
+  }
 
   const generatedParamsText = pipeInto(infinitAction.paramsSchema, zodGetDefaults, stringifyWithUndefined)
   const splittedParamsText = generatedParamsText.split('\n')

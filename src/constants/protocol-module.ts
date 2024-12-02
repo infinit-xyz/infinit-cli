@@ -10,8 +10,8 @@ import { TokenContractVerifier } from '@infinit-xyz/token/utils'
 import { actions as uniswapV3Actions } from '@infinit-xyz/uniswap-v3/actions'
 import { UniswapV3ContractVerifier } from '@infinit-xyz/uniswap-v3/utils'
 
+import type { ModuleAction } from '@constants/protocol-module.type'
 import { PROTOCOL_MODULE } from '@enums/module'
-import type { ModuleAction } from './protocol-module.type'
 
 export const protocolModules = {
   [PROTOCOL_MODULE.token]: {
