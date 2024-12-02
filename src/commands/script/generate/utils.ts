@@ -1,10 +1,10 @@
-import type { OffChainActionDetail, OnChainActionDetail } from '@infinit-xyz/core'
 import fs from 'fs'
 import _ from 'lodash'
 import path from 'path'
 
 import { writeFileSync } from '@utils/files'
 import { generateScriptText } from '@utils/script'
+import type { InfinitAction } from 'src/types'
 
 /**
  * Get the directory path for script files.
@@ -45,7 +45,7 @@ export const getUniqueScriptFileName = (actionClassName: string, folderPath: str
 /**
  * Handle the generation of a script file.
  *
- * @param {OnChainActionDetail | OffChainActionDetail} actionDetail - The action to be converted into a script.
+ * @param {InfinitAction} actionDetail - The action to be converted into a script.
  * @param {string} actionKey - The key associated with the action.
  * @param {string} libPath - The library path to be used in the script.
  * @param {string} filename - The name of the script file.
@@ -54,7 +54,7 @@ export const getUniqueScriptFileName = (actionClassName: string, folderPath: str
  * @returns {Promise<string>} The path to the generated script file.
  */
 export const handleGenerateScriptFile = async (
-  actionDetail: OnChainActionDetail | OffChainActionDetail,
+  actionDetail: InfinitAction,
   actionKey: string,
   libPath: string,
   filename: string,

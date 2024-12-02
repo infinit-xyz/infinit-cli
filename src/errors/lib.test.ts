@@ -18,5 +18,11 @@ describe('INFINITLibraryError', () => {
         ${cliName}: ${cliVersion}
         Node: ${nodeVersion}]
     `)
+
+    expect(new INFINITLibraryError(PROTOCOL_MODULE.init_capital, 'error')).toMatchInlineSnapshot(`
+      [INFINITLibraryError-${PROTOCOL_MODULE.init_capital}: error
+      ${cliName}: ${cliVersion}
+      Node: ${nodeVersion}]
+  `)
   })
 })

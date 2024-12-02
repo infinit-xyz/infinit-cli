@@ -1,7 +1,9 @@
-import type { OffChainActionDetail, OnChainActionDetail } from '@infinit-xyz/core'
 import { confirm } from '@inquirer/prompts'
 
 import { config } from '@classes'
+import { actionSelectPrompt } from '@commands/script/generate/index.prompt'
+import type { ProtocolModuleActionKey } from '@commands/script/generate/index.type'
+import { getScriptFileDirectory, getUniqueScriptFileName, handleGenerateScriptFile } from '@commands/script/generate/utils'
 import { chalkError, chalkInfo } from '@constants/chalk'
 import { protocolModules } from '@constants/protocol-module'
 import type { PROTOCOL_MODULE } from '@enums/module'
@@ -9,10 +11,7 @@ import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
 import { ValidateInputValueError } from '@errors/validate'
 import { sendOffChainEvent } from '@utils/analytics'
 import { ensureCwdRootProject } from '@utils/files'
-
-import { actionSelectPrompt } from './index.prompt'
-import type { ProtocolModuleActionKey } from './index.type'
-import { getScriptFileDirectory, getUniqueScriptFileName, handleGenerateScriptFile } from './utils'
+import type { InfinitAction } from 'src/types'
 
 export const handleGenerateScript = async (actionIdFromInput?: string) => {
   ensureCwdRootProject()
@@ -48,7 +47,7 @@ export const handleGenerateScript = async (actionIdFromInput?: string) => {
     }
   }
 
-  const selectedAction: OnChainActionDetail | OffChainActionDetail = protocolModule.actions[actionKey]
+  const selectedAction: InfinitAction = protocolModule.actions[actionKey]
 
   const isConfirm = await confirm({
     message: `Do you want to generate script with action ${chalkInfo(selectedAction.name)}?`,

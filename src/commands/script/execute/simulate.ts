@@ -1,3 +1,4 @@
+import type { OnChainActionCallback, OnChainActionCallbackKeys, OnChainActionCallbackParams } from '@infinit-xyz/core/types/callback'
 import axios from 'axios'
 import type { Ora } from 'ora'
 import { createServer } from 'prool'
@@ -7,7 +8,6 @@ import { createPublicClient, createTestClient, http, type Address } from 'viem'
 
 import type { ChainInfo } from '@constants/chains'
 import type { Action, InfinitCache } from '@infinit-xyz/core'
-import type { OnChainActionCallback, OnChainActionCallbackKeys, OnChainActionCallbackParams } from '@infinit-xyz/core/types/callback'
 import { getProjectRpc } from '@utils/config'
 
 const FORK_CHAIN_HOST = 'http://127.0.0.1'

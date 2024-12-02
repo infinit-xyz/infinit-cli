@@ -5,6 +5,7 @@ import type { ProtocolModuleActionKey } from '@commands/script/generate/index.ty
 import { protocolModules } from '@constants/protocol-module'
 import type { PROTOCOL_MODULE } from '@enums/module'
 import { ValidateInputValueError } from '@errors/validate'
+import type { ActionDetailRecord, OffChainActionDetail, OnChainActionDetail } from '@infinit-xyz/core'
 import { sendOffChainEvent } from '@utils/analytics'
 
 export const handleListAction = () => {
@@ -15,7 +16,7 @@ export const handleListAction = () => {
     throw new ValidateInputValueError('Protocol module not supported')
   }
 
-  const actionDetailRecord = protocolModule.actions
+  const actionDetailRecord = protocolModule.actions as ActionDetailRecord
 
   const onChainActionKeys = Object.entries(actionDetailRecord)
     .filter(([_, action]) => action.type === 'on-chain')
@@ -33,7 +34,7 @@ export const handleListAction = () => {
 
   if (onChainActionKeys.length > 0) {
     for (const actionKey of onChainActionKeys) {
-      const action = actionDetailRecord[actionKey]
+      const action = actionDetailRecord[actionKey] as OnChainActionDetail
       onChainActiontable.push([actionKey, action.name, action.signers.join(', ')])
     }
 
@@ -52,7 +53,7 @@ export const handleListAction = () => {
 
   if (offChainActionKeys.length > 0) {
     for (const actionKey of offChainActionKeys) {
-      const action = actionDetailRecord[actionKey]
+      const action = actionDetailRecord[actionKey] as OffChainActionDetail
       offChainActiontable.push([actionKey, action.name])
     }
 

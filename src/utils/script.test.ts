@@ -12,24 +12,26 @@ describe('generateScriptText', () => {
   const generatedText = generateScriptText(initialAction, libPath, 'init')
 
   test('should generate script text correctly (partial match)', () => {
-    expect(generatedText).toContain(`import { ${initialAction.actionClassName}, type actions } from '${libPath}/actions'`)
+    if (initialAction.type === 'on-chain') {
+      expect(generatedText).toContain(`import { ${initialAction.actionClassName}, type actions } from '${libPath}/actions'`)
 
-    const zodObjectDefault = zodGetDefaults(initialAction.paramsSchema)
-    const allZodKeys = Object.keys(zodObjectDefault)
+      const zodObjectDefault = zodGetDefaults(initialAction.paramsSchema)
+      const allZodKeys = Object.keys(zodObjectDefault)
 
-    expect(generatedText).toContain(`type Param = z.infer<typeof actions['init']['paramsSchema']>`)
-    expect(generatedText).toContain(`const params: Param = {`)
-    allZodKeys.forEach((key) => {
-      expect(generatedText).toContain(`"${key}": undefined`)
-      expect(generatedText).toContain(`// TODO: ${paramsSchema.shape[key].description ?? ''}`)
-    })
+      expect(generatedText).toContain(`type Param = z.infer<typeof actions['init']['paramsSchema']>`)
+      expect(generatedText).toContain(`const params: Param = {`)
+      allZodKeys.forEach((key) => {
+        expect(generatedText).toContain(`"${key}": undefined`)
+        expect(generatedText).toContain(`// TODO: ${paramsSchema.shape[key].description ?? ''}`)
+      })
 
-    expect(generatedText).toContain(`const signer = {`)
-    initialAction.signers.forEach((signer) => {
-      expect(generatedText).toContain(`"${signer}": ""`)
-    })
+      expect(generatedText).toContain(`const signer = {`)
+      initialAction.signers.forEach((signer) => {
+        expect(generatedText).toContain(`"${signer}": ""`)
+      })
 
-    expect(generatedText).toContain(`export default { params, signer, Action: ${initialAction.actionClassName} }`)
+      expect(generatedText).toContain(`export default { params, signer, Action: ${initialAction.actionClassName} }`)
+    }
   })
 
   test('should generate script text correctly (exact match)', () => {
