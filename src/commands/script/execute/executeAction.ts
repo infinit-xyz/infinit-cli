@@ -1,36 +1,28 @@
-import type { InfinitConfigSchema } from '@schemas/generated'
+import { type Action as BaseAction, type OffChainAction as BaseOffChainAction, type InfinitCache, InfinitWallet } from '@infinit-xyz/core'
+import { confirm } from '@inquirer/prompts'
+import fs from 'fs'
+import _ from 'lodash'
 import type { Ora } from 'ora'
+import path from 'path'
 import type { Address } from 'viem'
 
 import { accounts } from '@classes'
-import { executeOffChainActionCallbackHandler } from '@commands/script/execute/callback'
-import type { PROTOCOL_MODULE } from '@enums/module'
-import { INFINITLibraryError } from '@errors/lib'
-import { type OffChainAction as BaseOffChainAction, InfinitWallet } from '@infinit-xyz/core'
-
-import _ from 'lodash' // [TODO/INVESTIGATE] later on importing from lodash
-
-import { loadAccountFromPrompt } from '@commons/prompts/accounts'
-import type { ChainInfo } from '@constants/chains'
-import { AccountNotFoundError } from '@errors/account'
-import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
-import { checkIsAccountFound } from '@utils/account'
-import { getProjectRpc } from '@utils/config'
-import { FORK_CHAIN_URL } from './simulate'
-
-import { type Action as BaseAction, type InfinitCache } from '@infinit-xyz/core'
-
 import { cache } from '@classes/Cache/Cache'
 import type { HandleExecuteScriptOption } from '@commands/script/execute'
+import { executeOffChainActionCallbackHandler, executeOnChainActionCallbackHandler } from '@commands/script/execute/callback'
+import { FORK_CHAIN_URL, simulateExecute } from '@commands/script/execute/simulate'
+import { loadAccountFromPrompt } from '@commons/prompts/accounts'
+import type { ChainInfo } from '@constants/chains'
 import { chalkError, chalkInfo } from '@constants/chalk'
-import { confirm } from '@inquirer/prompts'
-import { executeOnChainActionCallbackHandler } from './callback'
-import { simulateExecute } from './simulate'
-
+import type { PROTOCOL_MODULE } from '@enums/module'
+import { AccountNotFoundError } from '@errors/account'
+import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
+import { INFINITLibraryError } from '@errors/lib'
 import { ValidateInputValueError } from '@errors/validate'
+import type { InfinitConfigSchema } from '@schemas/generated'
+import { checkIsAccountFound } from '@utils/account'
+import { getProjectRpc } from '@utils/config'
 import { writeFileSync } from '@utils/files'
-import fs from 'fs'
-import path from 'path'
 
 // type casting
 // biome-ignore lint/suspicious/noExplicitAny: must assign any from reading the file

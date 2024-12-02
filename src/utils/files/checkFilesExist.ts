@@ -1,10 +1,10 @@
-import { chalkError, chalkSuccess } from '@constants/chalk'
-import type { FolderStructure } from '@utils/files/files.type'
-
 import fs from 'fs'
-import _ from 'lodash' // [TODO/INVESTIGATE] later on importing from lodash
+import _ from 'lodash'
 import path from 'path'
 import { match } from 'ts-pattern'
+
+import { chalkError, chalkSuccess } from '@constants/chalk'
+import type { FolderStructure } from '@utils/files/files.type'
 
 /**
  *

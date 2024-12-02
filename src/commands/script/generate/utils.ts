@@ -1,10 +1,10 @@
 import type { OffChainActionDetail, OnChainActionDetail } from '@infinit-xyz/core'
-import { writeFileSync } from '@utils/files'
 import fs from 'fs'
+import _ from 'lodash'
 import path from 'path'
 
+import { writeFileSync } from '@utils/files'
 import { generateScriptText } from '@utils/script'
-import _ from 'lodash' // [TODO/INVESTIGATE] later on importing from lodash
 
 /**
  * Get the directory path for script files.

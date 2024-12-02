@@ -6,6 +6,7 @@ import * as tsx from 'tsx/cjs/api'
 
 import { config } from '@classes'
 import { executeOffChainAction, executeOnChainAction } from '@commands/script/execute/executeAction'
+import { scriptFileNamePrompt } from '@commands/script/execute/index.prompt'
 import { getScriptFileDirectory, getScriptHistoryFileDirectory } from '@commands/script/generate/utils'
 import { chalkInfo } from '@constants/chalk'
 import { protocolModules } from '@constants/protocol-module'
@@ -15,7 +16,6 @@ import { ValidateInputValueError } from '@errors/validate'
 import { getProjectChainInfo } from '@utils/config'
 import { ensureCwdRootProject, getFilesCurrentDir, readProjectRegistry } from '@utils/files'
 import { isValidTypescriptFileName } from '@utils/string'
-import { scriptFileNamePrompt } from './index.prompt'
 
 export type HandleExecuteScriptOption = {
   ignoreCache?: boolean
