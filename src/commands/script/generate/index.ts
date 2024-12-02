@@ -1,4 +1,3 @@
-import type { OffChainActionDetail, OnChainActionDetail } from '@infinit-xyz/core'
 import { confirm } from '@inquirer/prompts'
 
 import { config } from '@classes'
@@ -12,6 +11,7 @@ import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
 import { ValidateInputValueError } from '@errors/validate'
 import { sendOffChainEvent } from '@utils/analytics'
 import { ensureCwdRootProject } from '@utils/files'
+import type { InfinitAction } from 'src/types'
 
 export const handleGenerateScript = async (actionIdFromInput?: string) => {
   ensureCwdRootProject()
@@ -47,7 +47,7 @@ export const handleGenerateScript = async (actionIdFromInput?: string) => {
     }
   }
 
-  const selectedAction: OnChainActionDetail | OffChainActionDetail = protocolModule.actions[actionKey]
+  const selectedAction: InfinitAction = protocolModule.actions[actionKey]
 
   const isConfirm = await confirm({
     message: `Do you want to generate script with action ${chalkInfo(selectedAction.name)}?`,
