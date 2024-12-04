@@ -51,10 +51,12 @@ export const executeOnChainAction = async (
   }
 
   const accountIds = _.uniq(Object.values(signer))
-  const notFoundAccounts = Object.values(signer).filter((accountId) => !checkIsAccountFound(accountId))
+  const notFoundAccounts = _.uniq(Object.values(signer).filter((accountId) => !checkIsAccountFound(accountId)))
   if (notFoundAccounts.length) {
-    spinner.stopAndPersist({ symbol: '❌', text: `Account(s) ${notFoundAccounts.join(', ')} not found` })
-    return
+    const text = `Account(s) ${notFoundAccounts.join(', ')} not found`
+
+    spinner.stopAndPersist({ symbol: '❌', text })
+    throw new ValidateInputValueError(`Invalid signer, ${text}`)
   }
 
   spinner.stopAndPersist({ symbol: '✅', text: 'Signer validated.' })
