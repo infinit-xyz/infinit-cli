@@ -1,7 +1,9 @@
-import type { InfinitAction } from '@infinit-xyz/core'
-import { confirm, select } from '@inquirer/prompts'
+import { confirm } from '@inquirer/prompts'
 
 import { config } from '@classes'
+import { actionSelectPrompt } from '@commands/script/generate/index.prompt'
+import type { ProtocolModuleActionKey } from '@commands/script/generate/index.type'
+import { getScriptFileDirectory, getUniqueScriptFileName, handleGenerateScriptFile } from '@commands/script/generate/utils'
 import { chalkError, chalkInfo } from '@constants/chalk'
 import { protocolModules } from '@constants/protocol-module'
 import type { PROTOCOL_MODULE } from '@enums/module'
@@ -9,10 +11,9 @@ import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
 import { ValidateInputValueError } from '@errors/validate'
 import { sendOffChainEvent } from '@utils/analytics'
 import { ensureCwdRootProject } from '@utils/files'
-import type { ProtocolModuleActionKey } from './index.type'
-import { getScriptFileDirectory, getUniqueScriptFileName, handleGenerateScriptFile } from './utils'
+import type { InfinitAction } from 'src/types'
 
-export const handleGenerateScript = async (actionId?: string) => {
+export const handleGenerateScript = async (actionIdFromInput?: string) => {
   ensureCwdRootProject()
 
   const projectConfig = config.getProjectConfig()
@@ -25,25 +26,31 @@ export const handleGenerateScript = async (actionId?: string) => {
 
   let actionKey: ProtocolModuleActionKey | undefined = undefined
 
-  if (actionId) {
-    if (actionId in protocolModule.actions) actionKey = actionId as ProtocolModuleActionKey
-    else console.error(chalkError(`Action ${actionId} not found. Please select your desired action.`))
+  if (actionIdFromInput) {
+    if (actionIdFromInput in protocolModule.actions) {
+      actionKey = actionIdFromInput as ProtocolModuleActionKey
+    } else {
+      console.error(chalkError(`Action ${actionIdFromInput} not found. Please select your desired action.`))
+    }
   }
 
   // Prompts
   if (!actionKey) {
-    actionKey = await select<ProtocolModuleActionKey>({
-      message: 'Select an action to generate',
-      choices: Object.entries(protocolModule.actions).map(([key, { name }]) => ({ name: name, value: key as ProtocolModuleActionKey })),
-    })
+    const actionKeyFromPrompt = await actionSelectPrompt(protocolModule)
+
+    if (!actionKeyFromPrompt) {
+      throw new ValidateInputValueError('ActionKey is required')
+    } else if (actionKeyFromPrompt in protocolModule.actions) {
+      actionKey = actionKeyFromPrompt
+    } else {
+      throw new ValidateInputValueError('ActionKey is invalid')
+    }
   }
 
-  if (!actionKey) {
-    throw new ValidateInputValueError('ActionKey is required')
-  }
+  const selectedAction: InfinitAction = protocolModule.actions[actionKey]
 
   const isConfirm = await confirm({
-    message: `Do you want to generate script with action ${chalkInfo(protocolModule.actions[actionKey].name)}?`,
+    message: `Do you want to generate script with action ${chalkInfo(selectedAction.name)}?`,
     default: true,
   })
 
@@ -53,7 +60,6 @@ export const handleGenerateScript = async (actionId?: string) => {
   }
 
   const folderPath = getScriptFileDirectory()
-  const selectedAction: InfinitAction = protocolModule.actions[actionKey] as InfinitAction
 
   // File name
   const scriptFileName = getUniqueScriptFileName(selectedAction.actionClassName, folderPath)

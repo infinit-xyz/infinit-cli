@@ -1,14 +1,18 @@
-import type { InfinitAction } from '@infinit-xyz/core'
 import { pipeInto } from 'ts-functional-pipe'
 
 import { stringifyWithUndefined } from '@utils/json'
 import { zodGetDefaults } from '@utils/zod'
+import type { InfinitAction } from 'src/types'
 
 export const generateScriptText = (infinitAction: InfinitAction, libPath: string, actionKey: string, deployerId?: string) => {
-  const signers = infinitAction.signers.reduce<Record<string, string>>((acc, signer) => {
-    acc[signer] = signer === 'deployer' ? (deployerId ?? '') : ''
-    return acc
-  }, {})
+  let signers = {}
+
+  if (infinitAction.type === 'on-chain') {
+    signers = infinitAction.signers.reduce<Record<string, string>>((acc, signer) => {
+      acc[signer] = signer === 'deployer' ? (deployerId ?? '') : ''
+      return acc
+    }, {})
+  }
 
   const generatedParamsText = pipeInto(infinitAction.paramsSchema, zodGetDefaults, stringifyWithUndefined)
   const splittedParamsText = generatedParamsText.split('\n')
@@ -24,6 +28,7 @@ export const generateScriptText = (infinitAction: InfinitAction, libPath: string
     newSplistedParamsText.push(line)
   }
 
+  // TODO: Handle signer of off-chain actions in the off-chain actions PR
   const scriptText = `
 import { ${infinitAction.actionClassName}, type actions } from '${libPath}/actions'
 import type { z } from 'zod'

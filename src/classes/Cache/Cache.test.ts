@@ -3,7 +3,7 @@ import ora from 'ora'
 import path from 'path'
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
-import { executeActionCallbackHandler } from '@commands/script/execute/callback'
+import { executeOnChainActionCallbackHandler } from '@commands/script/execute/callback'
 import { FILE_NAMES } from '@constants'
 import { checkFilesExist, writeFileSync } from '@utils/files'
 import { jsonSafeParse, parseDateReviver } from '@utils/json'
@@ -389,7 +389,7 @@ describe('Cache', () => {
   describe('Action Callback Cache', () => {
     const spinner = ora({ spinner: 'dots' })
 
-    const actionCb01Callback = executeActionCallbackHandler(spinner, 'action-cb-01', mockProjectConfig, ['0x123'])
+    const actionCb01Callback = executeOnChainActionCallbackHandler(spinner, 'action-cb-01', mockProjectConfig, ['0x123'])
 
     const txHash01 = '0x001'
     const txHash02 = '0x002'
@@ -401,7 +401,7 @@ describe('Cache', () => {
     const date03 = new Date(1725584580_000) // Fri Sep 06 2024 01:03:00 GMT+0000
 
     test('actionInfo', () => {
-      actionCb01Callback('actionInfo', { name: 'action-name-01' })
+      actionCb01Callback('actionInfo', { name: 'action-name-01', totalSubActions: 0 })
 
       const expectedCacheObject: InfinitCliCache = {
         txs: {
@@ -432,9 +432,9 @@ describe('Cache', () => {
       const duringCallback = date00
 
       vi.setSystemTime(date00)
-      actionCb01Callback('actionInfo', { name: 'action-name-01' })
+      actionCb01Callback('actionInfo', { name: 'action-name-01', totalSubActions: 0 })
       actionCb01Callback('subActionStarted', { name: 'sub-action-01' })
-      actionCb01Callback('txSubmitted', { txHash: txHash01, name: 'tx-builder-name-01' })
+      actionCb01Callback('txSubmitted', { txHash: txHash01, name: 'tx-builder-name-01', walletAddress: '0x0' })
 
       const expectedCacheObject: InfinitCliCache = {
         txs: {
@@ -486,7 +486,7 @@ describe('Cache', () => {
       const updatedAt = date01
 
       vi.setSystemTime(updatedAt)
-      actionCb01Callback('txConfirmed', { txHash: txHash01, status: 'CONFIRMED' })
+      actionCb01Callback('txConfirmed', { name: '', txHash: txHash01, walletAddress: '0x0' })
 
       const expectedCacheObject: InfinitCliCache = {
         txs: {
@@ -534,12 +534,12 @@ describe('Cache', () => {
       const updatedAt = date03
 
       vi.setSystemTime(createdAt)
-      actionCb01Callback('txSubmitted', { txHash: txHash02, name: 'tx-builder-name-02' })
-      actionCb01Callback('txSubmitted', { txHash: txHash03, name: 'tx-builder-name-03' })
+      actionCb01Callback('txSubmitted', { txHash: txHash02, name: 'tx-builder-name-02', walletAddress: '0x0' })
+      actionCb01Callback('txSubmitted', { txHash: txHash03, name: 'tx-builder-name-03', walletAddress: '0x0' })
 
       vi.setSystemTime(updatedAt)
-      actionCb01Callback('txChecked', { txHash: txHash02, status: 'CONFIRMED' })
-      actionCb01Callback('txChecked', { txHash: txHash03, status: 'PENDING' })
+      actionCb01Callback('txChecked', { txHash: txHash02, status: 'CONFIRMED', walletAddress: '0x0' })
+      actionCb01Callback('txChecked', { txHash: txHash03, status: 'PENDING', walletAddress: '0x0' })
 
       const expectedCacheObject: InfinitCliCache = {
         txs: {
@@ -607,7 +607,7 @@ describe('Cache', () => {
     })
 
     test('txChecked, REVERTED', () => {
-      actionCb01Callback('txChecked', { txHash: txHash02, status: 'REVERTED' })
+      actionCb01Callback('txChecked', { txHash: txHash02, status: 'REVERTED', walletAddress: '0x0' })
 
       const expectedCacheObject: InfinitCliCache = {
         txs: {
@@ -652,7 +652,7 @@ describe('Cache', () => {
     })
 
     test('txChecked, NOT_FOUND', () => {
-      actionCb01Callback('txChecked', { txHash: txHash03, status: 'NOT_FOUND' })
+      actionCb01Callback('txChecked', { txHash: txHash03, status: 'NOT_FOUND', walletAddress: '0x0' })
 
       const expectedCacheObject: InfinitCliCache = {
         txs: {

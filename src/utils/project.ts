@@ -1,5 +1,11 @@
+import { ContractProvider } from '@infinit-xyz/core'
 import fs from 'fs'
+import yaml from 'js-yaml'
+import _ from 'lodash'
+import ora from 'ora'
+import os from 'os'
 import path from 'path'
+import { match } from 'ts-pattern'
 
 import { getScriptFileDirectory, handleGenerateScriptFile } from '@commands/script/generate/utils'
 import { DEFAULT_ACTION_KEY, FILE_NAMES } from '@constants'
@@ -11,24 +17,20 @@ import type { CHAIN_ID } from '@enums/chain'
 import { PROTOCOL_MODULE } from '@enums/module'
 import type { PACKAGE_MANAGER } from '@enums/package-managers'
 import { ValidateInputValueError } from '@errors/validate'
-import { ContractProvider } from '@infinit-xyz/core'
 import type { InfinitConfigSchema } from '@schemas/generated'
 import { sendOffChainEvent } from '@utils/analytics'
 import { spawnChild } from '@utils/childprocess'
 import { writeFileSync } from '@utils/files'
 import { getPackageManagerInstallArgs } from '@utils/packageManager'
-import yaml from 'js-yaml'
-import _ from 'lodash' // [TODO/INVESTIGATE] later on importing from lodash
-import ora from 'ora'
-import os from 'os'
+
 import { dependencies as packageJsonDependencies, name as packageJsonName } from 'package.json'
-import { match } from 'ts-pattern'
 
 export const getProtocolModule = (protocolModule: PROTOCOL_MODULE) =>
   match<PROTOCOL_MODULE>(protocolModule)
     .with(PROTOCOL_MODULE.token, () => `token`)
     .with(PROTOCOL_MODULE.aave_v3, () => `aave-v3`)
     .with(PROTOCOL_MODULE.uniswap_v3, () => `uniswap-v3`)
+    .with(PROTOCOL_MODULE.init_capital, () => `init-capital`)
     .exhaustive()
 
 export const compileProject = async (projectDirectory: string, _protocolModule: PROTOCOL_MODULE) => {
