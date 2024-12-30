@@ -31,7 +31,7 @@ export const getProtocolModule = (protocolModule: PROTOCOL_MODULE) =>
     .with(PROTOCOL_MODULE.aave_v3, () => `aave-v3`)
     .with(PROTOCOL_MODULE.uniswap_v3, () => `uniswap-v3`)
     .with(PROTOCOL_MODULE.init_capital, () => `init-capital`)
-    .with(PROTOCOL_MODULE.pendle_v3, () => `pendle-v3`)
+    .with(PROTOCOL_MODULE.pendle, () => `pendle`)
     .exhaustive()
 
 export const compileProject = async (projectDirectory: string, _protocolModule: PROTOCOL_MODULE) => {

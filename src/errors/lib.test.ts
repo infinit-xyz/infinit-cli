@@ -25,8 +25,8 @@ describe('INFINITLibraryError', () => {
       Node: ${nodeVersion}]
     `)
 
-    expect(new INFINITLibraryError(PROTOCOL_MODULE.pendle_v3, 'error')).toMatchInlineSnapshot(`
-      [INFINITLibraryError-${PROTOCOL_MODULE.pendle_v3}: error
+    expect(new INFINITLibraryError(PROTOCOL_MODULE.pendle, 'error')).toMatchInlineSnapshot(`
+      [INFINITLibraryError-${PROTOCOL_MODULE.pendle}: error
       ${cliName}: ${cliVersion}
       Node: ${nodeVersion}]
     `)

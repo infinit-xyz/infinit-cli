@@ -5,7 +5,7 @@ export const SUPPORTED_PROTOCOL_MODULES = [
   PROTOCOL_MODULE.uniswap_v3,
   PROTOCOL_MODULE.token,
   PROTOCOL_MODULE.init_capital,
-  PROTOCOL_MODULE.pendle_v3,
+  PROTOCOL_MODULE.pendle,
 ]
 
 export const FILE_NAMES = {

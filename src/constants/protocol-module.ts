@@ -46,12 +46,12 @@ export const protocolModules = {
     libPath: '@infinit-xyz/init-capital',
     Verifier: InitCapitalContractVerifier,
   },
-  [PROTOCOL_MODULE.pendle_v3]: {
-    key: PROTOCOL_MODULE.pendle_v3,
-    name: 'Pendle V3',
-    description: 'Pendle V3',
+  [PROTOCOL_MODULE.pendle]: {
+    key: PROTOCOL_MODULE.pendle,
+    name: 'Pendle',
+    description: 'Pendle',
     actions: initCapitalActions,
-    libPath: '@infinit-xyz/pendle-v3',
+    libPath: '@infinit-xyz/pendle',
     Verifier: InitCapitalContractVerifier,
   },
 } satisfies Record<PROTOCOL_MODULE, ModuleAction>

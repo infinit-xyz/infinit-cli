@@ -4,5 +4,5 @@ export enum PROTOCOL_MODULE {
   token = 'token',
   aave_v3 = 'aave-v3',
   uniswap_v3 = 'uniswap-v3',
-  pendle_v3 = 'pendle-v3',
+  pendle = 'pendle',
 }
