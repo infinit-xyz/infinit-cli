@@ -12,6 +12,7 @@ import { ERROR_MESSAGE_RECORD } from '@errors/errorList'
 import { isBlockscout } from '@infinit-xyz/core/internal'
 import { verifyContractCallbackHandler } from './callback'
 import { confirmPrompt, explorerApiKeyPrompt, explorerApiUrlPrompt, explorerNamePrompt, explorerUrlPrompt } from './index.prompt'
+import { getContractRoot } from '@utils/files/getContractRoot'
 
 export const handleVerifyContract = async () => {
   const projectConfig = config.getProjectConfig()
@@ -86,7 +87,10 @@ export const handleVerifyContract = async () => {
   }
 
   const chainInfo = getProjectChainInfo()
-  const publicClient = createPublicClient({ chain: chainInfo.viemChain.instance, transport: http(getProjectRpc()) })
+  const publicClient = createPublicClient({
+    chain: chainInfo.viemChain.instance,
+    transport: http(getProjectRpc()),
+  })
 
   const verifier = new protocolModules[projectConfig.protocol_module as PROTOCOL_MODULE].Verifier(publicClient, {
     apiKey,
@@ -97,6 +101,8 @@ export const handleVerifyContract = async () => {
   // Spinner
   const spinner = ora({ spinner: 'dots' })
 
+  const contractRoot = getContractRoot()
+
   // Verify
-  verifier.verify(registry, verifyContractCallbackHandler(spinner, explorerUrl))
+  verifier.verify(registry, contractRoot, verifyContractCallbackHandler(spinner, explorerUrl))
 }
