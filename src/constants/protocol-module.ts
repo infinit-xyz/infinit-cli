@@ -10,6 +10,9 @@ import { TokenContractVerifier } from '@infinit-xyz/token/utils'
 import { actions as uniswapV3Actions } from '@infinit-xyz/uniswap-v3/actions'
 import { UniswapV3ContractVerifier } from '@infinit-xyz/uniswap-v3/utils'
 
+import { actions as pendleActions } from '@infinit-xyz/pendle/actions'
+import { PendleContractVerifier } from '@infinit-xyz/pendle/utils'
+
 import type { ModuleAction } from '@constants/protocol-module.type'
 import { PROTOCOL_MODULE } from '@enums/module'
 
@@ -45,5 +48,13 @@ export const protocolModules = {
     actions: initCapitalActions,
     libPath: '@infinit-xyz/init-capital',
     Verifier: InitCapitalContractVerifier,
+  },
+  [PROTOCOL_MODULE.pendle]: {
+    key: PROTOCOL_MODULE.pendle,
+    name: 'Pendle',
+    description: 'Pendle',
+    actions: pendleActions,
+    libPath: '@infinit-xyz/pendle',
+    Verifier: PendleContractVerifier,
   },
 } satisfies Record<PROTOCOL_MODULE, ModuleAction>
