@@ -8,3 +8,4 @@ bump INFINIT Library version
 - @infinit-xyz/core@0.1.0-alpha.12
 - @infinit-xyz/init-capital@0.0.0-alpha.10
 - @infinit-xyz/uniswap-v3@0.0.0-alpha.24
+- @infinit-xyz/token@0.0.0-alpha.24
