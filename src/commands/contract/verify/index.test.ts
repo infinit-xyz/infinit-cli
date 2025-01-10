@@ -55,7 +55,6 @@ const MOCK_PROJECT_WITH_BLOCKSCOUT_CONFIG = {
   protocol_module: PROTOCOL_MODULE.aave_v3,
 } as InfinitConfigSchema
 
-
 describe('handleVerifyContract', () => {
   const mockVerifyContract = vi.fn()
   const mockVerifier = vi.fn().mockImplementation(() => {
