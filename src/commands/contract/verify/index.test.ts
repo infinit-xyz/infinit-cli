@@ -7,6 +7,7 @@ import { PROTOCOL_MODULE } from '@enums/module'
 import type { InfinitConfigSchema } from '@schemas/generated'
 import { type PublicClient, createPublicClient } from 'viem'
 import { handleVerifyContract } from './index'
+import { getContractRoot } from '@utils/files/getContractRoot'
 import { confirmPrompt, explorerApiKeyPrompt, explorerApiUrlPrompt, explorerNamePrompt, explorerUrlPrompt } from './index.prompt'
 
 vi.mock('viem', () => ({
@@ -53,6 +54,7 @@ const MOCK_PROJECT_WITH_BLOCKSCOUT_CONFIG = {
   },
   protocol_module: PROTOCOL_MODULE.aave_v3,
 } as InfinitConfigSchema
+
 
 describe('handleVerifyContract', () => {
   const mockVerifyContract = vi.fn()
@@ -105,7 +107,7 @@ describe('handleVerifyContract', () => {
     })
 
     expect(mockVerifyContract).toHaveBeenCalledTimes(1)
-    expect(mockVerifyContract).toHaveBeenCalledWith({}, expect.any(Function))
+    expect(mockVerifyContract).toHaveBeenCalledWith({}, getContractRoot(), expect.any(Function))
   })
 
   test('should handle explorer info and call verify contract correctly with Blockscout', async () => {
@@ -135,7 +137,7 @@ describe('handleVerifyContract', () => {
     })
 
     expect(mockVerifyContract).toHaveBeenCalledTimes(1)
-    expect(mockVerifyContract).toHaveBeenCalledWith({}, expect.any(Function))
+    expect(mockVerifyContract).toHaveBeenCalledWith({}, getContractRoot(), expect.any(Function))
   })
 
   test('should throw error if block explorer is not blockscout but no api key', async () => {

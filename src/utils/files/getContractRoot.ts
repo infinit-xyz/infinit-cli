@@ -1,25 +1,15 @@
-import fs from 'fs'
 import path from 'path'
-import yaml from 'js-yaml'
-
-import { FILE_NAMES } from '@constants'
-import { FileNotFoundError } from '@errors/fs'
-import type { InfinitConfigSchema } from '@schemas/generated'
+import { config } from '@classes'
 
 /**
  * Get contract root
  * @returns {string} contractRootPath
  */
 export const getContractRoot = (): string => {
-  const configPath = path.resolve(process.cwd(), 'src', FILE_NAMES.CONFIG)
-  if (!fs.existsSync(configPath)) {
-    throw new FileNotFoundError(configPath)
-  }
-
-  const config = yaml.load(fs.readFileSync(configPath, 'utf-8')) as InfinitConfigSchema
+  const projectConfig = config.getProjectConfig()
 
   // replace _ with -
-  const protocolModule = config.protocol_module.replaceAll('_', '-')
+  const protocolModule = projectConfig.protocol_module.replaceAll('_', '-')
 
   const contractRootPath = path.resolve(process.cwd(), 'node_modules', `@infinit-xyz/${protocolModule}`, 'contracts')
 
