@@ -1,5 +1,11 @@
 # @infinit-xyz/cli
 
+## 0.0.0-alpha.18
+
+### Patch Changes
+
+- [#93](https://github.com/infinit-xyz/infinit-cli/pull/93) [`8e123b6`](https://github.com/infinit-xyz/infinit-cli/commit/8e123b667503225fc7168091522293f197756d6a) Thanks [@tapakornl](https://github.com/tapakornl)! - fix verify contracts
+
 ## 0.0.0-alpha.17
 
 ### Minor Changes
