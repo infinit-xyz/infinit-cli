@@ -1,5 +1,21 @@
 # @infinit-xyz/cli
 
+## 0.0.0-alpha.17
+
+### Minor Changes
+
+- [#90](https://github.com/infinit-xyz/infinit-cli/pull/90) [`eb60cc1`](https://github.com/infinit-xyz/infinit-cli/commit/eb60cc104ecdc4384673e68b240de3c218941f99) Thanks [@mewpawee](https://github.com/mewpawee)! - bump INFINIT Library version
+
+  - @infinit-xyz/aave-v3@0.0.0-alpha.27
+  - @infinit-xyz/core@0.1.0-alpha.12
+  - @infinit-xyz/init-capital@0.0.0-alpha.10
+  - @infinit-xyz/uniswap-v3@0.0.0-alpha.24
+  - @infinit-xyz/token@0.0.0-alpha.24
+
+### Patch Changes
+
+- [#90](https://github.com/infinit-xyz/infinit-cli/pull/90) [`eb60cc1`](https://github.com/infinit-xyz/infinit-cli/commit/eb60cc104ecdc4384673e68b240de3c218941f99) Thanks [@mewpawee](https://github.com/mewpawee)! - add support for Pendle Module
+
 ## 0.0.0-alpha.16
 
 ### Minor Changes
