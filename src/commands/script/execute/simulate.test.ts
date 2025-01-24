@@ -27,6 +27,7 @@ vi.mock('viem', () => ({
   createPublicClient: vi.fn(),
   createTestClient: vi.fn(),
   http: vi.fn(),
+  defineChain: vi.fn(),
 }))
 
 vi.mock('axios')
