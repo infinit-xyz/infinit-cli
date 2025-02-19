@@ -1,5 +1,15 @@
 # @infinit-xyz/cli
 
+## 0.0.0-alpha.19
+
+### Minor Changes
+
+- [#105](https://github.com/infinit-xyz/infinit-cli/pull/105) [`9a783d5`](https://github.com/infinit-xyz/infinit-cli/commit/9a783d5e2c8280a4e1516fd0c486990d1a05a57a) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - support Monad Testnet
+
+### Patch Changes
+
+- [`f62ab87`](https://github.com/infinit-xyz/infinit-cli/commit/f62ab87d0afd3d7a85f8be44f32e5fca21a4f4fe) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - bump infinit library version
+
 ## 0.0.0-alpha.18
 
 ### Patch Changes
