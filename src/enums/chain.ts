@@ -9,6 +9,7 @@ export enum CHAIN_ID {
   Holesky = '17000',
   Berachain_bArtio = '80084',
   Unichain_Sepolia = '1301',
+  Monad_Testnet = '10143',
   // Arbitrum = '42161',
   // ARB_SEPOLIA = '421614',
   // Optimism = '10',
