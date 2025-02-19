@@ -1,5 +1,11 @@
 # @infinit-xyz/cli
 
+## 0.0.0-alpha.20
+
+### Patch Changes
+
+- [`a36e4ad`](https://github.com/infinit-xyz/infinit-cli/commit/a36e4ade6a2842b3c480c17502023efd7baf7c64) Thanks [@melvinmcrn](https://github.com/melvinmcrn)! - support bun text-based lockfile
+
 ## 0.0.0-alpha.19
 
 ### Minor Changes
