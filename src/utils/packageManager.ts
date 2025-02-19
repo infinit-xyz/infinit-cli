@@ -19,7 +19,7 @@ export const getPackageManager = (projectPath: string): PACKAGE_MANAGER => {
     return PACKAGE_MANAGER.yarn
   } else if (fs.existsSync(path.resolve(projectPath, 'package-lock.json'))) {
     return PACKAGE_MANAGER.npm
-  } else if (fs.existsSync(path.resolve(projectPath, 'bun.lockb'))) {
+  } else if (fs.existsSync(path.resolve(projectPath, 'bun.lockb')) || fs.existsSync(path.resolve(projectPath, 'bun.lock'))) {
     return PACKAGE_MANAGER.bun
   } else {
     throw new Error('Package manager not found')
