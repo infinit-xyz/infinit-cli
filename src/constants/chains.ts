@@ -1,5 +1,5 @@
 import { CHAIN_ID } from '@enums/chain'
-import { type Chain, defineChain } from 'viem'
+import { type Chain } from 'viem'
 import * as viemChains from 'viem/chains'
 
 type TokenDetail = {
@@ -19,31 +19,6 @@ export type ChainInfo = {
     instance: Chain
   }
 }
-
-const monadTestnetChain = defineChain({
-  id: parseInt(CHAIN_ID.Monad_Testnet),
-  name: 'Monad Testnet',
-  nativeCurrency: {
-    name: 'Monad',
-    symbol: 'MON',
-    decimals: 18,
-  },
-  rpcUrls: {
-    default: {
-      http: ['https://rpc-testnet.monadinfra.com/rpc/smkuKxR14Php4gxcWPU7ZZk5DEd9xXBU'],
-      webSocket: [],
-    },
-  },
-  blockExplorers: {
-    default: { name: 'Explorer', url: 'https://explorer.monad-testnet.category.xyz' },
-  },
-  contracts: {
-    multicall3: {
-      address: '0xcA11bde05977b3631167028862bE2a173976CA11',
-      blockCreated: 251449,
-    },
-  },
-})
 
 export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
   [CHAIN_ID.Ethereum]: {
@@ -163,14 +138,14 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     chainId: CHAIN_ID.Monad_Testnet,
     name: '[Testnet] Monad Testnet',
     shortName: 'Monad Testnet',
-    rpcList: ['https://rpc-testnet.monadinfra.com/rpc/smkuKxR14Php4gxcWPU7ZZk5DEd9xXBU'],
+    rpcList: ['https://testnet-rpc.monad.xyz'],
     nativeCurrency: {
       name: 'Monad',
       symbol: 'MON',
       decimals: 18,
     },
     viemChain: {
-      instance: monadTestnetChain,
+      instance: viemChains.monadTestnet,
     },
   },
   // [CHAIN_ID.Arbitrum]: {
