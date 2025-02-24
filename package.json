@@ -58,7 +58,7 @@
     "json-schema-to-typescript": "^15.0.0",
     "lodash": "^4.17.21",
     "ora": "^8.0.1",
-    "prool": "^0.0.16",
+    "prool": "^0.0.23",
     "ts-functional-pipe": "^3.1.2",
     "ts-pattern": "^5.3.1",
     "tsx": "^4.16.2",
