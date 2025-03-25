@@ -28,7 +28,6 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     rpcList: [
       'https://1rpc.io/eth',
       'https://eth.llamarpc.com',
-      'https://rpc.ankr.com/eth',
       'https://eth-pokt.nodies.app',
       'https://eth-mainnet.public.blastapi.io',
       'https://eth.meowrpc.com',
@@ -46,7 +45,7 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     chainId: CHAIN_ID.Mantle,
     name: 'Mantle',
     shortName: 'Mantle',
-    rpcList: ['https://rpc.mantle.xyz', 'https://rpc.ankr.com/mantle'],
+    rpcList: ['https://rpc.mantle.xyz'],
     nativeCurrency: {
       name: 'Mantle',
       symbol: 'MNT',
@@ -61,7 +60,6 @@ export const CHAINS: Record<CHAIN_ID, ChainInfo> = {
     name: 'BNB Chain',
     shortName: 'BSC',
     rpcList: [
-      'https://rpc.ankr.com/bsc',
       'https://1rpc.io/bnb',
       'https://binance.llamarpc.com',
       'https://bsc-dataseed1.bnbchain.org',
