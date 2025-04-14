@@ -11,7 +11,7 @@ export const isChainNameSupported = (chainName?: string): boolean => {
 
 /**
  * isSupportedChain
- * @param value hain name, short name or chain id
+ * @param value chain name, short name or chain id
  * @returns
  */
 export const isSupportedChain = (value: string) => {
@@ -21,10 +21,17 @@ export const isSupportedChain = (value: string) => {
   )
 }
 
-export const toSupportedChainID = (chainName?: string): CHAIN_ID | undefined => {
-  if (!chainName) return
-  const _chainName = chainName.toLowerCase()
-  return Object.values(CHAINS).find((chain) => chain.name.toLowerCase() === _chainName || chain.shortName.toLowerCase() === _chainName)?.chainId
+/**
+ * convert to supported chain id
+ * @param value chain name, short name or chain id
+ * @returns
+ */
+export const toSupportedChainID = (value?: string): CHAIN_ID | undefined => {
+  if (!value) return
+  const formatValue = value.toLowerCase()
+  return Object.values(CHAINS).find(
+    (chain) => chain.name.toLowerCase() === formatValue || chain.shortName.toLowerCase() === formatValue || chain.chainId === formatValue,
+  )?.chainId
 }
 
 export const isUrlValid = (url?: string): boolean => {
